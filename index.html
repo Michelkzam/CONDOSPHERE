@@ -333,7 +333,15 @@
                                 <p class="panel-subtitle">Entradas e saídas de visitantes/prestadores no dia atual</p>
                             </div>
                             <!-- SVG Rendered Interactive Graph (Works offline beautifully) -->
-                            <div style="height:200px; display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--color-border); padding-bottom:8px; margin-top:20px">
+                            <div style="display:flex; gap:4px; margin-top:20px">
+                                <div style="display:flex; flex-direction:column; justify-content:space-between; height:200px; padding-bottom:8px; font-size:0.55rem; color:var(--color-text-muted); text-align:right; min-width:28px">
+                                    <span>20</span>
+                                    <span>15</span>
+                                    <span>10</span>
+                                    <span>5</span>
+                                    <span>0</span>
+                                </div>
+                                <div style="flex:1; height:200px; display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--color-border); border-left:1px solid var(--color-border); padding-bottom:8px; padding-left:4px">
                                 <div style="display:flex; flex-direction:column; align-items:center; width:12%">
                                     <div style="height:40px; width:20px; background:rgba(59,130,246,0.3); border-top: 2px solid var(--color-primary); border-radius: 3px 3px 0 0"></div>
                                     <span style="font-size:0.6rem; color:var(--color-text-muted); margin-top:6px">08:00</span>
@@ -362,6 +370,7 @@
                                     <div style="height:50px; width:20px; background:rgba(59,130,246,0.3); border-top: 2px solid var(--color-primary); border-radius: 3px 3px 0 0"></div>
                                     <span style="font-size:0.6rem; color:var(--color-text-muted); margin-top:6px">20:00</span>
                                 </div>
+                            </div>
                             </div>
                         </div>
 
@@ -2956,7 +2965,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     <!-- PRINT VIEW FOR PROFESSIONAL A4 SALARY ADVANCE RECEIPT & REAL COMPARATIVE 12-MONTH CHART -->
     <div class="print-only receipt-a4-page" id="print-sheet-wrapper">
         <!-- Default Salary Advance wrapper. Toggled dynamically on print action -->
-        <div id="salary-advance-print-section">
+        <div id="salary-advance-print-section" style="display: none">
             <!-- Copy 1: Empresa -->
             <div class="receipt-box">
                 <div class="receipt-header">
@@ -8798,7 +8807,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                 const password = document.getElementById('login-password').value.trim(); // Allow alphanumeric passwords like AdminMaster
 
                 const defaultUsers = {
-                    "administrador": { role: "Administrador", name: "Administrador Geral", job: "Administrador Geral", avatar: "AD", pass: "AdminMaster" }
+                    "administrador": { role: "Administrador", name: "Administrador", job: "Gestor Master", avatar: "AD", pass: "AdminMaster" }
                 };
 
                 // Helper to perform local/offline login fallback
@@ -8884,7 +8893,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                                         // Fallback if public.users row is missing
                                         const fallbackUser = {
                                             role: "Administrador",
-                                            name: "Administrador Geral",
+                                            name: username,
                                             job: "Administrador Geral",
                                             avatar: "AD",
                                             pass: password
