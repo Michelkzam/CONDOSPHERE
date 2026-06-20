@@ -62,3 +62,12 @@ out/
 Thumbs.db
 
 .vercel
+
+# Runtime database files
+data/condosphere.db
+data/db.json
+data/db_config.json
+
+# Agent configuration
+.agents/
+skills-lock.json

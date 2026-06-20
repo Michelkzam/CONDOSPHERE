@@ -209,7 +209,7 @@ export const AccessProfiles: React.FC = () => {
                   <div key={cat} className="space-y-1">
                     <button
                       onClick={() => toggleAccordion(p.id, cat)}
-                      className="w-full flex justify-between items-center bg-slate-900 border border-slate-850 p-2.5 rounded-lg text-xs font-bold text-slate-200 hover:bg-slate-800/60 transition-colors"
+                      className="w-full flex justify-between items-center bg-slate-900 border border-slate-800 p-2.5 rounded-lg text-xs font-bold text-slate-200 hover:bg-slate-800/60 transition-colors"
                     >
                       <span>{cat}</span>
                       <svg className={`w-3.5 h-3.5 transition-transform text-slate-400 ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -234,16 +234,16 @@ export const AccessProfiles: React.FC = () => {
                               <tr key={subIdx}>
                                 <td className="py-2 font-medium text-slate-400">{perm.moduleName}</td>
                                 <td className="py-2 text-center">
-                                  <input type="checkbox" checked={perm.ver} disabled className="rounded bg-slate-950 border-slate-850 text-blue-600 cursor-not-allowed" />
+                                  <input type="checkbox" checked={perm.ver} disabled className="rounded bg-slate-950 border-slate-800 text-blue-600 cursor-not-allowed" />
                                 </td>
                                 <td className="py-2 text-center">
-                                  <input type="checkbox" checked={perm.criar} disabled className="rounded bg-slate-950 border-slate-850 text-blue-600 cursor-not-allowed" />
+                                  <input type="checkbox" checked={perm.criar} disabled className="rounded bg-slate-950 border-slate-800 text-blue-600 cursor-not-allowed" />
                                 </td>
                                 <td className="py-2 text-center">
-                                  <input type="checkbox" checked={perm.editar} disabled className="rounded bg-slate-950 border-slate-850 text-blue-600 cursor-not-allowed" />
+                                  <input type="checkbox" checked={perm.editar} disabled className="rounded bg-slate-950 border-slate-800 text-blue-600 cursor-not-allowed" />
                                 </td>
                                 <td className="py-2 text-center">
-                                  <input type="checkbox" checked={perm.excluir} disabled className="rounded bg-slate-950 border-slate-850 text-blue-600 cursor-not-allowed" />
+                                  <input type="checkbox" checked={perm.excluir} disabled className="rounded bg-slate-950 border-slate-800 text-blue-600 cursor-not-allowed" />
                                 </td>
                               </tr>
                             ))}
@@ -319,7 +319,7 @@ export const AccessProfiles: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => toggleAccordion(999, cat)} // Use 999 as ID for new profile
-                        className="w-full flex justify-between items-center bg-slate-950 border border-slate-850 p-2.5 rounded-lg text-xs font-bold text-slate-300 hover:bg-slate-900/60 transition-colors"
+                        className="w-full flex justify-between items-center bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-xs font-bold text-slate-300 hover:bg-slate-900/60 transition-colors"
                       >
                         <span>{cat}</span>
                         <svg className={`w-3.5 h-3.5 transition-transform text-slate-400 ${expanded[`999-${cat}`] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -331,7 +331,7 @@ export const AccessProfiles: React.FC = () => {
                         <div className="p-3 bg-slate-950/40 border-l-2 border-blue-600 rounded-b-lg overflow-x-auto">
                           <table className="w-full text-left text-xs border-collapse">
                             <thead>
-                              <tr className="text-slate-500 text-[9px] uppercase border-b border-slate-850">
+                              <tr className="text-slate-500 text-[9px] uppercase border-b border-slate-800">
                                 <th className="p-2">Submenu / Aba</th>
                                 <th className="p-2 text-center">Ver</th>
                                 <th className="p-2 text-center">Criar</th>

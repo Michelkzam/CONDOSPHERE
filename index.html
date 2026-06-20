@@ -427,21 +427,9 @@
                     </style>
 
                     
-                    <style>
-                        @keyframes wave-pulse {
-                            0% { height: 3px; }
-                            100% { height: 18px; }
-                        }
-                        .sound-wave-bar {
-                            width: 3px;
-                            background: #10b981;
-                            border-radius: 1px;
-                        }
-                    </style>
-
                     <!-- Quick Resident Association Checker & Telephone split layout (NEW!) -->
                     <div class="panel-card" style="margin-bottom:24px; padding: 20px">
-                        <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:24px; display:-ms-grid">
+                        <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:24px">
                             
                             <!-- COLUNA ESQUERDA: CONSULTA E LISTA -->
                             <div style="display:flex; flex-direction:column; justify-content:flex-start; border-right:1px solid var(--color-border); padding-right:24px">
@@ -1527,7 +1515,7 @@
                         <h3 class="panel-title">Avaliação de Desempenho (Matriz 9-Box)</h3>
                         <p class="panel-subtitle" style="margin-bottom:20px">Mapeamento de talentos cruzando Potencial e Desempenho dos funcionários</p>
                         
-                        <div style="display:grid; grid-template-columns: 80px 1fr; gap:12px; display:-ms-grid">
+                        <div style="display:grid; grid-template-columns: 80px 1fr; gap:12px">
                             <!-- Y-axis (Potencial) label -->
                             <div style="display:flex; flex-direction:column; justify-content:space-around; align-items:center; font-size:0.7rem; font-weight:bold; color:var(--color-text-muted); text-transform:uppercase">
                                 <span>Alto</span>
@@ -1582,7 +1570,7 @@
                         </div>
                         
                         <!-- X-axis Label -->
-                        <div style="display:grid; grid-template-columns: 80px 1fr; gap:12px; margin-top:8px; display:-ms-grid">
+                        <div style="display:grid; grid-template-columns: 80px 1fr; gap:12px; margin-top:8px">
                             <div></div>
                             <div style="display:flex; justify-content:space-around; font-size:0.7rem; font-weight:bold; color:var(--color-text-muted); text-transform:uppercase">
                                 <span>Desempenho Baixo</span>
@@ -1593,7 +1581,7 @@
                     </div>
 
                     <!-- Training and Recruitment Grid -->
-                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:24px; display:-ms-grid">
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:24px">
                         <!-- T&D Section -->
                         <div class="panel-card">
                             <h3 class="panel-title" style="margin-bottom:12px">Treinamento & Capacitação (T&D)</h3>
@@ -1638,7 +1626,7 @@
 
                 <!-- VIEW TAB: PORTAL DO COLABORADOR (NEW) -->
                 <div id="tab-portal_colaborador" class="tab-panel" style="display: none">
-                    <div style="display:grid; grid-template-columns: 280px 1fr; gap:24px; display:-ms-grid">
+                    <div style="display:grid; grid-template-columns: 280px 1fr; gap:24px">
                         <!-- Left Control: Select Employee Login -->
                         <div class="panel-card" style="height:fit-content">
                             <h3 class="panel-title" style="margin-bottom:12px">Acesso do Colaborador</h3>
@@ -1660,7 +1648,7 @@
                                 <p class="panel-subtitle">Acesso rápido a holerites, informes de rendimento e solicitações de férias</p>
                             </div>
 
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; display:-ms-grid">
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px">
                                 <!-- Pay slip & tax section -->
                                 <div style="background:rgba(255,255,255,0.02); border:1px solid var(--color-border); padding:16px; border-radius:10px">
                                     <h4 style="font-size:0.8rem; font-weight:bold; color:white; margin-bottom:12px">Holerites e Informe de Rendimentos</h4>
@@ -1726,7 +1714,7 @@
                         <h3 class="panel-title">Dashboard Analítico de Força de Trabalho</h3>
                         <p class="panel-subtitle" style="margin-bottom:20px">Distribuição dos custos da folha salarial por departamento e índice de satisfação interna.</p>
                         
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; display:-ms-grid">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px">
                             <!-- SVG Pie Chart: Payroll distribution -->
                             <div style="background-color:rgba(0,0,0,0.2); border:1px solid var(--color-border); padding:20px; border-radius:12px; text-align:center">
                                 <h4 style="font-size:0.8rem; font-weight:bold; color:white; margin-bottom:12px">Distribuição Custos de Pessoal</h4>
@@ -1768,6 +1756,42 @@
                                     <text x="153" y="61" fill="white" font-size="5" font-weight="bold" text-anchor="middle">1.2%</text>
                                 </svg>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW TAB: PRESTADORES -->
+                <div id="tab-prestadores" class="tab-panel" style="display: none">
+                    <div class="panel-card">
+                        <div class="panel-header" style="border-bottom:1px solid var(--color-border); padding-bottom:12px; margin-bottom:16px">
+                            <div>
+                                <h3 class="panel-title">🔧 Prestadores de Serviço</h3>
+                                <p class="panel-subtitle">Gerencie contratos de empresas terceirizadas (limpeza, segurança, manutenção, etc.)</p>
+                            </div>
+                            <div style="display:flex; gap:10px">
+                                <button class="btn btn-primary" onclick="openPrestadorModal(false)">+ Novo Prestador</button>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:15px">
+                            <label class="form-label" style="font-weight:bold; font-size:0.75rem">🔍 Busca Rápida</label>
+                            <input type="text" id="providers-search" class="form-control" style="background-color:var(--bg-input)" oninput="filterProvidersTable()" placeholder="Pesquise por empresa, CNPJ ou serviço...">
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Empresa</th>
+                                        <th>CNPJ</th>
+                                        <th>Serviço</th>
+                                        <th>Valor do Contrato</th>
+                                        <th>Status</th>
+                                        <th style="text-align:center">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="provider-table-rows">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -2415,7 +2439,7 @@
                             </div>
                         </div>
 
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; display:-ms-grid">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px">
                             <!-- Connection form -->
                             <div style="display:flex; flex-direction:column; gap:16px">
                                 <div class="form-group" style="margin-bottom:14px; background: rgba(59,130,246,0.05); border: 1px solid var(--color-primary); padding: 14px; border-radius: 8px">
@@ -2432,7 +2456,7 @@
                                 <!-- SEÇÃO 1: SERVIDOR LOCAL -->
                                 <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--color-border); padding: 14px; border-radius: 8px">
                                     <h4 style="font-weight:700; font-size:0.85rem; color:white; margin-bottom:12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px">🖥️ Conexão com Servidor de Rede Local</h4>
-                                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px; margin-bottom:10px; display:-ms-grid">
+                                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px; margin-bottom:10px">
                                         <div class="form-group">
                                             <label class="form-label" style="font-size:0.68rem">Host / IP do Servidor</label>
                                             <input type="text" id="net-ip" class="form-control" style="font-family:monospace; font-size:0.75rem" value="localhost" placeholder="Ex: 192.168.1.100">
@@ -2863,7 +2887,7 @@ EXECUTE FUNCTION public.handle_new_residence_receivable();
                             </div>
                         </div>
 
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; display:-ms-grid">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px">
                             <!-- Left: Operations & Info -->
                             <div style="display:flex; flex-direction:column; gap:16px">
                                 <h4 style="font-weight:700; font-size:0.85rem; color:white">Operações Consolidadas</h4>
@@ -5012,8 +5036,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
             } else if (tabId === 'funcionarios') {
                 renderEmployees();
             } else if (tabId === 'prestadores') {
-                renderAssemblies();
-            renderPrestadores();
+                renderPrestadores();
             } else if (tabId === 'portaria') {
                 renderVisitorLogs();
                 populateVisitorAuthDropdown(); // Dynamic population of visitor authorize select
@@ -8669,10 +8692,13 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
         }
 
         function showCalendarAlert(day, info) {
+            const now = new Date();
+            const monthNames = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+            const monthName = monthNames[now.getMonth()];
             if (info) {
-                showToast("Dia " + day + "/06/2026 reservado para: " + info, 'warning');
+                showToast("Dia " + day + " de " + monthName + " reservado para: " + info, 'warning');
             } else {
-                showToast("Dia " + day + "/06/2026 livre para novas reservas!", 'success');
+                showToast("Dia " + day + " de " + monthName + " livre para novas reservas!", 'success');
             }
         }
 
@@ -8681,7 +8707,14 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
             if (!grid) return;
 
             grid.innerHTML = '';
-            
+
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+            const monthNames = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
+
             // Add headers
             const weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
             weekdays.forEach(day => {
@@ -8691,50 +8724,57 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                 grid.appendChild(header);
             });
 
-            // June 2026 starts on a Monday (June 1st, 2026)
-            // So we need 1 faded day for May 31st (Sunday)
-            const fadedDay = document.createElement('div');
-            fadedDay.className = "calendar-day";
-            fadedDay.style.opacity = "0.3";
-            fadedDay.innerHTML = '<span class="day-num">31</span>';
-            grid.appendChild(fadedDay);
+            // Add faded days for previous month
+            if (firstDayOfWeek > 0) {
+                const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
+                for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+                    const fadedDay = document.createElement('div');
+                    fadedDay.className = "calendar-day";
+                    fadedDay.style.opacity = "0.3";
+                    fadedDay.innerHTML = '<span class="day-num">' + (prevMonthDays - i) + '</span>';
+                    grid.appendChild(fadedDay);
+                }
+            }
 
             // Fetch reservations to map booked days
-            const bookedDays = {}; // Map of dayNum -> list of booked area names
-            
-            // Scan DOM table
+            const bookedDays = {};
             const resvRows = Array.from(document.querySelectorAll('#tab-reservas table tbody tr'));
             resvRows.forEach(row => {
                 const cells = row.getElementsByTagName('td');
                 if (cells.length >= 7) {
                     const area = cells[1].textContent.trim();
                     const resident = cells[2].textContent.trim();
-                    const dateStr = cells[3].textContent.trim(); // "DD/MM/YYYY" or "YYYY-MM-DD"
+                    const dateStr = cells[3].textContent.trim();
                     
                     let dayNum = null;
+                    let matchMonth = false;
+                    let matchYear = false;
                     if (dateStr.includes("/")) {
                         const parts = dateStr.split("/");
-                        if (parts[1] === "06" && parts[2] === "2026") {
-                            dayNum = parseInt(parts[0], 10);
-                        }
+                        matchMonth = parseInt(parts[1], 10) === (currentMonth + 1);
+                        matchYear = parseInt(parts[2], 10) === currentYear;
+                        if (matchMonth && matchYear) dayNum = parseInt(parts[0], 10);
                     } else if (dateStr.includes("-")) {
                         const parts = dateStr.split("-");
-                        if (parts[1] === "06" && parts[0] === "2026") {
-                            dayNum = parseInt(parts[2], 10);
-                        }
+                        matchMonth = parseInt(parts[1], 10) === (currentMonth + 1);
+                        matchYear = parseInt(parts[0], 10) === currentYear;
+                        if (matchMonth && matchYear) dayNum = parseInt(parts[2], 10);
                     }
                     
-                    if (dayNum >= 1 && dayNum <= 30) {
+                    if (dayNum >= 1 && dayNum <= daysInMonth) {
                         if (!bookedDays[dayNum]) bookedDays[dayNum] = [];
                         bookedDays[dayNum].push({ area, resident });
                     }
                 }
             });
 
-            // Populate June 1 to 30
-            for (let day = 1; day <= 30; day++) {
+            // Populate current month days
+            for (let day = 1; day <= daysInMonth; day++) {
                 const cell = document.createElement('div');
                 cell.className = "calendar-day";
+                if (day === now.getDate()) {
+                    cell.style.border = '2px solid var(--color-primary)';
+                }
                 
                 const dayBookings = bookedDays[day];
                 if (dayBookings && dayBookings.length > 0) {
@@ -8756,6 +8796,12 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                     })(day);
                 }
                 grid.appendChild(cell);
+            }
+
+            // Update calendar title
+            const calendarTitle = document.querySelector('#tab-areas .page-section-title, #tab-areas .panel-title');
+            if (calendarTitle) {
+                calendarTitle.textContent = '📅 Calendário de Reservas — ' + monthNames[currentMonth] + ' ' + currentYear;
             }
         }
 
@@ -12481,7 +12527,7 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
                         </div>
 
                         <!-- Topics in Voting (Pautas) Grid -->
-                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px; display:-ms-grid">
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px">
                             ${proposalsHTML}
                         </div>
                 `;

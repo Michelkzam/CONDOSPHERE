@@ -12,5 +12,8 @@
     "@supabase/supabase-js": "^2.108.1",
     "pg": "^8.21.0",
     "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "supabase": "^2.107.0"
   }
 }
