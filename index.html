@@ -8927,12 +8927,16 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
 
         function forceTabPanelVisibility() {
             document.querySelectorAll('.tab-panel').forEach(panel => {
+                const cs = getComputedStyle(panel);
+                console.log(`[TAB-DIAG] ${panel.id}: class="${panel.className}" computedDisplay="${cs.display}" hasActive=${panel.classList.contains('active')}`);
                 if (!panel.classList.contains('active')) {
                     panel.style.display = 'none';
                 } else {
                     panel.style.display = '';
                 }
             });
+            // Also log how many .tab-panel elements were found
+            console.log(`[TAB-DIAG] Total .tab-panel elements: ${document.querySelectorAll('.tab-panel').length}`);
         }
 
         function applyUserSession(user) {
