@@ -11,6 +11,58 @@
     <style>
         .tab-panel { display: none !important; }
         .tab-panel.active { display: block !important; }
+
+        /* Dashboard metric cards */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .metric-card {
+            background: var(--bg-darkCard);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .metric-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .metric-icon-box {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            margin-top: 8px;
+        }
+        .metric-footer {
+            font-size: 11px;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+        .metric-footer.success { color: var(--color-success); }
+        .metric-footer.danger { color: var(--color-danger); }
+        .metric-footer.warning { color: var(--color-warning); }
     </style>
 </head>
 <body>
