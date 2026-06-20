@@ -237,7 +237,7 @@
 
         /* Sidebar Footer (Import/Export) */
         .sidebar-footer {
-            padding: 16px 16px 40px;
+            padding: 16px 12px 40px;
             border-top: 1px solid var(--color-border);
         }
         .sidebar.collapsed .sidebar-footer {
