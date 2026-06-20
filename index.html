@@ -284,7 +284,7 @@
                                 <span>Unidades Cadastradas</span>
                                 <div class="metric-icon-box">🏠</div>
                             </div>
-                            <div class="metric-value">6 / 500</div>
+                            <div class="metric-value">342 / 500</div>
                             <div class="metric-footer success">
                                 <span>100% integradas</span>
                             </div>
@@ -364,7 +364,7 @@
                                 </div>
                                 <div style="display:flex; flex-direction:column; align-items:center; width:12%">
                                     <div style="height:180px; width:20px; background:var(--color-primary); border-top: 2px solid #60a5fa; border-radius: 3px 3px 0 0"></div>
-                                    <span style="font-size:0.55rem; color:white; margin-top:6px; white-space:nowrap">18:00 (Pico)</span>
+                                    <span style="font-size:0.45rem; color:white; margin-top:6px; white-space:nowrap">18h (Pico)</span>
                                 </div>
                                 <div style="display:flex; flex-direction:column; align-items:center; width:12%">
                                     <div style="height:50px; width:20px; background:rgba(59,130,246,0.3); border-top: 2px solid var(--color-primary); border-radius: 3px 3px 0 0"></div>
@@ -8788,7 +8788,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
         }
     
         const userDatabase = {
-            "admin.geral": { role: "Administrador", name: "Maurício Albuquerque", job: "Administrador Geral", avatar: "MA", pass: "12345678901" },
+            "admin.geral": { role: "Administrador", name: "Maurício Albuquerque", job: "Gestor Master & Arquiteto", avatar: "MA", pass: "12345678901" },
             "reginaldo.silveira": { role: "Colaborador", name: "Reginaldo Silveira", job: "Zelador Geral", avatar: "RS", pass: "22233344455" },
             "carlos.silva": { role: "Morador", name: "Carlos Henrique Silva", job: "Morador Proprietário", avatar: "CS", pass: "33344455566" },
             "jose.portaria": { role: "Portaria", name: "José Portaria", job: "Supervisor Portaria", avatar: "JP", pass: "44455566677" }
@@ -8894,7 +8894,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                                         const fallbackUser = {
                                             role: "Administrador",
                                             name: username,
-                                            job: "Administrador Geral",
+                                            job: "ID: ADM-" + Math.random().toString(36).slice(2, 6).toUpperCase(),
                                             avatar: "AD",
                                             pass: password
                                         };
