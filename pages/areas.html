@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Áreas Comuns</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style></head>
+<body>
+<div class="card" style="margin-bottom:24px">
+    <div class="card-header">
+        <div><div class="card-title">Listagem das Áreas Comuns</div><div class="card-subtitle">Cadastro de taxas e limites</div></div>
+        <div style="display:flex; gap:8px"><button class="btn btn-primary">Incluir Novo</button><button class="btn btn-secondary">Exportar (.xlsx)</button><button class="btn btn-danger">Relatório (.pdf)</button></div>
+    </div>
+    <div id="areas-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:12px; margin-bottom:20px">
+        <div class="card" style="text-align:center"><div style="font-size:24px; margin-bottom:8px">🎉</div><div style="font-weight:700; color:#fff; margin-bottom:4px">Salão de Festas</div><div class="badge badge-success">Disponível</div></div>
+        <div class="card" style="text-align:center"><div style="font-size:24px; margin-bottom:8px">🔥</div><div style="font-weight:700; color:#fff; margin-bottom:4px">Churrasqueira A</div><div class="badge badge-danger">Reservado</div></div>
+        <div class="card" style="text-align:center"><div style="font-size:24px; margin-bottom:8px">⚽</div><div style="font-weight:700; color:#fff; margin-bottom:4px">Quadra Poliesportiva</div><div class="badge badge-success">Disponível</div></div>
+    </div>
+    <div class="table-wrap"><table>
+        <thead><tr><th>Área Comum</th><th>Capacidade</th><th>Taxa de Limpeza</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead>
+        <tbody><tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:15px">Nenhuma área comum cadastrada.</td></tr></tbody>
+    </table></div>
+</div>
+<div class="card">
+    <div class="card-title" style="margin-bottom:12px">Agenda de Reservas</div>
+    <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:4px">
+        <div style="font-size:9px; font-weight:700; text-align:center; color:var(--text-muted); padding:4px">DOM</div>
+        <div style="font-size:9px; font-weight:700; text-align:center; color:var(--text-muted); padding:4px">SEG</div>
+        <div style="font-size:9px; font-weight:700; text-align:center; color:var(--text-muted); padding:4px">TER</div>
+        <div style="font-size:9px; font-weight:700; text-align:center; color:var(--text-muted); padding:4px">QUA</div>
+        <div style="font-size:9px; font-weight:700; text-align:center; color:var(--text-muted); padding:4px">QUI</div>
+        <div style="font-size:9px; font-weight:700; text-align:center; color:var(--text-muted); padding:4px">SEX</div>
+        <div style="font-size:9px; font-weight:700; text-align:center; color:var(--text-muted); padding:4px">SÁB</div>
+        <div class="calendar-day"><div class="day-num">1</div></div>
+        <div class="calendar-day"><div class="day-num">2</div></div>
+        <div class="calendar-day"><div class="day-num">3</div></div>
+        <div class="calendar-day"><div class="day-num">4</div></div>
+        <div class="calendar-day"><div class="day-num">5</div></div>
+        <div class="calendar-day"><div class="day-num">6</div></div>
+        <div class="calendar-day"><div class="day-num">7</div></div>
+        <div class="calendar-day"><div class="day-num">8</div></div>
+        <div class="calendar-day"><div class="day-num">9</div></div>
+        <div class="calendar-day today"><div class="day-num">10</div></div>
+        <div class="calendar-day"><div class="day-num">11</div></div>
+        <div class="calendar-day has-event"><div class="day-num">12</div><div class="day-event">Churrasqueira</div></div>
+        <div class="calendar-day"><div class="day-num">13</div></div>
+        <div class="calendar-day"><div class="day-num">14</div></div>
+    </div>
+</div>
+</body></html>

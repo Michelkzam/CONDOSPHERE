@@ -3,8 +3,15 @@
 ## What this is
 
 CondoSphere is a condominium management ERP with two operating modes:
-1. **Offline prototype** — `index.html` (12,800-line monolith, open directly in browser, zero dependencies)
+1. **Multi-page HTML** — `index.html` (shell with sidebar/topbar) + `pages/*.html` (26 module pages) + `src/styles/condosphere.css` (professional CSS)
 2. **Server + React SPA** — `server.js` (Node.js REST API + static server) + `src/App.tsx` (React/TypeScript frontend)
+
+### New Architecture (v2)
+- `index.html` — Main shell: login, sidebar menu, topbar, iframe content area
+- `pages/*.html` — 26 standalone page files loaded into iframe per sidebar button
+- `src/styles/condosphere.css` — Professional CSS (dark theme, layout system)
+- `src/styles/global.css` — Original CSS (kept for reference)
+- `index.html.backup` — Original 12,800-line monolith (backup)
 
 Both share the same data layer. The React app in `src/` has **no build pipeline** (no tsconfig, no bundler config, no Vite/Webpack). Treat `src/` components as source-of-truth for feature logic, but they are not compiled independently.
 

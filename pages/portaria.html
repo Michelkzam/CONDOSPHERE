@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portaria & Acesso</title>
+    <link rel="stylesheet" href="/src/styles/condosphere.css">
+    <style>body{overflow:auto; padding:24px; background:var(--bg-body)}</style>
+</head>
+<body>
+    <!-- INTERFONE & CONSULTA -->
+    <div class="card" style="margin-bottom:24px">
+        <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:24px">
+            <div style="border-right:1px solid var(--border); padding-right:24px">
+                <div class="card-header" style="border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:16px">
+                    <div>
+                        <div class="card-title">Consulta de Associados & Interfone</div>
+                        <div class="card-subtitle">Consulte moradores e clique para selecionar canal do Interfone</div>
+                    </div>
+                </div>
+                <div style="display:flex; gap:10px; margin-bottom:14px">
+                    <input type="text" class="form-control" placeholder="Digite nome do morador ou lote..." id="gate-query">
+                    <button class="btn btn-primary" onclick="queryGateResident()" style="font-weight:bold">Buscar</button>
+                </div>
+                <div id="gate-results" style="max-height:360px; overflow-y:auto">
+                    <p style="font-size:11px; color:var(--text-muted); text-align:center; padding:20px">Digite um nome ou lote para consultar o status na portaria...</p>
+                </div>
+            </div>
+            <div>
+                <div style="background:#0d131f; border:2px solid #1e293b; border-radius:12px; padding:18px; display:flex; flex-direction:column; gap:12px">
+                    <div style="display:flex; align-items:center; justify-content:space-between">
+                        <span style="font-size:9px; letter-spacing:1px; font-weight:900; color:#10b981; text-transform:uppercase">INTERFONE TELEFÔNICO</span>
+                        <div style="display:flex; align-items:center; gap:6px">
+                            <span style="font-size:8px; color:var(--text-muted)">LINHA</span>
+                            <div style="width:8px; height:8px; border-radius:50%; background:#475569"></div>
+                        </div>
+                    </div>
+                    <div style="background:#101827; border:1px solid #1e293b; border-radius:6px; padding:12px; font-family:monospace; min-height:80px; display:flex; flex-direction:column; justify-content:space-between">
+                        <div style="display:flex; justify-content:space-between; font-size:9px; color:#10b981">
+                            <span>LINHA DIRETA DIGITAL</span>
+                            <span id="intercom-clock">--:--</span>
+                        </div>
+                        <div style="text-align:center; margin:8px 0">
+                            <p style="font-size:12px; font-weight:bold; color:#64748b; text-transform:uppercase">AGUARDANDO SELEÇÃO</p>
+                            <p style="font-size:9px; color:#475569">Nenhum canal ativo</p>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:10px">
+                        <button class="btn btn-secondary" style="flex:1; font-size:10px; font-weight:bold">Ligar p/ Admin</button>
+                        <button class="btn" style="flex:1; font-size:10px; font-weight:bold; background:#374151; color:#94a3b8; cursor:not-allowed" disabled>Ligar p/ Morador</button>
+                    </div>
+                    <div style="background:#090d16; border:1px solid #1e293b; border-radius:6px; padding:8px; font-family:monospace; font-size:9px; color:#64748b; height:80px; overflow-y:auto">
+                        <span>[SISTEMA] Aguardando seleção de morador...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISTRAR ENTRADA & HISTÓRICO -->
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title" style="margin-bottom:12px">Registrar Entrada de Visitante</div>
+            <form onsubmit="event.preventDefault(); parent.postMessage({type:'toast',msg:'Entrada registrada com sucesso!'},'*')">
+                <div class="form-group"><label class="form-label">Nome Completo</label><input type="text" class="form-control" placeholder="Ex: Daniel Souza" required></div>
+                <div class="form-group"><label class="form-label">Documento (RG/CPF)</label><input type="text" class="form-control" placeholder="Ex: 44.555.222-X" required></div>
+                <div class="form-group"><label class="form-label">Tipo de Acesso</label><select class="form-control"><option>Visitante</option><option>Prestador de Serviço</option></select></div>
+                <div class="form-group"><label class="form-label">Morador Responsável</label><select class="form-control"><option>Carlos Henrique (Quadra A - Lote 05)</option><option>Mariana Souza (Quadra A - Lote 12)</option><option>Roberto de Alencar (Quadra B - Lote 02)</option><option>Isabela Pereira (Quadra C - Lote 18)</option></select></div>
+                <div class="form-group">
+                    <label class="form-label">Tipo de Veículo</label>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:4px">
+                        <label style="display:flex; align-items:center; gap:4px; font-size:11px; color:var(--text-muted); cursor:pointer"><input type="radio" name="veh-type" checked> Nenhum</label>
+                        <label style="display:flex; align-items:center; gap:4px; font-size:11px; color:var(--text-muted); cursor:pointer"><input type="radio" name="veh-type"> Carro</label>
+                        <label style="display:flex; align-items:center; gap:4px; font-size:11px; color:var(--text-muted); cursor:pointer"><input type="radio" name="veh-type"> Moto</label>
+                        <label style="display:flex; align-items:center; gap:4px; font-size:11px; color:var(--text-muted); cursor:pointer"><input type="radio" name="veh-type"> Caminhão</label>
+                    </div>
+                </div>
+                <div style="display:flex; gap:12px; margin-bottom:14px">
+                    <div style="flex:1">
+                        <label class="form-label">Foto Documento</label>
+                        <div style="border:1px dashed var(--border); border-radius:var(--radius-sm); padding:12px; text-align:center; font-size:10px; color:var(--text-muted); cursor:pointer; background:var(--bg-input)">📷 Upload Doc</div>
+                    </div>
+                    <div style="flex:1">
+                        <label class="form-label">Foto Pessoa</label>
+                        <div style="border:1px dashed var(--border); border-radius:var(--radius-sm); padding:12px; text-align:center; font-size:10px; color:var(--text-muted); cursor:pointer; background:var(--bg-input)">👤 Capturar Foto</div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success" style="width:100%">Autorizar Entrada</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="card-title" style="margin-bottom:12px">Histórico de Acesso em Tempo Real</div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Visitante / Doc</th><th>Tipo</th><th>Veículo</th><th>Responsável</th><th>Data/Hora</th></tr></thead>
+                    <tbody>
+                        <tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum registro de acesso hoje.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function queryGateResident() {
+        const q = document.getElementById('gate-query').value;
+        if (!q) return;
+        document.getElementById('gate-results').innerHTML = '<p style="font-size:11px; color:var(--text-muted); text-align:center; padding:20px">Nenhum resultado para "'+q+'".</p>';
+    }
+    setInterval(function(){var e=document.getElementById('intercom-clock');if(e)e.innerText=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});},1000);
+    </script>
+</body>
+</html>

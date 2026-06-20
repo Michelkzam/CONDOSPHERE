@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dados da Empresa</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style></head>
+<body>
+<div class="card">
+    <div class="card-title" style="margin-bottom:16px">Dados de Registro & Identidade Visual</div>
+    <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px">
+        <form onsubmit="event.preventDefault();showToast('Dados da empresa salvos!')" style="display:flex; flex-direction:column; gap:12px">
+            <div class="form-group"><label class="form-label">Razão Social</label><input type="text" class="form-control" value="Associação de Moradores do Condomínio CondoSphere"></div>
+            <div class="form-group"><label class="form-label">Nome Fantasia</label><input type="text" class="form-control" value="CondoSphere"></div>
+            <div style="display:flex; gap:12px"><div class="form-group" style="flex:1"><label class="form-label">CNPJ</label><input type="text" class="form-control" value="12.345.678/0001-90"></div><div class="form-group" style="flex:1"><label class="form-label">Inscrição Estadual</label><input type="text" class="form-control" value="123.456.789.111"></div></div>
+            <div class="form-group"><label class="form-label">Endereço Completo</label><input type="text" class="form-control" value="Av. Principal do Sol, s/n, Gleba A, Alphaville"></div>
+            <div style="display:flex; gap:12px"><div class="form-group" style="flex:1"><label class="form-label">Responsável Legal</label><input type="text" class="form-control" value="Maurício Albuquerque"></div><div class="form-group" style="flex:1"><label class="form-label">Telefone</label><input type="text" class="form-control" value="(11) 4004-2222"></div></div>
+            <button type="submit" class="btn btn-success" style="align-self:flex-start">Salvar Informações</button>
+        </form>
+        <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:var(--radius); padding:20px; display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center">
+            <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; align-self:flex-start">Branding (Logo)</div>
+            <div style="width:180px; height:180px; border:2px dashed var(--border); border-radius:var(--radius); display:flex; align-items:center; justify-content:center">
+                <div style="width:56px; height:56px; border-radius:14px; background:linear-gradient(135deg,var(--primary),#1d4ed8); display:flex; align-items:center; justify-content:center"><span style="color:#fff; font-size:20px; font-weight:900">CS</span></div>
+            </div>
+            <button class="btn btn-secondary" style="font-size:10px">Selecionar Foto</button>
+        </div>
+    </div>
+</div>
+</body></html>

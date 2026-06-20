@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Principal</title>
+    <link rel="stylesheet" href="/src/styles/condosphere.css">
+    <style>body{overflow:auto; padding:24px; background:var(--bg-body)}</style>
+</head>
+<body>
+    <!-- STATS -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-label">Unidades Cadastradas</div>
+            <div class="metric-value primary">342 / 500</div>
+            <div class="metric-footer success">100% integradas</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Inadimplência Analítica</div>
+            <div class="metric-value danger">R$ 12.450,00</div>
+            <div class="metric-footer danger">18 Residências em atraso</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Acessos Hoje (Portaria)</div>
+            <div class="metric-value warning">12 Entradas</div>
+            <div class="metric-footer success">Rondas e fluxo normal</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Reservas Confirmadas</div>
+            <div class="metric-value success">4 Ativas</div>
+            <div class="metric-footer warning">Fim de semana ocupado</div>
+        </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Fluxo de Portaria (Por Horário)</div>
+                    <div class="card-subtitle">Entradas e saídas de visitantes/prestadores no dia atual</div>
+                </div>
+            </div>
+            <div style="display:flex; gap:4px; margin-top:16px">
+                <div style="display:flex; flex-direction:column; justify-content:space-between; height:180px; padding-bottom:8px; font-size:9px; color:var(--text-muted); text-align:right; min-width:24px">
+                    <span>20</span><span>15</span><span>10</span><span>5</span><span>0</span>
+                </div>
+                <div style="flex:1; height:180px; display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--border); border-left:1px solid var(--border); padding-bottom:8px; padding-left:4px">
+                    <div style="display:flex; flex-direction:column; align-items:center; width:12%"><div style="height:36px; width:18px; background:rgba(59,130,246,0.3); border-top:2px solid var(--primary); border-radius:3px 3px 0 0"></div><span style="font-size:9px; color:var(--text-muted); margin-top:4px">08:00</span></div>
+                    <div style="display:flex; flex-direction:column; align-items:center; width:12%"><div style="height:99px; width:18px; background:rgba(59,130,246,0.3); border-top:2px solid var(--primary); border-radius:3px 3px 0 0"></div><span style="font-size:9px; color:var(--text-muted); margin-top:4px">10:00</span></div>
+                    <div style="display:flex; flex-direction:column; align-items:center; width:12%"><div style="height:63px; width:18px; background:rgba(59,130,246,0.3); border-top:2px solid var(--primary); border-radius:3px 3px 0 0"></div><span style="font-size:9px; color:var(--text-muted); margin-top:4px">12:00</span></div>
+                    <div style="display:flex; flex-direction:column; align-items:center; width:12%"><div style="height:135px; width:18px; background:rgba(59,130,246,0.3); border-top:2px solid var(--primary); border-radius:3px 3px 0 0"></div><span style="font-size:9px; color:var(--text-muted); margin-top:4px">14:00</span></div>
+                    <div style="display:flex; flex-direction:column; align-items:center; width:12%"><div style="height:85px; width:18px; background:rgba(59,130,246,0.3); border-top:2px solid var(--primary); border-radius:3px 3px 0 0"></div><span style="font-size:9px; color:var(--text-muted); margin-top:4px">16:00</span></div>
+                    <div style="display:flex; flex-direction:column; align-items:center; width:12%"><div style="height:162px; width:18px; background:var(--primary); border-top:2px solid #60a5fa; border-radius:3px 3px 0 0"></div><span style="font-size:8px; color:#fff; margin-top:4px; font-weight:700">18h PICO</span></div>
+                    <div style="display:flex; flex-direction:column; align-items:center; width:12%"><div style="height:45px; width:18px; background:rgba(59,130,246,0.3); border-top:2px solid var(--primary); border-radius:3px 3px 0 0"></div><span style="font-size:9px; color:var(--text-muted); margin-top:4px">20:00</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Ocupação de Áreas Comuns</div>
+                    <div class="card-subtitle">Status operacional e agendamentos confirmados</div>
+                </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:16px; margin-top:16px">
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:4px">
+                        <span>Salão de Festas Principal</span>
+                        <span class="badge badge-success">Disponível</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill success" style="width:100%"></div></div>
+                </div>
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:4px">
+                        <span>Churrasqueira A</span>
+                        <span class="badge badge-danger">Reservado Hoje</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill danger" style="width:100%"></div></div>
+                </div>
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:4px">
+                        <span>Quadra Poliesportiva</span>
+                        <span class="badge badge-success">Disponível</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill success" style="width:100%"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

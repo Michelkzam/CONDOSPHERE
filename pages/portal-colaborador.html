@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Portal do Colaborador</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style></head>
+<body>
+<div style="display:grid; grid-template-columns:260px 1fr; gap:24px">
+    <div class="card" style="height:fit-content">
+        <div class="card-title" style="margin-bottom:12px">Acesso do Colaborador</div>
+        <div class="form-group"><label class="form-label">Selecionar Funcionário</label><select class="form-control"><option>Nenhum funcionário ativo</option></select></div>
+        <div style="background:rgba(255,255,255,0.02); border:1px dashed var(--border); padding:12px; border-radius:var(--radius); text-align:center"><p style="font-size:10px; color:var(--text-muted)">Login Criptografado nos Termos da LGPD ✓</p></div>
+    </div>
+    <div class="card">
+        <div style="border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:20px"><div class="card-title">Área do Colaborador (Self-Service)</div><div class="card-subtitle">Acesso rápido a holerites, informes e solicitações de férias</div></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px">
+            <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border); padding:16px; border-radius:var(--radius)">
+                <div style="font-size:12px; font-weight:700; color:#fff; margin-bottom:12px">Holerites e Informe de Rendimentos</div>
+                <div style="display:flex; flex-direction:column; gap:8px">
+                    <button class="btn btn-secondary" style="font-size:10px; text-align:left" onclick="showToast('Holerite emitido!')">📄 Contracheque - Junho 2026</button>
+                    <button class="btn btn-secondary" style="font-size:10px; text-align:left" onclick="showToast('Holerite emitido!')">📄 Contracheque - Maio 2026</button>
+                    <button class="btn btn-secondary" style="font-size:10px; text-align:left" onclick="showToast('Informe emitido!')">📈 Informe de Rendimentos - IRPF 2026</button>
+                </div>
+            </div>
+            <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border); padding:16px; border-radius:var(--radius)">
+                <div style="font-size:12px; font-weight:700; color:#fff; margin-bottom:12px">Solicitação de Férias & Atestados</div>
+                <form onsubmit="event.preventDefault();showToast('Solicitação registrada!')"><div class="form-group"><label class="form-label">Período de Gozo</label><input type="text" class="form-control" placeholder="Ex: 01/09/2026 a 30/09/2026" required></div><button type="submit" class="btn btn-primary" style="width:100%; font-size:10px">Agendar Férias</button></form>
+                <div style="margin-top:14px; border-top:1px solid var(--border); padding-top:10px"><button class="btn btn-success" style="width:100%; font-size:10px">📤 Anexar Atestado Médico</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body></html>

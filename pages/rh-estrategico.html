@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>RH Estratégico & Talentos</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style></head>
+<body>
+<div class="card" style="margin-bottom:24px">
+    <div class="card-title">Avaliação de Desempenho (Matriz 9-Box)</div>
+    <div class="card-subtitle" style="margin-bottom:20px">Mapeamento de talentos cruzando Potencial e Desempenho</div>
+    <div style="display:grid; grid-template-columns:60px 1fr; gap:10px">
+        <div style="display:flex; flex-direction:column; justify-content:space-around; align-items:center; font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase"><span>Alto</span><span>Médio</span><span>Baixo</span></div>
+        <div class="ninebox-grid">
+            <div class="ninebox-cell"><div style="font-size:9px; color:var(--text-muted); font-weight:700">Enigma (Alto/Baixo)</div><div style="font-size:11px; color:#fff">-</div></div>
+            <div class="ninebox-cell" style="border-color:var(--primary)"><div style="font-size:9px; color:var(--text-muted); font-weight:700">Estrela Cadente (Alto/Médio)</div><div style="font-size:11px; color:#fff">-</div></div>
+            <div class="ninebox-cell star"><div style="font-size:9px; color:var(--success); font-weight:700">Estrela/Líder (Alto/Alto)</div><div style="font-size:11px; color:#fff; font-weight:700">-</div></div>
+            <div class="ninebox-cell"><div style="font-size:9px; color:var(--text-muted); font-weight:700">Questionável (Médio/Baixo)</div><div style="font-size:11px; color:#fff">-</div></div>
+            <div class="ninebox-cell"><div style="font-size:9px; color:var(--text-muted); font-weight:700">Mantenedor (Médio/Médio)</div><div style="font-size:11px; color:#fff; font-weight:700">-</div></div>
+            <div class="ninebox-cell" style="border-color:var(--primary)"><div style="font-size:9px; color:var(--text-muted); font-weight:700">Alto Desempenho (Médio/Alto)</div><div style="font-size:11px; color:#fff">-</div></div>
+            <div class="ninebox-cell danger"><div style="font-size:9px; color:var(--danger); font-weight:700">Insuficiente (Baixo/Baixo)</div><div style="font-size:11px; color:#fff">-</div></div>
+            <div class="ninebox-cell"><div style="font-size:9px; color:var(--text-muted); font-weight:700">Eficaz (Baixo/Médio)</div><div style="font-size:11px; color:#fff">-</div></div>
+            <div class="ninebox-cell"><div style="font-size:9px; color:var(--text-muted); font-weight:700">Especialista (Baixo/Alto)</div><div style="font-size:11px; color:#fff">-</div></div>
+        </div>
+    </div>
+    <div style="display:grid; grid-template-columns:60px 1fr; gap:10px; margin-top:6px"><div></div><div style="display:flex; justify-content:space-around; font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase"><span>Desempenho Baixo</span><span>Médio</span><span>Alto</span></div></div>
+</div>
+<div class="grid-2">
+    <div class="card">
+        <div class="card-title" style="margin-bottom:12px">Treinamento & Capacitação</div>
+        <div style="display:flex; flex-direction:column; gap:12px">
+            <div><div style="display:flex; justify-content:space-between; font-size:10px; font-weight:700; margin-bottom:4px"><span>NR 35 - Segurança em Altura</span><span style="color:var(--success)">100%</span></div><div class="progress-bar"><div class="progress-fill success" style="width:100%"></div></div></div>
+            <div><div style="display:flex; justify-content:space-between; font-size:10px; font-weight:700; margin-bottom:4px"><span>Atendimento ao Cliente</span><span style="color:var(--primary)">50%</span></div><div class="progress-bar"><div class="progress-fill primary" style="width:50%"></div></div></div>
+        </div>
+        <button class="btn btn-secondary" style="width:100%; margin-top:16px; font-size:10px">Acessar Central de Cursos (T&D)</button>
+    </div>
+    <div class="card">
+        <div class="card-title" style="margin-bottom:12px">Recrutamento & Seleção (ATS)</div>
+        <div style="background:rgba(0,0,0,0.2); border:1px solid var(--border); padding:12px; border-radius:var(--radius); display:flex; justify-content:space-between; align-items:center">
+            <div><div style="font-size:11px; font-weight:700; color:#fff">Auxiliar de Jardinagem Geral</div><div style="font-size:10px; color:var(--text-muted)">12 candidatos triados | 2 em entrevista</div></div>
+            <button class="btn btn-success btn-sm" onclick="showToast('Onboarding concluído!')">Concluir Onboarding</button>
+        </div>
+    </div>
+</div>
+</body></html>

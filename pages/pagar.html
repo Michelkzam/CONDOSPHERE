@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contas a Pagar</title>
+    <link rel="stylesheet" href="/src/styles/condosphere.css">
+    <style>body{overflow:auto; padding:0; background:var(--bg-body)}</style>
+</head>
+<body>
+    <div class="subtabs" id="pay-tabs">
+        <button class="subtab active" onclick="switchPayTab(0,this)">Lançamento de Despesas</button>
+        <button class="subtab" onclick="switchPayTab(1,this)">Fluxo de Aprovação</button>
+        <button class="subtab" onclick="switchPayTab(2,this)">Agendamento de Pagamentos</button>
+    </div>
+    <div class="pay-panel" style="padding:24px">
+        <div class="card">
+            <div class="card-header">
+                <div><div class="card-title">Despesas e Contas a Pagar</div><div class="card-subtitle" style="color:var(--danger); font-weight:700">Despesas Pendentes Totais: R$ 6.150,90</div></div>
+                <div style="display:flex; gap:8px"><button class="btn btn-success" onclick="showToast('Conta incluída!')">Incluir Conta</button><button class="btn btn-primary">Lançar Parcelado</button></div>
+            </div>
+            <div class="metrics-grid" style="grid-template-columns:1fr 1fr; margin-bottom:20px">
+                <div class="metric-card"><div class="metric-label">Total Pendente</div><div class="metric-value danger" style="font-size:18px">R$ 6.150,90</div></div>
+                <div class="metric-card"><div class="metric-label">Total Pago</div><div class="metric-value success" style="font-size:18px">R$ 850,00</div></div>
+            </div>
+            <div class="form-group" style="margin-bottom:16px"><label class="form-label">Busca Global</label><input type="text" class="form-control" placeholder="Pesquise Enel, Tintas, Dedetização..."></div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Código</th><th>Fornecedor</th><th>Descrição</th><th>Vencimento</th><th>Categoria</th><th>Valor</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead>
+                    <tbody>
+                        <tr><td style="font-family:monospace; color:var(--text-muted)">#001</td><td><strong>Enel Energia</strong></td><td>Conta de Energia - Junho<span class="badge badge-warning" style="font-size:8px; padding:1px 4px; margin-left:6px">Mensal</span></td><td>15/06/2026</td><td><span style="font-size:10px; background:rgba(255,255,255,0.04); padding:2px 6px; border-radius:4px; border:1px solid var(--border)">Utilidades</span></td><td style="font-weight:700">R$ 2.850,90</td><td><span class="badge badge-danger">Pendente</span></td><td style="text-align:center"><div class="actions-cell"><button class="action-btn view" onclick="showToast('Conta quitada!')">✓</button><button class="action-btn edit">✎</button><button class="action-btn delete">✕</button></div></td></tr>
+                        <tr><td style="font-family:monospace; color:var(--text-muted)">#002</td><td><strong>Coral Tintas</strong></td><td>Tinta Acrílica Branca 18L<span class="badge badge-warning" style="font-size:8px; padding:1px 4px; margin-left:6px">Única</span></td><td>20/06/2026</td><td><span style="font-size:10px; background:rgba(255,255,255,0.04); padding:2px 6px; border-radius:4px; border:1px solid var(--border)">Manutenção</span></td><td style="font-weight:700">R$ 850,00</td><td><span class="badge badge-success">Pago</span></td><td style="text-align:center"><div class="actions-cell"><button class="action-btn edit">✎</button><button class="action-btn delete">✕</button></div></td></tr>
+                        <tr><td style="font-family:monospace; color:var(--text-muted)">#003</td><td><strong>Dedetizadora Express</strong></td><td>Dedetização Mensal<span class="badge badge-warning" style="font-size:8px; padding:1px 4px; margin-left:6px">Mensal</span></td><td>25/06/2026</td><td><span style="font-size:10px; background:rgba(255,255,255,0.04); padding:2px 6px; border-radius:4px; border:1px solid var(--border)">Saúde</span></td><td style="font-weight:700">R$ 450,00</td><td><span class="badge badge-danger">Pendente</span></td><td style="text-align:center"><div class="actions-cell"><button class="action-btn view" onclick="showToast('Conta quitada!')">✓</button><button class="action-btn edit">✎</button><button class="action-btn delete">✕</button></div></td></tr>
+                        <tr><td style="font-family:monospace; color:var(--text-muted)">#004</td><td><strong>Sicoob Cooperativa</strong></td><td>Taxa Administrativa<span class="badge badge-warning" style="font-size:8px; padding:1px 4px; margin-left:6px">Mensal</span></td><td>10/06/2026</td><td><span style="font-size:10px; background:rgba(255,255,255,0.04); padding:2px 6px; border-radius:4px; border:1px solid var(--border)">Financeiro</span></td><td style="font-weight:700">R$ 2.000,00</td><td><span class="badge badge-danger">Pendente</span></td><td style="text-align:center"><div class="actions-cell"><button class="action-btn view" onclick="showToast('Conta quitada!')">✓</button><button class="action-btn edit">✎</button><button class="action-btn delete">✕</button></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="pay-panel" style="padding:24px; display:none">
+        <div class="card">
+            <div class="card-title" style="margin-bottom:10px">Aprovação Regimental da Diretoria</div>
+            <div class="card-subtitle" style="margin-bottom:20px">Valide notas fiscais e boletos antes da remessa</div>
+            <div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>Despesa</th><th>Valor</th><th>Categoria</th><th style="text-align:center">Decisão</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:15px">Nenhuma despesa pendente de aprovação.</td></tr></tbody></table></div>
+        </div>
+    </div>
+    <div class="pay-panel" style="padding:24px; display:none">
+        <div class="card" style="max-width:520px">
+            <div class="card-title" style="margin-bottom:10px">Transmissão de Remessa PAGFOR</div>
+            <div class="card-subtitle" style="margin-bottom:20px">Dispare pagamentos aprovados em lote para Sicoob</div>
+            <div style="background:var(--bg-input); padding:16px; border-radius:var(--radius); border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center">
+                <div><p style="font-size:11px; font-weight:bold; color:#fff">3 Despesas Prontas para Borderô</p><p style="font-size:10px; color:var(--text-muted)">Total: R$ 6.150,90</p></div>
+                <button class="btn btn-success" onclick="showToast('Borderô enviado para Sicoob!')">Enviar Lote</button>
+            </div>
+        </div>
+    </div>
+    <script>
+    function switchPayTab(i,b){document.querySelectorAll('.pay-panel').forEach((p,x)=>p.style.display=x===i?'block':'none');document.querySelectorAll('#pay-tabs .subtab').forEach(t=>t.classList.remove('active'));b.classList.add('active');}
+    function showToast(m,t){parent.postMessage({type:'toast',msg:m,toastType:t||'success'},'*');}
+    </script>
+</body>
+</html>

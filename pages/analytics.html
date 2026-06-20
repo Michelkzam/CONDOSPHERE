@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>People Analytics & KPIs</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style></head>
+<body>
+<div class="metrics-grid">
+    <div class="metric-card"><div class="metric-label">Turnover Acumulado</div><div style="display:flex; justify-content:space-between; align-items:baseline"><div class="metric-value success" style="font-size:20px">0.0%</div><span style="font-size:10px; color:var(--success); font-weight:700">▼ 0.5% (Saudável)</span></div></div>
+    <div class="metric-card"><div class="metric-label">Índice de Absenteísmo</div><div style="display:flex; justify-content:space-between; align-items:baseline"><div class="metric-value success" style="font-size:20px">0.0%</div><span style="font-size:10px; color:var(--success); font-weight:700">▼ 0.2% (Excelente)</span></div></div>
+    <div class="metric-card"><div class="metric-label">Orçamento Pessoal Anual</div><div style="display:flex; justify-content:space-between; align-items:baseline"><div class="metric-value" style="font-size:20px">R$ 0,00</div><span style="font-size:10px; color:var(--success); font-weight:700">92% Utilizado</span></div></div>
+</div>
+<div class="card">
+    <div class="card-title">Dashboard Analítico de Força de Trabalho</div>
+    <div class="card-subtitle" style="margin-bottom:20px">Distribuição de custos da folha e índice de satisfação</div>
+    <div class="grid-2">
+        <div style="background:rgba(0,0,0,0.2); border:1px solid var(--border); padding:20px; border-radius:var(--radius); text-align:center">
+            <div style="font-size:12px; font-weight:700; color:#fff; margin-bottom:12px">Distribuição Custos de Pessoal</div>
+            <svg width="200" height="200" viewBox="0 0 100 100" style="margin:0 auto; display:block">
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="var(--primary)" stroke-width="20" stroke-dasharray="157 251" stroke-dashoffset="0"/>
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="var(--success)" stroke-width="20" stroke-dasharray="94 251" stroke-dashoffset="-157"/>
+                <text x="50" y="55" fill="white" font-size="8" font-weight="900" text-anchor="middle">R$ 0,00</text>
+            </svg>
+            <div style="display:flex; justify-content:center; gap:12px; margin-top:14px; font-size:9px"><span style="color:var(--primary)">● Portaria (62.5%)</span><span style="color:var(--success)">● Zeladoria (37.5%)</span></div>
+        </div>
+        <div style="background:rgba(0,0,0,0.2); border:1px solid var(--border); padding:20px; border-radius:var(--radius); text-align:center">
+            <div style="font-size:12px; font-weight:700; color:#fff; margin-bottom:12px">Histórico Mensal de Absenteísmo (%)</div>
+            <svg width="260" height="150" viewBox="0 0 200 100" style="margin:0 auto; display:block">
+                <line x1="10" y1="90" x2="190" y2="90" stroke="var(--border)" stroke-width="1"/>
+                <rect x="25" y="40" width="16" height="50" fill="var(--primary)" rx="2"/><text x="33" y="98" fill="var(--text-muted)" font-size="6" text-anchor="middle">Jan</text>
+                <rect x="65" y="50" width="16" height="40" fill="var(--primary)" rx="2"/><text x="73" y="98" fill="var(--text-muted)" font-size="6" text-anchor="middle">Fev</text>
+                <rect x="105" y="60" width="16" height="30" fill="var(--primary)" rx="2"/><text x="113" y="98" fill="var(--text-muted)" font-size="6" text-anchor="middle">Mar</text>
+                <rect x="145" y="66" width="16" height="24" fill="var(--success)" rx="2"/><text x="153" y="98" fill="var(--text-muted)" font-size="6" text-anchor="middle">Abr</text>
+            </svg>
+        </div>
+    </div>
+</div>
+</body></html>

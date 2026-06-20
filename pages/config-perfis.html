@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Perfis de Acesso</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style></head>
+<body>
+<div class="card">
+    <div class="card-header">
+        <div><div class="card-title">Perfis Customizados de Acesso (RBAC)</div><div class="card-subtitle">Crie funções para restringir visualização de módulos</div></div>
+        <button class="btn btn-primary">Criar Perfil de Acesso</button>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(340px,1fr)); gap:20px">
+        <!-- Administrador -->
+        <div class="card" style="margin-bottom:0">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:10px; margin-bottom:12px">
+                <div style="font-size:14px; font-weight:800; color:#fff">Administrador</div>
+                <div style="display:flex; align-items:center; gap:6px"><label class="switch"><input type="checkbox" checked><span class="slider"></span></label><span style="font-size:10px; color:var(--text-muted)">Ativo</span></div>
+            </div>
+            <div style="font-size:10px; font-weight:700; color:var(--primary); margin-bottom:8px">Permissões por Módulo</div>
+            <div style="font-size:10px; color:var(--text-muted); line-height:2">
+                <div style="display:flex; justify-content:space-between"><span>📊 Dashboard</span><span class="badge badge-success">Total</span></div>
+                <div style="display:flex; justify-content:space-between"><span>🏢 Condomínio</span><span class="badge badge-success">Total</span></div>
+                <div style="display:flex; justify-content:space-between"><span>💰 Financeiro</span><span class="badge badge-success">Total</span></div>
+                <div style="display:flex; justify-content:space-between"><span>👮 Portaria</span><span class="badge badge-success">Total</span></div>
+                <div style="display:flex; justify-content:space-between"><span>👥 RH & Pessoal</span><span class="badge badge-success">Total</span></div>
+                <div style="display:flex; justify-content:space-between"><span>⚙️ Configurações</span><span class="badge badge-success">Total</span></div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:6px; border-top:1px solid var(--border); padding-top:10px; margin-top:10px"><button class="btn btn-secondary btn-sm">Editar</button><button class="btn btn-secondary btn-sm">Copiar</button><button class="btn btn-danger btn-sm">Excluir</button></div>
+        </div>
+        <!-- Colaborador -->
+        <div class="card" style="margin-bottom:0">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:10px; margin-bottom:12px">
+                <div style="font-size:14px; font-weight:800; color:#fff">Colaborador</div>
+                <div style="display:flex; align-items:center; gap:6px"><label class="switch"><input type="checkbox" checked><span class="slider"></span></label><span style="font-size:10px; color:var(--text-muted)">Ativo</span></div>
+            </div>
+            <div style="font-size:10px; font-weight:700; color:var(--primary); margin-bottom:8px">Permissões por Módulo</div>
+            <div style="font-size:10px; color:var(--text-muted); line-height:2">
+                <div style="display:flex; justify-content:space-between"><span>📊 Dashboard</span><span class="badge badge-success">Leitura</span></div>
+                <div style="display:flex; justify-content:space-between"><span>🏢 Condomínio</span><span class="badge badge-success">Edição</span></div>
+                <div style="display:flex; justify-content:space-between"><span>💰 Financeiro</span><span class="badge badge-danger">Sem acesso</span></div>
+                <div style="display:flex; justify-content:space-between"><span>👮 Portaria</span><span class="badge badge-success">Leitura</span></div>
+                <div style="display:flex; justify-content:space-between"><span>👥 RH & Pessoal</span><span class="badge badge-success">Edição</span></div>
+                <div style="display:flex; justify-content:space-between"><span>⚙️ Configurações</span><span class="badge badge-danger">Sem acesso</span></div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:6px; border-top:1px solid var(--border); padding-top:10px; margin-top:10px"><button class="btn btn-secondary btn-sm">Editar</button><button class="btn btn-secondary btn-sm">Copiar</button><button class="btn btn-danger btn-sm">Excluir</button></div>
+        </div>
+        <!-- Morador -->
+        <div class="card" style="margin-bottom:0">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:10px; margin-bottom:12px">
+                <div style="font-size:14px; font-weight:800; color:#fff">Morador</div>
+                <div style="display:flex; align-items:center; gap:6px"><label class="switch"><input type="checkbox" checked><span class="slider"></span></label><span style="font-size:10px; color:var(--text-muted)">Ativo</span></div>
+            </div>
+            <div style="font-size:10px; font-weight:700; color:var(--primary); margin-bottom:8px">Permissões por Módulo</div>
+            <div style="font-size:10px; color:var(--text-muted); line-height:2">
+                <div style="display:flex; justify-content:space-between"><span>📊 Dashboard</span><span class="badge badge-success">Leitura</span></div>
+                <div style="display:flex; justify-content:space-between"><span>🏢 Condomínio</span><span class="badge badge-success">Leitura</span></div>
+                <div style="display:flex; justify-content:space-between"><span>💰 Financeiro</span><span class="badge badge-danger">Sem acesso</span></div>
+                <div style="display:flex; justify-content:space-between"><span>👮 Portaria</span><span class="badge badge-danger">Sem acesso</span></div>
+                <div style="display:flex; justify-content:space-between"><span>👥 RH & Pessoal</span><span class="badge badge-success">Folha + Portal</span></div>
+                <div style="display:flex; justify-content:space-between"><span>⚙️ Configurações</span><span class="badge badge-danger">Sem acesso</span></div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:6px; border-top:1px solid var(--border); padding-top:10px; margin-top:10px"><button class="btn btn-secondary btn-sm">Editar</button><button class="btn btn-secondary btn-sm">Copiar</button><button class="btn btn-danger btn-sm">Excluir</button></div>
+        </div>
+        <!-- Portaria -->
+        <div class="card" style="margin-bottom:0">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:10px; margin-bottom:12px">
+                <div style="font-size:14px; font-weight:800; color:#fff">Portaria</div>
+                <div style="display:flex; align-items:center; gap:6px"><label class="switch"><input type="checkbox" checked><span class="slider"></span></label><span style="font-size:10px; color:var(--text-muted)">Ativo</span></div>
+            </div>
+            <div style="font-size:10px; font-weight:700; color:var(--primary); margin-bottom:8px">Permissões por Módulo</div>
+            <div style="font-size:10px; color:var(--text-muted); line-height:2">
+                <div style="display:flex; justify-content:space-between"><span>📊 Dashboard</span><span class="badge badge-success">Leitura</span></div>
+                <div style="display:flex; justify-content:space-between"><span>🏢 Condomínio</span><span class="badge badge-success">Total</span></div>
+                <div style="display:flex; justify-content:space-between"><span>💰 Financeiro</span><span class="badge badge-danger">Sem acesso</span></div>
+                <div style="display:flex; justify-content:space-between"><span>👮 Portaria</span><span class="badge badge-success">Total</span></div>
+                <div style="display:flex; justify-content:space-between"><span>👥 RH & Pessoal</span><span class="badge badge-danger">Sem acesso</span></div>
+                <div style="display:flex; justify-content:space-between"><span>⚙️ Configurações</span><span class="badge badge-danger">Sem acesso</span></div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:6px; border-top:1px solid var(--border); padding-top:10px; margin-top:10px"><button class="btn btn-secondary btn-sm">Editar</button><button class="btn btn-secondary btn-sm">Copiar</button><button class="btn btn-danger btn-sm">Excluir</button></div>
+        </div>
+    </div>
+</div>
+</body></html>

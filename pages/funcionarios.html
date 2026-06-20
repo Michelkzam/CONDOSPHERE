@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Funcionários</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style></head>
+<body>
+<div class="card">
+    <div class="card-header">
+        <div><div class="card-title">Cadastro de Funcionários & Escalas (RH)</div><div class="card-subtitle">Gerencie colaboradores CLT, salários, adiantamentos e rendimentos</div></div>
+        <button class="btn btn-success">Incluir Funcionário</button>
+    </div>
+    <div class="form-group" style="margin-bottom:16px"><label class="form-label">Busca Rápida de Funcionários</label><input type="text" class="form-control" placeholder="Pesquise por nome, CPF ou cargo..."></div>
+    <div class="table-wrap"><table>
+        <thead><tr><th>Funcionário</th><th>CPF</th><th>Cargo</th><th>Salário Base</th><th>Adiantamento</th><th>Contato</th><th>Admissão</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead>
+        <tbody id="emp-tbody"><tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum funcionário cadastrado.</td></tr></tbody>
+    </table></div>
+</div>
+</body></html>

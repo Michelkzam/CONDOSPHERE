@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Rede & Banco de Dados</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style></head>
+<body>
+<div class="card">
+    <div class="card-header"><div><div class="card-title">Gestão de Rede & Banco de Dados Híbrido</div><div class="card-subtitle">Configure o modo de operação do banco de dados CondoSphere</div></div></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px">
+        <div style="display:flex; flex-direction:column; gap:16px">
+            <div class="form-group" style="background:var(--primary-bg); border:1px solid var(--primary); padding:14px; border-radius:var(--radius)"><label class="form-label" style="color:var(--primary); font-size:10px; font-weight:700">Fonte de Dados Ativa</label><select class="form-control" style="font-weight:bold; border-color:var(--primary)"><option>Servidor Local CondoSphere (Offline)</option><option>Supabase Cloud (Online)</option></select></div>
+            <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border); padding:14px; border-radius:var(--radius)">
+                <div style="font-weight:700; font-size:12px; color:#fff; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px">Conexão Servidor Local</div>
+                <div style="display:grid; grid-template-columns:2fr 1fr; gap:10px; margin-bottom:10px"><div class="form-group"><label class="form-label" style="font-size:9px">Host / IP</label><input type="text" class="form-control" value="localhost" style="font-family:monospace"></div><div class="form-group"><label class="form-label" style="font-size:9px">Porta</label><input type="text" class="form-control" value="3000" style="font-family:monospace"></div></div>
+                <button class="btn btn-success" style="width:100%; font-size:10px" onclick="showToast('Configuração salva!')">Salvar e Ativar Rede Local</button>
+            </div>
+            <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border); padding:14px; border-radius:var(--radius)">
+                <div style="font-weight:700; font-size:12px; color:#fff; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px">Conexão Supabase Cloud</div>
+                <div class="form-group"><label class="form-label" style="font-size:9px">Project URL</label><input type="text" class="form-control" value="https://psbvjscrqhwhttvbstty.supabase.co" style="font-family:monospace; font-size:10px"></div>
+                <div class="form-group"><label class="form-label" style="font-size:9px">Anon Public API Key</label><input type="password" class="form-control" placeholder="Cole seu token eyJhbGci..." style="font-family:monospace; font-size:10px"></div>
+                <button class="btn btn-success" style="width:100%; font-size:10px" onclick="showToast('Conexão Supabase salva!')">Salvar e Ativar Conexão Nuvem</button>
+            </div>
+            <div class="form-group"><label class="form-label">Console de Diagnósticos</label><div style="background:#000; border:1px solid var(--border); border-radius:var(--radius); padding:12px; font-family:monospace; font-size:10px; color:var(--success); min-height:120px; max-height:160px; overflow-y:auto"><span style="color:var(--text-muted)">&gt; Aguardando comandos ou testes...</span></div></div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px">
+            <div style="display:flex; justify-content:space-between; align-items:center"><div style="font-weight:700; font-size:12px; color:#fff">Esquema PostgreSQL (DDL)</div><button class="btn btn-secondary btn-sm" onclick="showToast('SQL copiado!')">Copiar SQL</button></div>
+            <textarea readonly style="width:100%; height:300px; background:#000; border:1px solid var(--border); border-radius:var(--radius); font-family:monospace; font-size:9px; color:#38bdf8; padding:12px; resize:none">-- CondoSphere Schema
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL UNIQUE,
+    is_active BOOLEAN DEFAULT true,
+    permissions JSONB DEFAULT '{}'::jsonb
+);
+-- (+ 13 tabelas adicionais)</textarea>
+            <div style="background:rgba(30,41,59,0.5); border:1px solid var(--border); border-radius:var(--radius); padding:14px; font-size:10px; line-height:1.6">
+                <div style="font-weight:700; color:#fff; margin-bottom:8px">Diagnóstico da Conexão</div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:4px"><span style="color:var(--text-muted)">Biblioteca JS:</span><span style="font-weight:700; color:var(--danger)">NÃO DETECTADA</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:4px"><span style="color:var(--text-muted)">Cliente Inicializado:</span><span style="font-weight:700; color:var(--danger)">DESCONECTADO</span></div>
+                <div style="display:flex; justify-content:space-between"><span style="color:var(--text-muted)">Banco de Dados:</span><span style="font-weight:700; color:var(--text-muted)">Aguardando Teste...</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card" style="margin-top:24px; border-color:rgba(239,68,68,0.15)">
+    <div class="card-header"><div><div class="card-title" style="color:var(--danger)">Limpeza e Reset de Dados</div><div class="card-subtitle">Exclua permanentemente registros de tabelas específicas</div></div></div>
+    <button class="btn btn-danger" style="font-size:10px" onclick="showToast('Modal de exclusão aberto!')">Excluir Dados / Resetar Tabelas</button>
+</div>
+</body></html>

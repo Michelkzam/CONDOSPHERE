@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Conciliação & Controle</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:0;background:var(--bg-body)}</style></head>
+<body>
+<div class="subtabs" id="con-tabs"><button class="subtab active" onclick="sw(0,this)">Conciliação Bancária</button><button class="subtab" onclick="sw(1,this)">Plano de Contas</button><button class="subtab" onclick="sw(2,this)">Gestão de Fundos</button></div>
+<div class="con-panel" style="padding:24px"><div class="card">
+    <div class="card-title" style="margin-bottom:10px">Conciliação Automática CNAB240</div>
+    <div class="card-subtitle" style="margin-bottom:20px">Batimento entre lançamentos internos e extrato Sicoob</div>
+    <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border); padding:16px; border-radius:var(--radius); margin-bottom:20px; display:flex; gap:16px; align-items:center; flex-wrap:wrap">
+        <div><p style="font-size:11px; font-weight:bold; color:#fff">Simulação Gateway CNAB240</p><p style="font-size:10px; color:var(--text-muted)">Importe arquivo .RET ou baixe modelo</p></div>
+        <div style="display:flex; gap:8px; margin-left:auto"><button class="btn btn-secondary btn-sm" onclick="showToast('Modelo baixado!')">Baixar Modelo (.RET)</button><button class="btn btn-success btn-sm" onclick="showToast('Arquivo importado!')">Importar Retorno (.RET)</button></div>
+    </div>
+    <div class="metrics-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:20px">
+        <div class="metric-card"><div class="metric-label">Taxa de Match</div><div class="metric-value success" style="font-size:20px">0.0%</div></div>
+        <div class="metric-card"><div class="metric-label">Títulos Conciliados</div><div class="metric-value" style="font-size:20px">0 / 0</div></div>
+        <div class="metric-card"><div class="metric-label">Valor Processado</div><div class="metric-value primary" style="font-size:20px">R$ 0,00</div></div>
+    </div>
+    <div style="text-align:center; color:var(--text-muted); padding:20px; font-size:11px">Nenhum extrato importado para conciliação.</div>
+</div></div>
+<div class="con-panel" style="padding:24px; display:none"><div class="card" style="max-width:520px">
+    <div class="card-title" style="margin-bottom:10px">Plano de Contas</div>
+    <div class="card-subtitle" style="margin-bottom:20px">Mapeamento contábil de receitas e despesas</div>
+    <div style="background:rgba(0,0,0,0.3); padding:16px; border-radius:var(--radius); border:1px solid var(--border); font-family:monospace; font-size:11px; line-height:1.8">
+        <p style="color:#60a5fa; font-weight:bold">1. RECEITAS ORDINÁRIAS</p>
+        <p style="padding-left:14px; color:var(--text-muted)">1.1 Cota Mensal Associativa</p>
+        <p style="padding-left:14px; color:var(--text-muted)">1.2 Juros e Multas Recebidas</p>
+        <p style="color:#60a5fa; font-weight:bold; margin-top:8px">2. DESPESAS GERAIS</p>
+        <p style="padding-left:14px; color:var(--text-muted)">2.1 Funcionários e Encargos (CLT)</p>
+        <p style="padding-left:14px; color:var(--text-muted)">2.2 Contratos Terceirizados</p>
+        <p style="padding-left:14px; color:var(--text-muted)">2.3 Manutenção e Conservação</p>
+    </div>
+</div></div>
+<div class="con-panel" style="padding:24px; display:none"><div class="grid-2">
+    <div class="card"><span class="badge badge-success" style="float:right">Ativo</span><div class="card-title">Fundo de Reserva Condominial</div><div class="card-subtitle" style="margin-bottom:12px">Provisão regulamentar (5% das cotas)</div><div class="metric-value primary" style="font-size:24px">R$ 0,00</div><p style="font-size:10px; color:var(--text-muted); margin-top:8px">Saldo em conta de liquidez diária.</p></div>
+    <div class="card"><span class="badge badge-success" style="float:right">Ativo</span><div class="card-title">Fundo de Obras & Melhorias</div><div class="card-subtitle" style="margin-bottom:12px">Rateios extras aprovados em assembleia</div><div class="metric-value warning" style="font-size:24px">R$ 0,00</div><p style="font-size:10px; color:var(--text-muted); margin-top:8px">Saldo destinado a reformas.</p></div>
+</div></div>
+<script>function sw(i,b){document.querySelectorAll('.con-panel').forEach((p,x)=>p.style.display=x===i?'block':'none');document.querySelectorAll('#con-tabs .subtab').forEach(t=>t.classList.remove('active'));b.classList.add('active');}function showToast(m,t){parent.postMessage({type:'toast',msg:m,toastType:t||'success'},'*');}</script>
+</body></html>

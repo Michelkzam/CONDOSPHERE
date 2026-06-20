@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Veículos</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style></head>
+<body>
+<div class="card">
+    <div class="card-header">
+        <div><div class="card-title">Frota Cadastrada</div><div class="card-subtitle">Controle de placas e veículos autorizados</div></div>
+        <div style="display:flex; gap:8px"><button class="btn btn-primary">Incluir Novo</button><button class="btn btn-secondary">Modelo (.xlsx)</button><button class="btn btn-success">Importar (.xlsx)</button><button class="btn btn-secondary">Exportar (.xlsx)</button></div>
+    </div>
+    <div class="form-group" style="margin-bottom:16px"><label class="form-label">Busca Rápida de Frota</label><input type="text" class="form-control" placeholder="Pesquise por placa, marca/modelo ou proprietário..."></div>
+    <div class="table-wrap"><table>
+        <thead><tr><th>Placa</th><th>Veículo</th><th>Cor</th><th>Proprietário</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead>
+        <tbody><tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum veículo cadastrado.</td></tr></tbody>
+    </table></div>
+</div>
+</body></html>
