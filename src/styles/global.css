@@ -238,13 +238,13 @@
         /* Tab sections switch */
         .tab-section,
         .tab-panel {
-            display: none;
+            display: none !important;
             animation: fadeIn 0.3s ease;
         }
 
         .tab-section.active,
         .tab-panel.active {
-            display: block;
+            display: block !important;
         }
 
         @keyframes fadeIn {

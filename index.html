@@ -9,8 +9,8 @@
     <title>CondoSphere - ERP & Governança de Alta Performance</title>
     <link rel="stylesheet" href="/src/styles/global.css">
     <style>
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
+        .tab-panel { display: none !important; }
+        .tab-panel.active { display: block !important; }
     </style>
 </head>
 <body>
@@ -8925,10 +8925,21 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
             showToast("Sessão encerrada com sucesso!");
         }
 
+        function forceTabPanelVisibility() {
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                if (!panel.classList.contains('active')) {
+                    panel.style.display = 'none';
+                } else {
+                    panel.style.display = '';
+                }
+            });
+        }
+
         function applyUserSession(user) {
             document.getElementById('top-responsible-name').innerText = user.name;
             document.getElementById('top-responsible-role').innerText = user.job;
             document.getElementById('top-avatar').innerText = user.avatar;
+            forceTabPanelVisibility();
 
             const rbacSelect = document.getElementById('active-user-role');
             if (rbacSelect) {
@@ -8973,6 +8984,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                 try {
                     const user = JSON.parse(cachedUser);
                     document.getElementById('login-screen-overlay').style.display = 'none';
+                    forceTabPanelVisibility();
                     applyUserSession(user);
                     setTimeout(() => {
                         try { loadAllDataFromSupabase(); } catch (e) { console.warn("[AUTH LOAD] Data load:", e); }
