@@ -12491,6 +12491,22 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
             renderPrestadores();
             setTimeout(renderReservationsCalendar, 200);
             setTimeout(loadAllDataFromSupabase, 800); // Tier 1: Slower cloud sync (replaces cache if connected)
+
+            // [TAB-DIAG-DELAYED] Check tab panel visibility after all loads settle
+            setTimeout(() => {
+                console.log('=== [TAB-DIAG-DELAYED] 3s after load ===');
+                document.querySelectorAll('.tab-panel').forEach(panel => {
+                    const cs = getComputedStyle(panel);
+                    console.log(`[TAB-DIAG-DELAYED] ${panel.id}: inlineStyle="${panel.getAttribute('style') || '(none)'}" computedDisplay="${cs.display}"`);
+                });
+            }, 3000);
+            setTimeout(() => {
+                console.log('=== [TAB-DIAG-DELAYED] 10s after load ===');
+                document.querySelectorAll('.tab-panel').forEach(panel => {
+                    const cs = getComputedStyle(panel);
+                    console.log(`[TAB-DIAG-DELAYED] ${panel.id}: computedDisplay="${cs.display}"`);
+                });
+            }, 10000);
         }
     </script>
 
