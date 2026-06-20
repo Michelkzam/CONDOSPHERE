@@ -3223,7 +3223,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     </div>
 
     <!-- VISITORS DETAILED MODAL SCREEN (TELA DE DETALHES DE VISITANTE/PRESTADOR) -->
-    <div id="visitor-details-modal" class="modal-overlay">
+    <div id="visitor-details-modal" class="modal-overlay" style="display: none">
         <div class="modal-box" style="max-width: 550px">
             <div class="modal-header">
                 <span class="modal-title" style="color:var(--color-primary); font-weight:700">📋 Ficha de Registro de Acesso</span>
@@ -3290,13 +3290,13 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     </div>
 
     <!-- LIGHTBOX ZOOM MODAL SCREEN (NEW REQUESTED ZOOM LIGHTBOX) -->
-    <div id="image-lightbox-modal" class="modal-overlay" onclick="closeLightboxModal()" style="background-color:rgba(0,0,0,0.95)">
+    <div id="image-lightbox-modal" class="modal-overlay" onclick="closeLightboxModal()" style="display: none; background-color:rgba(0,0,0,0.95)">
         <img id="lightbox-img" src="" style="max-width:90%; max-height:80vh; border-radius:10px; box-shadow:0 10px 40px rgba(0,0,0,0.8); object-fit:contain; border:2px solid var(--color-border)">
         <span style="position:absolute; bottom:30px; font-size:0.75rem; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:bold">Clique em qualquer lugar para fechar</span>
     </div>
 
     <!-- OTHER REGULAR WINDOWS -->
-    <div id="advance-modal" class="modal-overlay">
+    <div id="advance-modal" class="modal-overlay" style="display: none">
         <div class="modal-box">
             <div class="modal-header">
                 <span class="modal-title">Registrar Adiantamento Salarial</span>
@@ -3326,7 +3326,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
         </div>
     </div>
 
-    <div id="profile-modal" class="modal-overlay">
+    <div id="profile-modal" class="modal-overlay" style="display: none">
         <div class="modal-box" style="max-width: 500px">
             <div class="modal-header">
                 <span class="modal-title" style="color:var(--color-primary); font-weight:700">🔑 Criar Perfil de Acesso Customizado</span>
@@ -3477,7 +3477,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     </div>
 
     <!-- REAL-TIME PAYROLL CALCULATOR MODAL (Cálculos em Tempo Real) -->
-    <div id="modal-calculadora-folha" class="modal-overlay">
+    <div id="modal-calculadora-folha" class="modal-overlay" style="display: none">
         <div class="modal-box" style="max-width: 500px">
             <div class="modal-header">
                 <span class="modal-title" style="color:var(--color-primary); font-weight:700">⚙️ Motor de Cálculo de Folha em Tempo Real</span>
@@ -3556,7 +3556,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     </div>
 
     <!-- TAX SLIPS AND BANK REMITTANCE MODAL (Guias de Recolhimento e Remessa Bancária) -->
-    <div id="modal-impostos-guias" class="modal-overlay">
+    <div id="modal-impostos-guias" class="modal-overlay" style="display: none">
         <div class="modal-box" style="max-width: 550px">
             <div class="modal-header">
                 <span class="modal-title" style="color:var(--color-primary); font-weight:700">📊 Central de Guias, Encargos e Remessa Bancária</span>
@@ -3609,7 +3609,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     </div>
 
     <!-- TERMINATION CALCULATOR MODAL (Cálculo de Rescisão Trabalhista) -->
-    <div id="modal-rescisao-calc" class="modal-overlay">
+    <div id="modal-rescisao-calc" class="modal-overlay" style="display: none">
         <div class="modal-box" style="max-width: 550px">
             <div class="modal-header">
                 <span class="modal-title" style="color:var(--color-primary); font-weight:700">✂️ Cálculo de Rescisão Trabalhista & Demissão</span>
@@ -3690,7 +3690,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
         </div>
     </div>
 
-    <div id="user-modal" class="modal-overlay">
+    <div id="user-modal" class="modal-overlay" style="display: none">
         <div class="modal-box">
             <div class="modal-header">
                 <span class="modal-title" id="usr-modal-title">Cadastrar Novo Usuário</span>
@@ -3745,7 +3745,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
 
     <!-- RESIDENCIA MODAL -->
     <!-- VIEW MODAL: ANTECIPAR PARCELAS (NEW!) -->
-    <div id="modal-anticipate" class="modal-overlay">
+    <div id="modal-anticipate" class="modal-overlay" style="display: none">
         <div class="modal-box" style="max-width: 450px">
             <div class="modal-header">
                 <span class="modal-title">⚡ Antecipar Parcelas Mensais</span>
@@ -3800,7 +3800,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
         </div>
     </div>
 
-    <div id="modal-residencia" class="modal-overlay">
+    <div id="modal-residencia" class="modal-overlay" style="display: none">
         <div class="modal-box">
             <div class="modal-header">
                 <span class="modal-title" id="residencia-modal-title">Incluir Residência</span>
@@ -3849,7 +3849,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     </div>
 
     <!-- MORADOR MODAL -->
-    <div id="modal-morador" class="modal-overlay">
+    <div id="modal-morador" class="modal-overlay" style="display: none">
         <div class="modal-box">
             <div class="modal-header">
                 <span class="modal-title" id="morador-modal-title">Incluir Morador</span>
@@ -3899,7 +3899,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     </div>
 
     <!-- VEICULO MODAL -->
-    <div id="modal-veiculo" class="modal-overlay">
+    <div id="modal-veiculo" class="modal-overlay" style="display: none">
         <div class="modal-box">
             <div class="modal-header">
                 <span class="modal-title" id="veiculo-modal-title">Incluir Veículo</span>
@@ -3932,7 +3932,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     </div>
 
     <!-- AREA MODAL -->
-    <div id="modal-area" class="modal-overlay">
+    <div id="modal-area" class="modal-overlay" style="display: none">
         <div class="modal-box">
             <div class="modal-header">
                 <span class="modal-title" id="area-modal-title">Incluir Área Comum</span>
@@ -3968,7 +3968,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     </div>
 
     <!-- RESERVA MODAL -->
-    <div id="modal-reserva" class="modal-overlay">
+    <div id="modal-reserva" class="modal-overlay" style="display: none">
         <div class="modal-box">
             <div class="modal-header">
                 <span class="modal-title" id="reserva-modal-title">Incluir Reserva</span>
@@ -4027,7 +4027,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
 
 
     <!-- MODAL NEGOTIATION / ACORDO (NEW!) -->
-    <div id="modal-negotiation" class="modal-overlay">
+    <div id="modal-negotiation" class="modal-overlay" style="display: none">
         <div class="modal-box" style="max-width: 450px">
             <div class="modal-header">
                 <span class="modal-title" style="color:var(--color-warning); font-weight:700">🤝 Acordo e Parcelamento Amigável</span>
@@ -4090,7 +4090,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     </div>
 
     <!-- MODAL EDIT RECEIVABLE (NEW!) -->
-    <div id="modal-edit-receivable" class="modal-overlay">
+    <div id="modal-edit-receivable" class="modal-overlay" style="display: none">
         <div class="modal-box" style="max-width: 450px">
             <div class="modal-header">
                 <span class="modal-title" style="color:var(--color-primary); font-weight:700">✏️ Editar Cobrança / Recebível</span>
@@ -4147,7 +4147,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     </div>
 
     <!-- MODAL CANCEL RECEIVABLE WITH JUSTIFICATION (NEW!) -->
-    <div id="modal-cancel-receivable" class="modal-overlay">
+    <div id="modal-cancel-receivable" class="modal-overlay" style="display: none">
         <div class="modal-box" style="max-width: 450px">
             <div class="modal-header">
                 <span class="modal-title" style="color:var(--color-danger); font-weight:700">🚫 Cancelar Cobrança</span>
@@ -4290,7 +4290,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     </div>
 
 <!-- MODAL GROUP SETTLE (NEW!) -->
-    <div id="modal-group-settle" class="modal-overlay">
+    <div id="modal-group-settle" class="modal-overlay" style="display: none">
         <div class="modal-box" style="max-width: 500px">
             <div class="modal-header">
                 <span class="modal-title" style="color:var(--color-success); font-weight:700">👥 Quitação em Grupo de Mensalidades</span>
@@ -4322,7 +4322,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     </div>
 
     <!-- MODAL DELETE TABLES (RESET DATABASE) -->
-    <div id="modal-delete-tables" class="modal-overlay">
+    <div id="modal-delete-tables" class="modal-overlay" style="display: none">
         <div class="modal-box" style="max-width: 450px">
             <div class="modal-header">
                 <span class="modal-title" style="color:var(--color-danger); font-weight:700">🧹 Resetar Tabelas / Excluir Dados</span>
@@ -4373,7 +4373,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
 
 
     <!-- MODAL BATCH SETTLE ("Quitar em Grupo") -->
-    <div id="modal-batch-settle" class="modal-overlay">
+    <div id="modal-batch-settle" class="modal-overlay" style="display: none">
         <div class="modal-box" style="max-width: 450px">
             <div class="modal-header">
                 <span class="modal-title" style="color:var(--color-success); font-weight:700">🤝 Quitação em Grupo de Mensalidades</span>
