@@ -229,7 +229,7 @@
 
         /* Sidebar Footer (Import/Export) */
         .sidebar-footer {
-            padding: 16px;
+            padding: 16px 16px 20px;
             border-top: 1px solid var(--color-border);
         }
         .sidebar.collapsed .sidebar-footer {
@@ -247,10 +247,10 @@
             margin-bottom: 10px;
         }
         .export-checkboxes {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 6px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .checkbox-label {
             display: flex;
@@ -302,6 +302,93 @@
             .print-only {
                 display: block;
             }
+        }
+
+        /* Header Bar */
+        .header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--color-border);
+            background: var(--bg-darkBg);
+        }
+        .header-title-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.5px;
+            margin: 0;
+        }
+        .badge-info {
+            display: inline-flex;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(59,130,246,0.1);
+            color: var(--color-primary);
+            border: 1px solid rgba(59,130,246,0.2);
+            width: fit-content;
+        }
+        .user-profile-widget {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        .user-profile-info {
+            text-align: right;
+            line-height: 1.3;
+        }
+        .user-profile-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
+        .user-profile-role {
+            font-size: 10px;
+            color: var(--color-text-muted);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .logout-btn-header {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.2);
+            color: #ef4444;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .logout-btn-header:hover {
+            background: rgba(239,68,68,0.2);
         }
 
         /* Main Content Area */
@@ -457,20 +544,7 @@
             letter-spacing: 0.5px;
         }
 
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--bg-input);
-            border: 1px solid var(--color-border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: white;
-            font-size: 11px;
-            font-family: monospace;
-        }
+
 
         .user-info {
             display: flex;
@@ -551,6 +625,13 @@
             grid-template-columns: 1fr 1fr;
             gap: 16px;
             margin-bottom: 24px;
+        }
+        .grid-2 > .panel-card {
+            display: flex;
+            flex-direction: column;
+        }
+        .grid-2 > .panel-card > :last-child {
+            flex: 1;
         }
         .metric-card {
             background: var(--bg-darkCard);
@@ -776,12 +857,6 @@
             background: rgba(239,68,68,0.1);
             color: var(--color-danger);
             border: 1px solid rgba(239,68,68,0.2);
-        }
-
-        .badge-info {
-            background: rgba(59,130,246,0.1);
-            color: var(--color-primary);
-            border: 1px solid rgba(59,130,246,0.2);
         }
 
         .badge-neutral {
