@@ -1,12 +1,14 @@
 {
   "builds": [
     { "src": "index.html", "use": "@vercel/static" },
+    { "src": "pages/**/*.html", "use": "@vercel/static" },
+    { "src": "src/styles/**", "use": "@vercel/static" },
     { "src": "supabase.js", "use": "@vercel/static" },
     { "src": "xlsx.full.min.js", "use": "@vercel/static" },
-    { "src": "src/styles/global.css", "use": "@vercel/static" },
     { "src": "data/db_config.json", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/pages/(.*)", "dest": "/pages/$1" },
     { "src": "/src/(.*)", "dest": "/src/$1" },
     { "src": "/supabase.js", "dest": "/supabase.js" },
     { "src": "/xlsx.full.min.js", "dest": "/xlsx.full.min.js" },
