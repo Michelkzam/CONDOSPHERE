@@ -431,6 +431,50 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Sub-tab navigation inside financial panels */
+        .subtabs-nav {
+            display: flex;
+            gap: 4px;
+            padding: 12px 20px;
+            background: var(--bg-darkCard);
+            border-bottom: 1px solid var(--color-border);
+            flex-wrap: wrap;
+        }
+
+        .subtab-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--color-border);
+            background: transparent;
+            color: var(--color-text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+
+        .subtab-btn:hover {
+            background: rgba(255,255,255,0.06);
+            color: white;
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .subtab-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .inner-sub-panel {
+            display: none !important;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .inner-sub-panel.active {
+            display: block !important;
+        }
+
         /* Panel Cards (used across all tabs) */
         .panel-card {
             background: var(--bg-darkCard);
