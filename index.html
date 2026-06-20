@@ -11,63 +11,6 @@
     <style>
         .tab-panel { display: none !important; }
         .tab-panel.active { display: block !important; }
-
-        /* Dashboard metric cards */
-        .grid-4 {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .metric-card {
-            background: var(--bg-darkCard);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-        }
-        .metric-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 11px;
-            color: var(--color-text-muted);
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-        .metric-icon-box {
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            background: rgba(255,255,255,0.04);
-            border-radius: 8px;
-        }
-        .metric-value {
-            font-size: 26px;
-            font-weight: 800;
-            color: white;
-            margin-top: 12px;
-            line-height: 1.2;
-        }
-        .metric-footer {
-            font-size: 11px;
-            margin-top: 6px;
-            font-weight: 500;
-        }
-        .metric-footer.success { color: var(--color-success); }
-        .metric-footer.danger { color: var(--color-danger); }
-        .metric-footer.warning { color: var(--color-warning); }
     </style>
 </head>
 <body>
