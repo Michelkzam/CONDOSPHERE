@@ -1,0 +1,6 @@
+{
+  "db_type": "sqlite",
+  "database": "C:\\Projetos\\Condosphere\\data\\condosphere.db",
+  "server_host": "0.0.0.0",
+  "server_port": 3000
+} 

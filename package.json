@@ -1,0 +1,16 @@
+{
+  "name": "condosphere",
+  "version": "3.0.0",
+  "description": "CondoSphere - ERP & Governança de Alta Performance",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "install-deps": "npm install"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.108.1",
+    "pg": "^8.21.0",
+    "sqlite3": "^5.1.7"
+  }
+}
