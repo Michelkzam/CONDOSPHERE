@@ -215,8 +215,28 @@
                         <button class="submenu-item" onclick="switchTab('config_adm', this)">Administrativo</button>
                         <button class="submenu-item" onclick="switchTab('admin-panel', this)">Painel Admin</button>
                         <button class="submenu-item" onclick="switchTab('gerenciar-planos', this)">Planos de Licenciamento</button>
+                        <button class="submenu-item" onclick="switchTab('migrate-database', this)">Migrar Banco</button>
                     </div>
 
+                </div>
+
+                <!-- ADMINISTRATIVO -->
+                <div class="nav-menu">
+                    <button class="nav-item submenu-header" onclick="toggleSubmenu('admin-section-sub', this)">
+                        <span style="display:flex;align-items:center;gap:12px">
+                            <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24">
+                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                            </svg>
+                            <span class="nav-label">Administrativo</span>
+                        </span>
+                        <svg class="submenu-arrow" style="width:12px;height:12px;fill:currentColor" viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                        </svg>
+                    </button>
+                    <div id="admin-section-sub" class="submenu-list">
+                        <button class="submenu-item" onclick="switchTab('relatorios-automatizados', this)">Relatórios Automatizados</button>
+                        <button class="submenu-item" onclick="switchTab('perfis-acesso', this)">Perfis de Acesso (RBAC)</button>
+                    </div>
                 </div>
 
                 <!-- NOVOS MÓDULOS -->
@@ -231,9 +251,6 @@
                     <div id="novos-sub" class="submenu-list">
                         <button class="submenu-item" onclick="loadExternalPage('pages/portal-colaborador-novo.html')">👤 Portal Colaborador</button>
                         <button class="submenu-item" onclick="loadExternalPage('pages/assembleias-online.html')">🗳️ Assembleias Online</button>
-                        <button class="submenu-item" onclick="loadExternalPage('pages/perfis-acesso.html')">🔑 Perfis de Acesso</button>
-                        <button class="submenu-item" onclick="loadExternalPage('pages/relatorios-automatizados.html')">📊 Relatórios Automatizados</button>
-                        <button class="submenu-item" onclick="loadExternalPage('pages/migrate-database.html')">🗄️ Migrar Banco</button>
                     </div>
                 </div>
 
@@ -5076,7 +5093,10 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                 'config_rh': 'Configurações > RH & Escalas',
                 'config_adm': 'Configurações > Administrativo',
                 'admin-panel': 'Configurações > Painel Admin',
-                'gerenciar-planos': 'Configurações > Planos de Licenciamento'
+                'gerenciar-planos': 'Configurações > Planos de Licenciamento',
+                'migrate-database': 'Configurações > Migrar Banco',
+                'relatorios-automatizados': 'Administrativo > Relatórios Automatizados',
+                'perfis-acesso': 'Administrativo > Perfis de Acesso (RBAC)'
             };
             cleanTitle = titleMap[tabId] || tabId.charAt(0).toUpperCase() + tabId.slice(1);
             document.getElementById('current-tab-title').innerText = cleanTitle;
