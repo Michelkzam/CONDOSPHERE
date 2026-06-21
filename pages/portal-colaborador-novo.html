@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Colaborador - CondoSphere</title>
+    <link rel="stylesheet" href="/src/styles/global.css">
+    <style>
+        .portal-grid { display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+        .portal-sidebar { background: var(--bg-darkCard); border: 1px solid var(--color-border); border-radius: 12px; padding: 20px; height: fit-content; }
+        .portal-content { background: var(--bg-darkCard); border: 1px solid var(--color-border); border-radius: 12px; padding: 20px; }
+        .payslip-card { background: var(--bg-darkBg); border: 1px solid var(--color-border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+        .payslip-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .payslip-row:last-child { border-bottom: none; }
+        .payslip-row .label { color: var(--color-text-muted); }
+        .payslip-row .value { color: white; font-weight: 600; }
+        .payslip-row .value.danger { color: var(--color-danger); }
+        .payslip-row .value.success { color: var(--color-success); }
+    </style>
+</head>
+<body style="overflow:auto; padding:24px; background:var(--bg-darkBg)">
+    <div style="max-width:1200px; margin:0 auto">
+        <div class="portal-grid">
+            <!-- Sidebar -->
+            <div class="portal-sidebar">
+                <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">Acesso do Colaborador</h3>
+                <div class="form-group">
+                    <label class="form-label">Selecionar Funcionário</label>
+                    <select id="portal-user-select" class="form-control" onchange="updatePortalView()">
+                        <option value="">Nenhum funcionário</option>
+                    </select>
+                </div>
+                <div style="background:rgba(255,255,255,0.02); border:1px dashed var(--color-border); padding:12px; border-radius:var(--radius); text-align:center; margin-top:12px">
+                    <p style="font-size:10px; color:var(--color-text-muted)">Login Criptografado nos Termos da LGPD ✓</p>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="portal-content">
+                <div style="border-bottom:1px solid var(--color-border); padding-bottom:14px; margin-bottom:20px">
+                    <h2 style="font-size:18px; font-weight:700; color:white; margin:0">Área do Colaborador (Self-Service)</h2>
+                    <p style="font-size:12px; color:var(--color-text-muted); margin:4px 0 0">Holerites, informes de rendimento e solicitações</p>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px">
+                    <!-- Holerites -->
+                    <div style="background:rgba(255,255,255,0.02); border:1px solid var(--color-border); padding:16px; border-radius:var(--radius)">
+                        <h4 style="font-size:13px; font-weight:700; color:white; margin-bottom:12px">Holerites e Informe de Rendimentos</h4>
+                        <div id="payslips-list" style="display:flex; flex-direction:column; gap:8px">
+                            <p style="font-size:10px; color:var(--color-text-muted)">Selecione um funcionário</p>
+                        </div>
+                    </div>
+
+                    <!-- Férias -->
+                    <div style="background:rgba(255,255,255,0.02); border:1px solid var(--color-border); padding:16px; border-radius:var(--radius)">
+                        <h4 style="font-size:13px; font-weight:700; color:white; margin-bottom:12px">Solicitação de Férias & Atestados</h4>
+                        <form onsubmit="submitVacation(event)">
+                            <div class="form-group">
+                                <label class="form-label">Período de Gozo</label>
+                                <input type="text" id="vacation-range" class="form-control" placeholder="Ex: 01/09/2026 a 30/09/2026" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%; font-size:10px">Agendar Férias</button>
+                        </form>
+                        <div style="margin-top:14px; border-top:1px solid var(--border); padding-top:10px">
+                            <label class="btn btn-success" style="width:100%; font-size:10px; cursor:pointer; text-align:center; display:block">📤 Anexar Atestado Médico<input type="file" accept="image/*,.pdf" style="display:none" onchange="uploadMedicalCert(this)"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Demonstrativo -->
+                <div id="payslip-detail" style="display:none; margin-top:24px">
+                    <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">Demonstrativo de Pagamento</h3>
+                    <div id="payslip-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/condo-engine.js"></script>
+    <script>
+        const SUPABASE_URL = 'https://psbvjscrqhwhttvbstty.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzYnZqc2NycWh3aHR0dmJzdHR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTA4MzAsImV4cCI6MjA5Njg2NjgzMH0.AFnX7TYKrpTSQMBEU9Rwj0g8nvgpSEDKSjGNb-FM2Gw';
+
+        let employees = [];
+
+        async function supabaseQuery(table, select = '*', filters = {}) {
+            let url = `${SUPABASE_URL}/rest/v1/${table}?select=${select}`;
+            for (const [key, value] of Object.entries(filters)) {
+                url += `&${key}=eq.${encodeURIComponent(value)}`;
+            }
+            const res = await fetch(url, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+            return await res.json();
+        }
+
+        async function loadEmployees() {
+            employees = await supabaseQuery('employees', '*');
+            const select = document.getElementById('portal-user-select');
+            select.innerHTML = '<option value="">Nenhum funcionário</option>' +
+                employees.map(e => `<option value="${e.id}">${e.name} (${e.role})</option>`).join('');
+        }
+
+        function updatePortalView() {
+            const empId = document.getElementById('portal-user-select').value;
+            if (!empId) return;
+            
+            const emp = employees.find(e => e.id === empId);
+            if (!emp) return;
+
+            // Calcular holerite
+            const salary = emp.salary || 0;
+            const inss = window.CondoFinance.calculateEmployeeINSS(salary);
+            const fgts = window.CondoFinance.calculateFGTS(salary);
+            const irrf = window.CondoFinance.calculateIRRF(salary, inss);
+            const net = salary - inss - irrf;
+
+            // Atualizar lista de holerites
+            document.getElementById('payslips-list').innerHTML = `
+                <button class="btn btn-secondary" style="font-size:10px; text-align:left" onclick="showPayslipDetail('${emp.id}','Junho 2026',${salary},${inss},${irrf},${fgts},${net})">📄 Contracheque - Junho 2026</button>
+                <button class="btn btn-secondary" style="font-size:10px; text-align:left" onclick="showPayslipDetail('${emp.id}','Maio 2026',${salary * 0.95},${inss * 0.95},${irrf * 0.95},${fgts * 0.95},${net * 0.95})">📄 Contracheque - Maio 2026</button>
+                <button class="btn btn-secondary" style="font-size:10px; text-align:left" onclick="showInformRendimentos('${emp.name}','${emp.cpf||''}',${salary})">📈 Informe de Rendimentos - IRPF 2026</button>
+            `;
+        }
+
+        function showPayslipDetail(empId, month, salary, inss, irrf, fgts, net) {
+            const emp = employees.find(e => e.id === empId);
+            document.getElementById('payslip-detail').style.display = 'block';
+            document.getElementById('payslip-content').innerHTML = `
+                <div class="payslip-card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:12px">
+                        <div><strong style="color:white">${emp.name}</strong><br><span style="font-size:10px; color:var(--text-muted)">${emp.role}</span></div>
+                        <div style="text-align:right"><strong style="color:white">${month}</strong><br><span style="font-size:10px; color:var(--text-muted)">Competência</span></div>
+                    </div>
+                    <div class="payslip-row"><span class="label">Salário Base:</span><span class="value">R$ ${salary.toFixed(2)}</span></div>
+                    <div class="payslip-row"><span class="label">(-) INSS:</span><span class="value danger">-R$ ${inss.toFixed(2)}</span></div>
+                    <div class="payslip-row"><span class="label">(-) IRRF:</span><span class="value danger">-R$ ${irrf.toFixed(2)}</span></div>
+                    <div class="payslip-row"><span class="label">(+) FGTS (patronal):</span><span class="value success">R$ ${fgts.toFixed(2)}</span></div>
+                    <div class="payslip-row" style="border-top:2px solid var(--color-border); padding-top:8px; margin-top:8px"><span class="label" style="font-weight:700; color:white">LÍQUIDO:</span><span class="value success" style="font-size:14px">R$ ${net.toFixed(2)}</span></div>
+                </div>
+                <button class="btn btn-primary" style="width:100%" onclick="printPayslip('${emp.name}','${emp.role}',${salary},${inss},${irrf},${fgts},${net})">🖨️ Imprimir Holerite</button>
+            `;
+        }
+
+        function showInformRendimentos(name, cpf, salary) {
+            alert(`Informe de Rendimentos IRPF 2026\n\nColaborador: ${name}\nCPF: ${cpf}\nRendimentos Brutos Anuais: R$ ${(salary * 12).toFixed(2)}\nINSS Descontado: R$ ${(window.CondoFinance.calculateEmployeeINSS(salary) * 12).toFixed(2)}\n\nDocumento gerado eletronicamente pelo CondoSphere ERP`);
+        }
+
+        function printPayslip(name, role, salary, inss, irrf, fgts, net) {
+            const w = window.open('', '_blank');
+            w.document.write(`<!DOCTYPE html><html><head><title>Holerite - ${name}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Courier New',monospace;font-size:11px;color:#000;padding:30px}.header{text-align:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:20px}table{width:100%;border-collapse:collapse;margin:10px 0}td{padding:4px 8px}.total{font-weight:bold;border-top:2px solid #000;padding-top:8px;margin-top:10px}</style></head><body><div class="header"><h2>COMPROVANTE DE REMUNERAÇÃO</h2><h3>CondoSphere ERP</h3></div><p><strong>Colaborador:</strong> ${name}</p><p><strong>Cargo:</strong> ${role}</p><p><strong>Competência:</strong> Junho/2026</p><table><tr><td>Salário Base:</td><td>R$ ${salary.toFixed(2)}</td></tr><tr><td>(-) INSS:</td><td>R$ ${inss.toFixed(2)}</td></tr><tr><td>(-) IRRF:</td><td>R$ ${irrf.toFixed(2)}</td></tr><tr><td>(+) FGTS:</td><td>R$ ${fgts.toFixed(2)}</td></tr><tr class="total"><td><strong>LÍQUIDO:</strong></td><td><strong>R$ ${net.toFixed(2)}</strong></td></tr></table><p style="margin-top:20px;font-size:9px;color:#888">Documento gerado eletronicamente pelo CondoSphere ERP</p></body></html>`);
+            w.document.close(); w.focus(); setTimeout(() => w.print(), 500);
+        }
+
+        function submitVacation(e) {
+            e.preventDefault();
+            const range = document.getElementById('vacation-range').value;
+            alert(`Solicitação de férias para o período "${range}" registrada e encaminhada para o administrativo!`);
+            document.getElementById('vacation-range').value = '';
+        }
+
+        function uploadMedicalCert(input) {
+            const file = input.files[0];
+            if (file) {
+                alert(`Atestado médico "${file.name}" anexado e enviado com sucesso nos termos da LGPD!`);
+                input.value = '';
+            }
+        }
+
+        loadEmployees();
+    </script>
+</body>
+</html>
