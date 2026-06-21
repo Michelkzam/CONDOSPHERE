@@ -58,6 +58,7 @@ body {
 
 /* === SIDEBAR === */
 .sidebar {
+  position: relative;
   width: var(--sidebar-w);
   min-width: var(--sidebar-w);
   height: 100vh;
@@ -242,10 +243,10 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 7px 12px 7px 28px;
+  padding: 8px 12px 8px 28px;
   border-radius: var(--radius-sm);
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition);
@@ -454,6 +455,10 @@ body {
 .dynamic-content-area::-webkit-scrollbar { width: 6px; }
 .dynamic-content-area::-webkit-scrollbar-track { background: transparent; }
 .dynamic-content-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* === OVERRIDES global.css para consistência de cores === */
+.header-bar { background: var(--bg-topbar) !important; }
+.content-body { background-color: var(--bg-body) !important; overflow-y: auto; }
 
 /* === SCROLLBAR GLOBAL === */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
