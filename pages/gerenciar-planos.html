@@ -4,44 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar Planos - CondoSphere</title>
-    <link rel="stylesheet" href="/src/styles/global.css">
+    <link rel="stylesheet" href="/src/styles/condosphere.css">
     <style>
         .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-        .plan-card { background: var(--bg-darkCard); border: 2px solid var(--color-border); border-radius: 16px; padding: 24px; position: relative; transition: border-color 0.2s; }
-        .plan-card:hover { border-color: var(--color-primary); }
-        .plan-card.featured { border-color: var(--color-success); }
-        .plan-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--color-success); color: white; padding: 4px 16px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        .plan-card { background: var(--bg-card); border: 2px solid var(--border); border-radius: 16px; padding: 24px; position: relative; transition: border-color 0.2s; }
+        .plan-card:hover { border-color: var(--primary); }
+        .plan-card.featured { border-color: var(--success); }
+        .plan-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 4px 16px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
         .plan-name { font-size: 20px; font-weight: 800; color: white; margin: 0 0 8px; }
-        .plan-desc { font-size: 12px; color: var(--color-text-muted); margin-bottom: 16px; }
+        .plan-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
         .plan-price { font-size: 32px; font-weight: 900; color: white; margin-bottom: 4px; }
-        .plan-price span { font-size: 14px; font-weight: 400; color: var(--color-text-muted); }
-        .plan-annual { font-size: 11px; color: var(--color-text-muted); margin-bottom: 16px; }
+        .plan-price span { font-size: 14px; font-weight: 400; color: var(--text-muted); }
+        .plan-annual { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; }
         .plan-features { list-style: none; padding: 0; margin: 0 0 20px; }
-        .plan-features li { font-size: 12px; color: var(--color-text-muted); padding: 6px 0; display: flex; align-items: center; gap: 8px; }
-        .plan-features li::before { content: "✓"; color: var(--color-success); font-weight: bold; }
+        .plan-features li { font-size: 12px; color: var(--text-muted); padding: 6px 0; display: flex; align-items: center; gap: 8px; }
+        .plan-features li::before { content: "✓"; color: var(--success); font-weight: bold; }
         .plan-features li.disabled { color: #64748b; text-decoration: line-through; }
         .plan-features li.disabled::before { content: "✕"; color: #64748b; }
         .plan-actions { display: flex; gap: 8px; }
         .plan-actions .btn { flex: 1; }
         .edit-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .edit-modal { background: var(--bg-darkCard); border: 1px solid var(--color-border); border-radius: 12px; padding: 24px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+        .edit-modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
         .edit-modal h3 { color: white; margin-bottom: 16px; }
     </style>
 </head>
-<body style="overflow:auto; padding:24px; background:var(--bg-darkBg)">
+<body style="overflow:auto; padding:24px; background:var(--bg-body)">
     <div style="max-width:1200px; margin:0 auto">
-        <div class="portal-card" style="background:var(--bg-darkCard); border:1px solid var(--color-border); border-radius:12px; padding:20px; margin-bottom:24px">
+        <div class="portal-card" style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:24px">
             <div style="display:flex; justify-content:space-between; align-items:center">
                 <div>
                     <h1 style="font-size:24px; font-weight:800; color:white; margin:0">Planos de Licenciamento</h1>
-                    <p style="font-size:12px; color:var(--color-text-muted); margin:4px 0 0">Gerencie os planos de assinatura e valores</p>
+                    <p style="font-size:12px; color:var(--text-muted); margin:4px 0 0">Gerencie os planos de assinatura e valores</p>
                 </div>
                 <button class="btn btn-primary" onclick="openEditModal(null)">+ Novo Plano</button>
             </div>
         </div>
 
         <div class="plans-grid" id="plans-container">
-            <p style="text-align:center; color:var(--color-text-muted); grid-column:1/-1; padding:40px">Carregando planos...</p>
+            <p style="text-align:center; color:var(--text-muted); grid-column:1/-1; padding:40px">Carregando planos...</p>
         </div>
     </div>
 
@@ -112,7 +112,7 @@
         function renderPlans() {
             const container = document.getElementById('plans-container');
             if (plans.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:var(--color-text-muted); grid-column:1/-1; padding:40px">Nenhum plano encontrado. Clique em "+ Novo Plano" para criar.</p>';
+                container.innerHTML = '<p style="text-align:center; color:var(--text-muted); grid-column:1/-1; padding:40px">Nenhum plano encontrado. Clique em "+ Novo Plano" para criar.</p>';
                 return;
             }
 

@@ -4,33 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentos & Informativos - CondoSphere</title>
-    <link rel="stylesheet" href="/src/styles/global.css">
+    <link rel="stylesheet" href="/src/styles/condosphere.css">
     <style>
         .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
-        .folder-card { background: var(--bg-darkBg); border: 1px solid var(--color-border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; text-align: center; }
-        .folder-card:hover { border-color: var(--color-primary); background: rgba(59,130,246,0.05); }
+        .folder-card { background: var(--bg-body); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .folder-card:hover { border-color: var(--primary); background: rgba(59,130,246,0.05); }
         .folder-icon { font-size: 40px; margin-bottom: 8px; }
         .folder-name { font-size: 12px; font-weight: 700; color: white; }
-        .folder-count { font-size: 10px; color: var(--color-text-muted); }
+        .folder-count { font-size: 10px; color: var(--text-muted); }
         .doc-list { display: flex; flex-direction: column; gap: 8px; }
-        .doc-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-darkBg); border: 1px solid var(--color-border); border-radius: 8px; transition: border-color 0.2s; }
-        .doc-item:hover { border-color: var(--color-primary); }
+        .doc-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-body); border: 1px solid var(--border); border-radius: 8px; transition: border-color 0.2s; }
+        .doc-item:hover { border-color: var(--primary); }
         .doc-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
         .doc-info { flex: 1; }
         .doc-title { font-size: 12px; font-weight: 700; color: white; }
-        .doc-meta { font-size: 10px; color: var(--color-text-muted); }
+        .doc-meta { font-size: 10px; color: var(--text-muted); }
         .doc-actions { display: flex; gap: 4px; }
-        .upload-zone { border: 2px dashed var(--color-border); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s; }
-        .upload-zone:hover { border-color: var(--color-primary); background: rgba(59,130,246,0.05); }
+        .upload-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .upload-zone:hover { border-color: var(--primary); background: rgba(59,130,246,0.05); }
     </style>
 </head>
-<body style="overflow:auto; padding:24px; background:var(--bg-darkBg)">
+<body style="overflow:auto; padding:24px; background:var(--bg-body)">
     <div style="max-width:1000px; margin:0 auto">
-        <div style="background:var(--bg-darkCard); border:1px solid var(--color-border); border-radius:12px; padding:20px; margin-bottom:24px">
+        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:24px">
             <div style="display:flex; justify-content:space-between; align-items:center">
                 <div>
                     <h1 style="font-size:24px; font-weight:800; color:white; margin:0">📁 Documentos & Informativos</h1>
-                    <p style="font-size:12px; color:var(--color-text-muted); margin:4px 0 0">Organize e compartilhe documentos do condomínio</p>
+                    <p style="font-size:12px; color:var(--text-muted); margin:4px 0 0">Organize e compartilhe documentos do condomínio</p>
                 </div>
                 <div style="display:flex; gap:8px">
                     <button class="btn btn-primary" onclick="openFolderModal()">+ Nova Pasta</button>
@@ -43,7 +43,7 @@
         <div style="margin-bottom:24px">
             <h2 style="font-size:16px; font-weight:700; color:white; margin-bottom:12px">Pastas</h2>
             <div class="folder-grid" id="folders-container">
-                <p style="color:var(--color-text-muted); grid-column:1/-1; text-align:center; padding:20px">Carregando pastas...</p>
+                <p style="color:var(--text-muted); grid-column:1/-1; text-align:center; padding:20px">Carregando pastas...</p>
             </div>
         </div>
 
@@ -51,7 +51,7 @@
         <div>
             <h2 style="font-size:16px; font-weight:700; color:white; margin-bottom:12px">Documentos Recentes</h2>
             <div class="doc-list" id="docs-container">
-                <p style="color:var(--color-text-muted); text-align:center; padding:20px">Carregando documentos...</p>
+                <p style="color:var(--text-muted); text-align:center; padding:20px">Carregando documentos...</p>
             </div>
         </div>
     </div>
@@ -154,7 +154,7 @@
         function renderFolders() {
             const container = document.getElementById('folders-container');
             if (folders.length === 0) {
-                container.innerHTML = '<p style="color:var(--color-text-muted); text-align:center; padding:20px">Nenhuma pasta criada</p>';
+                container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:20px">Nenhuma pasta criada</p>';
                 return;
             }
             container.innerHTML = folders.map(f => `
@@ -170,7 +170,7 @@
             const container = document.getElementById('docs-container');
             const docs = docList || documents;
             if (docs.length === 0) {
-                container.innerHTML = '<p style="color:var(--color-text-muted); text-align:center; padding:20px">Nenhum documento encontrado</p>';
+                container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:20px">Nenhum documento encontrado</p>';
                 return;
             }
             const icons = { 'contrato': '📋', 'boleto': '💰', 'ata': '📝', 'relatorio': '📊', 'comunicado': '📢', 'regulamento': '📜', 'outro': '📄' };

@@ -164,8 +164,9 @@
                         <button class="submenu-item" onclick="switchTab('moradores', this)">Moradores</button>
                         <button class="submenu-item" onclick="switchTab('veiculos', this)">Veículos</button>
                         <button class="submenu-item" onclick="switchTab('areas', this)">Áreas Comuns</button>
-                        <button class="submenu-item" onclick="switchTab('reservas', this)">Reservas</button>
+                        <button class="submenu-item" onclick="switchTab('reservas', this)">Reservas & Agendamentos</button>
                         <button class="submenu-item" onclick="switchTab('assemblies', this)">Assembleias Virtuais</button>
+                        <button class="submenu-item" onclick="switchTab('portal-morador', this)">Portal do Morador</button>
                     </div>
 
                     <!-- RH e Pessoal -->
@@ -189,6 +190,7 @@
                         <button class="submenu-item" onclick="switchTab('portal_colaborador', this)">Portal do Colaborador</button>
                         <button class="submenu-item" onclick="switchTab('people_analytics', this)">People Analytics & KPIs</button>
                         <button class="submenu-item" onclick="switchTab('prestadores', this)">Prestadores de Serviço</button>
+                        <button class="submenu-item" onclick="switchTab('documentos', this)">Documentos & Informativos</button>
                     </div>
 
                     <!-- Configurações master -->
@@ -211,6 +213,8 @@
                         <button class="submenu-item" onclick="switchTab('config_mass_import', this)">Carga Massiva (.XLSX)</button>
                         <button class="submenu-item" onclick="switchTab('config_rh', this)">RH & Escalas</button>
                         <button class="submenu-item" onclick="switchTab('config_adm', this)">Administrativo</button>
+                        <button class="submenu-item" onclick="switchTab('admin-panel', this)">Painel Admin</button>
+                        <button class="submenu-item" onclick="switchTab('gerenciar-planos', this)">Planos de Licenciamento</button>
                     </div>
 
                 </div>
@@ -225,12 +229,7 @@
                         <svg class="submenu-arrow" style="width:12px;height:12px;fill:currentColor" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
                     </button>
                     <div id="novos-sub" class="submenu-list">
-                        <button class="submenu-item" onclick="loadExternalPage('pages/admin-panel.html')">⚙️ Painel Admin</button>
-                        <button class="submenu-item" onclick="loadExternalPage('pages/portal-morador.html')">🏠 Portal Morador</button>
                         <button class="submenu-item" onclick="loadExternalPage('pages/portal-colaborador-novo.html')">👤 Portal Colaborador</button>
-                        <button class="submenu-item" onclick="loadExternalPage('pages/gerenciar-planos.html')">📋 Planos Licenciamento</button>
-                        <button class="submenu-item" onclick="loadExternalPage('pages/reservas-agendamentos.html')">📅 Reservas & Agendamentos</button>
-                        <button class="submenu-item" onclick="loadExternalPage('pages/documentos.html')">📁 Documentos</button>
                         <button class="submenu-item" onclick="loadExternalPage('pages/assembleias-online.html')">🗳️ Assembleias Online</button>
                         <button class="submenu-item" onclick="loadExternalPage('pages/perfis-acesso.html')">🔑 Perfis de Acesso</button>
                         <button class="submenu-item" onclick="loadExternalPage('pages/relatorios-automatizados.html')">📊 Relatórios Automatizados</button>
@@ -5059,21 +5058,25 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                 'rh_estrategico': 'RH & Pessoal > RH Estratégico & Talentos',
                 'portal_colaborador': 'RH & Pessoal > Portal do Colaborador',
                 'people_analytics': 'RH & Pessoal > People Analytics & KPIs',
+                'documentos': 'RH & Pessoal > Documentos & Informativos',
                 'portaria': 'Portaria & Acesso',
                 'dashboard': 'Painel Principal',
                 'residencias': 'Condomínio > Residências',
                 'moradores': 'Condomínio > Moradores',
                 'veiculos': 'Condomínio > Veículos',
                 'areas': 'Condomínio > Áreas Comuns',
-                'reservas': 'Condomínio > Reservas',
+                'reservas': 'Condomínio > Reservas & Agendamentos',
                 'assemblies': 'Condomínio > Assembleias Virtuais',
+                'portal-morador': 'Condomínio > Portal do Morador',
                 'config_empresa': 'Configurações > Dados da Empresa',
                 'config_usuarios': 'Configurações > Usuários do Sistema',
                 'config_perfis': 'Configurações > Perfis de Acesso',
                 'config_supabase': 'Configurações > Rede & Banco de Dados',
                 'config_mass_import': 'Configurações > Carga Massiva',
                 'config_rh': 'Configurações > RH & Escalas',
-                'config_adm': 'Configurações > Administrativo'
+                'config_adm': 'Configurações > Administrativo',
+                'admin-panel': 'Configurações > Painel Admin',
+                'gerenciar-planos': 'Configurações > Planos de Licenciamento'
             };
             cleanTitle = titleMap[tabId] || tabId.charAt(0).toUpperCase() + tabId.slice(1);
             document.getElementById('current-tab-title').innerText = cleanTitle;

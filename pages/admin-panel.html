@@ -4,29 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Administração - CondoSphere</title>
-    <link rel="stylesheet" href="/src/styles/global.css">
-    <link rel="stylesheet" href="/src/styles/mobile.css">
+    <link rel="stylesheet" href="/src/styles/condosphere.css">
     <style>
         .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .admin-card { background: var(--bg-darkCard); border: 1px solid var(--color-border); border-radius: 12px; padding: 20px; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--color-border); }
+        .admin-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
         .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .stat-row:last-child { border-bottom: none; }
-        .stat-label { font-size: 12px; color: var(--color-text-muted); }
+        .stat-label { font-size: 12px; color: var(--text-muted); }
         .stat-value { font-size: 14px; font-weight: 700; color: white; }
         .activity-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .activity-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
         .activity-content { flex: 1; }
         .activity-title { font-size: 12px; font-weight: 600; color: white; }
-        .activity-time { font-size: 10px; color: var(--color-text-muted); }
-        .chart-container { background: var(--bg-darkBg); border: 1px solid var(--color-border); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+        .activity-time { font-size: 10px; color: var(--text-muted); }
+        .chart-container { background: var(--bg-body); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
         .chart-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-        .chart-bar-label { width: 80px; font-size: 10px; color: var(--color-text-muted); }
+        .chart-bar-label { width: 80px; font-size: 10px; color: var(--text-muted); }
         .chart-bar-fill { height: 20px; border-radius: 4px; transition: width 0.5s; }
         .chart-bar-value { font-size: 10px; color: white; font-weight: 600; min-width: 40px; }
     </style>
 </head>
-<body style="overflow:auto; padding:24px; background:var(--bg-darkBg)">
+<body style="overflow:auto; padding:24px; background:var(--bg-body)">
     <div style="max-width:1400px; margin:0 auto">
         <!-- Header -->
         <div class="admin-card" style="margin-bottom:24px">
@@ -47,7 +46,7 @@
             <div class="admin-card">
                 <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">📊 Métricas do Sistema</h3>
                 <div class="stat-row"><span class="stat-label">Total de Assinaturas</span><span class="stat-value" id="total-subscriptions">0</span></div>
-                <div class="stat-row"><span class="stat-label">Assinaturas Ativas</span><span class="stat-value" style="color:var(--color-success)" id="active-subscriptions">0</span></div>
+                <div class="stat-row"><span class="stat-label">Assinaturas Ativas</span><span class="stat-value" style="color:var(--success)" id="active-subscriptions">0</span></div>
                 <div class="stat-row"><span class="stat-label">Receita Mensal</span><span class="stat-value" id="monthly-revenue">R$ 0,00</span></div>
                 <div class="stat-row"><span class="stat-label">Receita Anual</span><span class="stat-value" id="annual-revenue">R$ 0,00</span></div>
             </div>
@@ -62,9 +61,9 @@
 
             <div class="admin-card">
                 <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">💰 Dados Financeiros</h3>
-                <div class="stat-row"><span class="stat-label">Total Recebido</span><span class="stat-value" style="color:var(--color-success)" id="total-received">R$ 0,00</span></div>
-                <div class="stat-row"><span class="stat-label">Total Pendente</span><span class="stat-value" style="color:var(--color-danger)" id="total-pending">R$ 0,00</span></div>
-                <div class="stat-row"><span class="stat-label">Total Despesas</span><span class="stat-value" style="color:var(--color-warning)" id="total-expenses">R$ 0,00</span></div>
+                <div class="stat-row"><span class="stat-label">Total Recebido</span><span class="stat-value" style="color:var(--success)" id="total-received">R$ 0,00</span></div>
+                <div class="stat-row"><span class="stat-label">Total Pendente</span><span class="stat-value" style="color:var(--danger)" id="total-pending">R$ 0,00</span></div>
+                <div class="stat-row"><span class="stat-label">Total Despesas</span><span class="stat-value" style="color:var(--warning)" id="total-expenses">R$ 0,00</span></div>
                 <div class="stat-row"><span class="stat-label">Saldo Geral</span><span class="stat-value" id="total-balance">R$ 0,00</span></div>
             </div>
         </div>
@@ -77,17 +76,17 @@
                 <div class="chart-container">
                     <div class="chart-bar">
                         <span class="chart-bar-label">Básico</span>
-                        <div class="chart-bar-fill" id="chart-basico" style="width:0%; background:var(--color-primary)"></div>
+                        <div class="chart-bar-fill" id="chart-basico" style="width:0%; background:var(--primary)"></div>
                         <span class="chart-bar-value" id="chart-basico-val">0</span>
                     </div>
                     <div class="chart-bar">
                         <span class="chart-bar-label">Profissional</span>
-                        <div class="chart-bar-fill" id="chart-profissional" style="width:0%; background:var(--color-success)"></div>
+                        <div class="chart-bar-fill" id="chart-profissional" style="width:0%; background:var(--success)"></div>
                         <span class="chart-bar-value" id="chart-profissional-val">0</span>
                     </div>
                     <div class="chart-bar">
                         <span class="chart-bar-label">Enterprise</span>
-                        <div class="chart-bar-fill" id="chart-enterprise" style="width:0%; background:var(--color-warning)"></div>
+                        <div class="chart-bar-fill" id="chart-enterprise" style="width:0%; background:var(--warning)"></div>
                         <span class="chart-bar-value" id="chart-enterprise-val">0</span>
                     </div>
                 </div>
@@ -97,7 +96,7 @@
             <div class="admin-card">
                 <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">🕐 Atividade Recente</h3>
                 <div id="activity-list" style="max-height:300px; overflow-y:auto">
-                    <p style="text-align:center; color:var(--color-text-muted); padding:20px">Carregando atividades...</p>
+                    <p style="text-align:center; color:var(--text-muted); padding:20px">Carregando atividades...</p>
                 </div>
             </div>
 
@@ -118,7 +117,7 @@
             <div class="admin-card">
                 <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">📜 Logs de Auditoria</h3>
                 <div id="audit-logs" style="max-height:300px; overflow-y:auto">
-                    <p style="text-align:center; color:var(--color-text-muted); padding:20px">Carregando logs...</p>
+                    <p style="text-align:center; color:var(--text-muted); padding:20px">Carregando logs...</p>
                 </div>
             </div>
         </div>
@@ -200,7 +199,7 @@
                 const balance = totalReceived - totalExpenses;
                 const balanceEl = document.getElementById('total-balance');
                 balanceEl.textContent = `R$ ${balance.toFixed(2).replace('.', ',')}`;
-                balanceEl.style.color = balance >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+                balanceEl.style.color = balance >= 0 ? 'var(--success)' : 'var(--danger)';
 
                 // Receita mensal/anual estimada
                 const plans = await supabaseQuery('license_plans', '*');
@@ -288,7 +287,7 @@
                 container.innerHTML = logs.slice(0, 20).map(l => `
                     <div style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.03); font-size:11px">
                         <div style="color:white; font-weight:600">${l.action}</div>
-                        <div style="color:var(--color-text-muted)">${l.table_name || ''} • ${new Date(l.created_at).toLocaleString('pt-BR')}</div>
+                        <div style="color:var(--text-muted)">${l.table_name || ''} • ${new Date(l.created_at).toLocaleString('pt-BR')}</div>
                     </div>
                 `).join('');
             } catch (err) {
