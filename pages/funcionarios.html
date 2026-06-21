@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Funcionários</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funcionários</title>
+    <link rel="stylesheet" href="/src/styles/condosphere.css">
+    <script src="/js/app.js"></script>
+    <style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style>
+</head>
 <body>
 <div class="card">
     <div class="card-header">
-        <div><div class="card-title">Cadastro de Funcionários & Escalas (RH)</div><div class="card-subtitle">Gerencie colaboradores CLT, salários, adiantamentos e rendimentos</div></div>
-        <button class="btn btn-success">Incluir Funcionário</button>
+        <div><div class="card-title">Cadastro de Funcionários & Escalas (RH)</div><div class="card-subtitle">Gerencie colaboradores CLT, salários, adiantamentos</div></div>
+        <button class="btn btn-success" onclick="promptAddEmployee()">Incluir Funcionário</button>
     </div>
     <div class="form-group" style="margin-bottom:16px"><label class="form-label">Busca Rápida de Funcionários</label><input type="text" class="form-control" placeholder="Pesquise por nome, CPF ou cargo..."></div>
     <div class="table-wrap"><table>
@@ -13,4 +20,19 @@
         <tbody id="emp-tbody"><tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum funcionário cadastrado.</td></tr></tbody>
     </table></div>
 </div>
+<script>
+function promptAddEmployee() {
+    var name = prompt('Nome completo:');
+    if (!name) return;
+    var cpf = prompt('CPF:');
+    var role = prompt('Cargo/Função:');
+    var salary = parseFloat(prompt('Salário Base:', '2500')) || 2500;
+    var contact = prompt('Contato:');
+    employeesList.push({ name:name, cpf:cpf, role:role, salary:salary, advance:0, contact:contact, admission_date:new Date().toLocaleDateString('pt-BR'), is_active:true });
+    SafeStorage.setItem('condosphere_employees', JSON.stringify(employeesList));
+    renderEmployees();
+    showToast('Funcionário "' + name + '" cadastrado!');
+}
+renderEmployees();
+</script>
 </body></html>

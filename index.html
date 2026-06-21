@@ -239,16 +239,18 @@
         const pass = document.getElementById('login-pass').value.trim();
 
         const presets = {
-            'admin.geral': { name: 'Administrador Geral', role: 'Administrador', initials: 'AG' },
-            'reginaldo.silveira': { name: 'Reginaldo Silveira', role: 'Colaborador', initials: 'RS' },
-            'carlos.silva': { name: 'Carlos Henrique', role: 'Morador', initials: 'CH' },
-            'jose.portaria': { name: 'José da Portaria', role: 'Portaria', initials: 'JP' }
+            'admin.geral': { name: 'Administrador Geral', role: 'Administrador', initials: 'AG', cpf: '12345678901' },
+            'reginaldo.silveira': { name: 'Reginaldo Silveira', role: 'Colaborador', initials: 'RS', cpf: '22233344455' },
+            'carlos.silva': { name: 'Carlos Henrique', role: 'Morador', initials: 'CH', cpf: '33344455566' },
+            'jose.portaria': { name: 'José da Portaria', role: 'Portaria', initials: 'JP', cpf: '44455566677' }
         };
 
-        if (presets[user] && pass === user.split('.').pop() === 'geral' ? '12345678901' : pass) {
-            currentUser = { username: user, ...presets[user] };
-        } else if (presets[user]) {
-            currentUser = { username: user, ...presets[user] };
+        if (presets[user]) {
+            if (pass !== presets[user].cpf) {
+                showToast('Senha incorreta! Use o CPF do perfil.', 'error');
+                return;
+            }
+            currentUser = { username: user, name: presets[user].name, role: presets[user].role, initials: presets[user].initials };
         } else {
             currentUser = { username: user, name: user, role: 'Morador', initials: user.substring(0,2).toUpperCase() };
         }
@@ -332,9 +334,15 @@
     // === GLOBAL API (called from iframes) ===
     window.parentAPI = {
         showToast: showToast,
-        getCurrentUser: function() { return currentUser; },
-        getDB: function() { return dbClient; }
+        getCurrentUser: function() { return currentUser; }
     };
+
+    // === LISTEN FOR MESSAGES FROM IFRAME PAGES ===
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.type === 'toast') {
+            showToast(event.data.msg, event.data.toastType || 'success');
+        }
+    });
     </script>
 </body>
 </html>
