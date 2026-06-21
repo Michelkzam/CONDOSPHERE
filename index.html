@@ -2996,9 +2996,6 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                 </div>
 
             </main>
-        </div>
-
-    </div>
 
     <!-- PRINT VIEW FOR PROFESSIONAL A4 SALARY ADVANCE RECEIPT & REAL COMPARATIVE 12-MONTH CHART -->
     <div class="print-only receipt-a4-page" id="print-sheet-wrapper">
@@ -4449,13 +4446,13 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     <!-- JAVASCRIPT STATE ENGINE (100% Offline / No network requests) -->
     
     <!-- High-Performance CDN loading for 100% reliability on Vercel and local executions -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script src="/js/condo-engine.js"></script>
-    <script src="/js/banking-integration.js"></script>
-    <script src="/js/condo-api.js"></script>
-    <script src="/js/pdf-reports.js"></script>
-    <script src="/js/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" onerror="console.warn('[CDN] xlsx failed to load')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" onerror="console.warn('[CDN] supabase failed to load')"></script>
+    <script src="/js/condo-engine.js?v=4"></script>
+    <script src="/js/banking-integration.js?v=4"></script>
+    <script src="/js/condo-api.js?v=4"></script>
+    <script src="/js/pdf-reports.js?v=4"></script>
+    <script src="/js/app.js?v=4"></script>
     <script>
         // SafeStorage defined at the top-level to prevent hoisting/reference errors (Aprovado!)
         const SafeStorage = {
@@ -5488,10 +5485,16 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
             let user = testPresets[username];
             if (user && user.pass === password) {
                 SafeStorage.setItem('currentUser', JSON.stringify({ username, ...user }));
-                document.getElementById('login-screen-overlay').style.display = 'none';
-                applyUserSession(user);
-                try { loadAllDataFromSupabase(); } catch (e) {}
-                showToast(`Seja bem-vindo, ${user.name}!`, 'success');
+                const overlay = document.getElementById('login-screen-overlay');
+                overlay.style.transition = "opacity 0.3s ease";
+                overlay.style.opacity = "0";
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    overlay.style.opacity = '1';
+                    applyUserSession(user);
+                    try { loadAllDataFromSupabase(); } catch (e) {}
+                    showToast(`Seja bem-vindo, ${user.name}!`, 'success');
+                }, 300);
             } else {
                 showToast("Credenciais inválidas! Use: admin.geral / 12345678901", "error");
             }
