@@ -8989,15 +8989,6 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                 showToast("Credenciais inválidas! Use: admin.geral / 12345678901", "error");
             }
         }
-                    if (!doLocalLoginFallback()) {
-                        showToast("Erro: Credenciais inválidas.", "error");
-                    }
-                }
-            } catch(e) {
-                console.error("[LOGIN HANDLER ERROR]:", e);
-                showToast("Erro de execução de login: " + e.message, "error");
-            }
-        }
 
         function handleLogout() {
             SafeStorage.removeItem('currentUser');
