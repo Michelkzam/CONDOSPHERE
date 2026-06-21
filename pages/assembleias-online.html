@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assembleias Virtuais - CondoSphere</title>
+    <link rel="stylesheet" href="/src/styles/global.css">
+    <style>
+        .assembly-card { background: var(--bg-darkCard); border: 1px solid var(--color-border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .assembly-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-border); padding-bottom: 12px; margin-bottom: 16px; }
+        .assembly-status { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+        .assembly-status.active { background: rgba(16,185,129,0.1); color: #10b981; }
+        .assembly-status.scheduled { background: rgba(59,130,246,0.1); color: #3b82f6; }
+        .assembly-status.ended { background: rgba(100,116,139,0.1); color: #64748b; }
+        .proposal-card { background: var(--bg-darkBg); border: 1px solid var(--color-border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+        .vote-bar { height: 8px; background: var(--color-border); border-radius: 4px; overflow: hidden; display: flex; }
+        .vote-bar .yes { background: var(--color-success); }
+        .vote-bar .no { background: var(--color-danger); }
+        .vote-bar .abstain { background: var(--color-text-muted); }
+        .vote-btn { padding: 8px 16px; border-radius: 6px; border: none; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .vote-btn.yes { background: rgba(16,185,129,0.1); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+        .vote-btn.yes:hover { background: rgba(16,185,129,0.2); }
+        .vote-btn.no { background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+        .vote-btn.no:hover { background: rgba(239,68,68,0.2); }
+        .vote-btn.abstain { background: rgba(100,116,139,0.1); color: #64748b; border: 1px solid rgba(100,116,139,0.3); }
+        .vote-btn.abstain:hover { background: rgba(100,116,139,0.2); }
+        .vote-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .quorum-bar { height: 20px; background: var(--color-border); border-radius: 10px; overflow: hidden; position: relative; margin: 16px 0; }
+        .quorum-fill { height: 100%; background: var(--color-primary); border-radius: 10px; transition: width 0.3s; }
+        .quorum-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 11px; font-weight: 700; color: white; }
+    </style>
+</head>
+<body style="overflow:auto; padding:24px; background:var(--bg-darkBg)">
+    <div style="max-width:1000px; margin:0 auto">
+        <div class="assembly-card">
+            <div class="assembly-header">
+                <div>
+                    <h1 style="font-size:24px; font-weight:800; color:white; margin:0">🗳️ Assembleias & Votações</h1>
+                    <p style="font-size:12px; color:var(--color-text-muted); margin:4px 0 0">Participe das votações e assembleias do condomínio</p>
+                </div>
+                <button class="btn btn-primary" onclick="openCreateModal()">+ Nova Assembleia</button>
+            </div>
+        </div>
+
+        <div id="assemblies-container">
+            <p style="text-align:center; color:var(--color-text-muted); padding:40px">Carregando assembleias...</p>
+        </div>
+    </div>
+
+    <!-- Create Modal -->
+    <div id="create-modal" class="edit-overlay" style="display:none">
+        <div class="edit-modal" style="max-width:600px">
+            <h3>Nova Assembleia</h3>
+            <form id="assembly-form">
+                <div class="form-group">
+                    <label class="form-label">Título da Assembleia</label>
+                    <input type="text" id="as-title" class="form-control" required placeholder="Ex: Assembleia Geral Ordinária 2026">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descrição / Pauta Geral</label>
+                    <textarea id="as-desc" class="form-control" rows="3" placeholder="Descreva os pontos principais da assembleia"></textarea>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+                    <div class="form-group">
+                        <label class="form-label">Data Início</label>
+                        <input type="date" id="as-start" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data Fim</label>
+                        <input type="date" id="as-end" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo de Assembleia</label>
+                    <select id="as-type" class="form-control">
+                        <option value="ordinary">Ordinária (Anual)</option>
+                        <option value="extraordinary">Extraordinária</option>
+                        <option value="virtual">Virtual</option>
+                    </select>
+                </div>
+                
+                <h4 style="color:white; margin:16px 0 12px; font-size:14px">Pautas de Votação</h4>
+                
+                <div class="form-group">
+                    <label class="form-label">Pauta 1 - Título</label>
+                    <input type="text" id="as-p1-title" class="form-control" required placeholder="Ex: Aprovação do orçamento anual">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Pauta 1 - Descrição</label>
+                    <textarea id="as-p1-desc" class="form-control" rows="2" placeholder="Detalhes da proposta"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Pauta 2 - Título (opcional)</label>
+                    <input type="text" id="as-p2-title" class="form-control" placeholder="Ex: Eleição de síndico">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Pauta 2 - Descrição</label>
+                    <textarea id="as-p2-desc" class="form-control" rows="2" placeholder="Detalhes da proposta"></textarea>
+                </div>
+
+                <div style="display:flex; gap:8px; margin-top:16px">
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateModal()" style="flex:1">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1">Criar Assembleia</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://psbvjscrqhwhttvbstty.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzYnZqc2NycWh3aHR0dmJzdHR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTA4MzAsImV4cCI6MjA5Njg2NjgzMH0.AFnX7TYKrpTSQMBEU9Rwj0g8nvgpSEDKSjGNb-FM2Gw';
+
+        let assemblies = [];
+        let userVotes = {};
+
+        async function supabaseQuery(table, select = '*', filters = {}) {
+            let url = `${SUPABASE_URL}/rest/v1/${table}?select=${select}`;
+            for (const [key, value] of Object.entries(filters)) {
+                url += `&${key}=eq.${encodeURIComponent(value)}`;
+            }
+            const res = await fetch(url, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+            return await res.json();
+        }
+
+        async function loadAssemblies() {
+            try {
+                assemblies = await supabaseQuery('virtual_assemblies', '*');
+                const proposals = await supabaseQuery('assembly_proposals', '*');
+                const votes = await supabaseQuery('assembly_votes', '*');
+                
+                // Load user votes from localStorage
+                const cached = localStorage.getItem('userVotes');
+                if (cached) userVotes = JSON.parse(cached);
+
+                renderAssemblies(proposals, votes);
+            } catch (err) {
+                console.error('Erro:', err);
+                document.getElementById('assemblies-container').innerHTML = '<p style="text-align:center; color:var(--color-danger); padding:40px">Erro ao carregar assembleias</p>';
+            }
+        }
+
+        function renderAssemblies(proposals, votes) {
+            const container = document.getElementById('assemblies-container');
+            
+            if (assemblies.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:var(--color-text-muted); padding:40px; border:1px dashed var(--color-border); border-radius:12px">🗳️ Nenhuma assembleia encontrada. Clique em "+ Nova Assembleia" para criar.</div>';
+                return;
+            }
+
+            container.innerHTML = assemblies.map(assembly => {
+                const isActive = new Date() >= new Date(assembly.start_date) && new Date() <= new Date(assembly.end_date);
+                const isEnded = new Date() > new Date(assembly.end_date);
+                const statusClass = isActive ? 'active' : (isEnded ? 'ended' : 'scheduled');
+                const statusText = isActive ? 'Em Andamento' : (isEnded ? 'Finalizada' : 'Agendada');
+                
+                const assemblyProposals = proposals.filter(p => p.assembly_id === assembly.id);
+                const totalVotes = votes.filter(v => v.assembly_id === assembly.id).length;
+                const quorumPct = assembly.total_units > 0 ? Math.min(100, (totalVotes / assembly.total_units) * 100) : 0;
+
+                return `
+                    <div class="assembly-card">
+                        <div class="assembly-header">
+                            <div>
+                                <h2 style="font-size:18px; font-weight:700; color:white; margin:0">${assembly.title}</h2>
+                                <p style="font-size:11px; color:var(--color-text-muted); margin:4px 0 0">${assembly.description || ''}</p>
+                            </div>
+                            <span class="assembly-status ${statusClass}">${statusText}</span>
+                        </div>
+                        
+                        <div style="display:flex; gap:20px; font-size:11px; color:var(--color-text-muted); margin-bottom:16px">
+                            <span>📅 ${new Date(assembly.start_date).toLocaleDateString('pt-BR')} a ${new Date(assembly.end_date).toLocaleDateString('pt-BR')}</span>
+                            <span>📋 ${assemblyProposals.length} pauta(s)</span>
+                            <span>🗳️ ${totalVotes} voto(s)</span>
+                        </div>
+                        
+                        <div style="margin-bottom:16px">
+                            <div style="display:flex; justify-content:space-between; font-size:10px; margin-bottom:4px">
+                                <span>Quórum</span>
+                                <span>${quorumPct.toFixed(1)}%</span>
+                            </div>
+                            <div class="quorum-bar">
+                                <div class="quorum-fill" style="width:${quorumPct}%"></div>
+                                <span class="quorum-label">${quorumPct.toFixed(1)}%</span>
+                            </div>
+                        </div>
+
+                        ${assemblyProposals.map(proposal => {
+                            const total = proposal.yes_votes + proposal.no_votes + (proposal.abstain_votes || 0);
+                            const yesPct = total > 0 ? (proposal.yes_votes / total * 100) : 0;
+                            const noPct = total > 0 ? (proposal.no_votes / total * 100) : 0;
+                            const hasVoted = userVotes[`${assembly.id}-${proposal.id}`];
+
+                            return `
+                                <div class="proposal-card">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+                                        <h3 style="font-size:14px; font-weight:700; color:white; margin:0">Pauta #${proposal.proposal_number}: ${proposal.title}</h3>
+                                        ${hasVoted ? '<span style="font-size:10px; color:var(--color-success); font-weight:700">✓ Votado</span>' : ''}
+                                    </div>
+                                    <p style="font-size:11px; color:var(--color-text-muted); margin-bottom:12px">${proposal.description || ''}</p>
+                                    
+                                    <div class="vote-bar" style="margin-bottom:8px">
+                                        <div class="yes" style="width:${yesPct}%"></div>
+                                        <div class="no" style="width:${noPct}%"></div>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--color-text-muted); margin-bottom:12px">
+                                        <span>Sim: ${proposal.yes_votes} (${yesPct.toFixed(1)}%)</span>
+                                        <span>Não: ${proposal.no_votes} (${noPct.toFixed(1)}%)</span>
+                                    </div>
+                                    
+                                    ${isActive && !hasVoted ? `
+                                        <div style="display:flex; gap:8px">
+                                            <button class="vote-btn yes" onclick="castVote('${assembly.id}', '${proposal.id}', 'yes', ${proposal.proposal_number})">✓ Sim</button>
+                                            <button class="vote-btn no" onclick="castVote('${assembly.id}', '${proposal.id}', 'no', ${proposal.proposal_number})">✕ Não</button>
+                                            <button class="vote-btn abstain" onclick="castVote('${assembly.id}', '${proposal.id}', 'abstain', ${proposal.proposal_number})">Abstenção</button>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function castVote(assemblyId, proposalId, voteValue, proposalNumber) {
+            if (userVotes[`${assemblyId}-${proposalId}`]) {
+                alert('Você já votou nesta pauta!');
+                return;
+            }
+
+            const cached = localStorage.getItem('currentUser');
+            const user = cached ? JSON.parse(cached) : null;
+            
+            try {
+                // Insert vote
+                await fetch(`${SUPABASE_URL}/rest/v1/assembly_votes`, {
+                    method: 'POST',
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        assembly_id: assemblyId,
+                        proposal_id: proposalId,
+                        voter_name: user?.name || 'Anônimo',
+                        vote_value: voteValue,
+                        ip_address: 'web'
+                    })
+                });
+
+                // Update vote count
+                const proposal = (await supabaseQuery('assembly_proposals', '*', { id: proposalId }))[0];
+                if (proposal) {
+                    const update = {};
+                    if (voteValue === 'yes') update.yes_votes = (proposal.yes_votes || 0) + 1;
+                    else if (voteValue === 'no') update.no_votes = (proposal.no_votes || 0) + 1;
+                    else update.abstain_votes = (proposal.abstain_votes || 0) + 1;
+                    
+                    await fetch(`${SUPABASE_URL}/rest/v1/assembly_proposals?id=eq.${proposalId}`, {
+                        method: 'PATCH',
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify(update)
+                    });
+                }
+
+                // Save vote locally
+                userVotes[`${assemblyId}-${proposalId}`] = voteValue;
+                localStorage.setItem('userVotes', JSON.stringify(userVotes));
+                
+                alert(`Voto "${voteValue === 'yes' ? 'SIM' : voteValue === 'no' ? 'NÃO' : 'ABSTENÇÃO'}" registrado com sucesso para a Pauta #${proposalNumber}!`);
+                await loadAssemblies();
+            } catch (err) {
+                alert('Erro ao registrar voto');
+                console.error(err);
+            }
+        }
+
+        function openCreateModal() {
+            document.getElementById('create-modal').style.display = 'flex';
+            document.getElementById('as-start').value = new Date().toISOString().split('T')[0];
+            const endDate = new Date();
+            endDate.setDate(endDate.getDate() + 10);
+            document.getElementById('as-end').value = endDate.toISOString().split('T')[0];
+        }
+
+        function closeCreateModal() {
+            document.getElementById('create-modal').style.display = 'none';
+        }
+
+        document.getElementById('assembly-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const cached = localStorage.getItem('currentUser');
+            const user = cached ? JSON.parse(cached) : null;
+
+            const data = {
+                title: document.getElementById('as-title').value,
+                description: document.getElementById('as-desc').value,
+                assembly_type: document.getElementById('as-type').value,
+                status: 'active',
+                start_date: document.getElementById('as-start').value,
+                end_date: document.getElementById('as-end').value,
+                created_by: user?.id || null
+            };
+
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/virtual_assemblies`, {
+                    method: 'POST',
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const assembly = await res.json();
+                
+                // Create proposals
+                const p1Title = document.getElementById('as-p1-title').value;
+                const p1Desc = document.getElementById('as-p1-desc').value;
+                if (p1Title) {
+                    await fetch(`${SUPABASE_URL}/rest/v1/assembly_proposals`, {
+                        method: 'POST',
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ assembly_id: assembly.id, proposal_number: 1, title: p1Title, description: p1Desc })
+                    });
+                }
+
+                const p2Title = document.getElementById('as-p2-title').value;
+                const p2Desc = document.getElementById('as-p2-desc').value;
+                if (p2Title) {
+                    await fetch(`${SUPABASE_URL}/rest/v1/assembly_proposals`, {
+                        method: 'POST',
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ assembly_id: assembly.id, proposal_number: 2, title: p2Title, description: p2Desc })
+                    });
+                }
+
+                closeCreateModal();
+                await loadAssemblies();
+                alert('Assembleia criada com sucesso!');
+            } catch (err) {
+                alert('Erro ao criar assembleia');
+                console.error(err);
+            }
+        });
+
+        loadAssemblies();
+    </script>
+</body>
+</html>

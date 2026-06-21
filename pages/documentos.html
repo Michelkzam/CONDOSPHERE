@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentos & Informativos - CondoSphere</title>
+    <link rel="stylesheet" href="/src/styles/global.css">
+    <style>
+        .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .folder-card { background: var(--bg-darkBg); border: 1px solid var(--color-border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .folder-card:hover { border-color: var(--color-primary); background: rgba(59,130,246,0.05); }
+        .folder-icon { font-size: 40px; margin-bottom: 8px; }
+        .folder-name { font-size: 12px; font-weight: 700; color: white; }
+        .folder-count { font-size: 10px; color: var(--color-text-muted); }
+        .doc-list { display: flex; flex-direction: column; gap: 8px; }
+        .doc-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-darkBg); border: 1px solid var(--color-border); border-radius: 8px; transition: border-color 0.2s; }
+        .doc-item:hover { border-color: var(--color-primary); }
+        .doc-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .doc-info { flex: 1; }
+        .doc-title { font-size: 12px; font-weight: 700; color: white; }
+        .doc-meta { font-size: 10px; color: var(--color-text-muted); }
+        .doc-actions { display: flex; gap: 4px; }
+        .upload-zone { border: 2px dashed var(--color-border); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .upload-zone:hover { border-color: var(--color-primary); background: rgba(59,130,246,0.05); }
+    </style>
+</head>
+<body style="overflow:auto; padding:24px; background:var(--bg-darkBg)">
+    <div style="max-width:1000px; margin:0 auto">
+        <div style="background:var(--bg-darkCard); border:1px solid var(--color-border); border-radius:12px; padding:20px; margin-bottom:24px">
+            <div style="display:flex; justify-content:space-between; align-items:center">
+                <div>
+                    <h1 style="font-size:24px; font-weight:800; color:white; margin:0">📁 Documentos & Informativos</h1>
+                    <p style="font-size:12px; color:var(--color-text-muted); margin:4px 0 0">Organize e compartilhe documentos do condomínio</p>
+                </div>
+                <div style="display:flex; gap:8px">
+                    <button class="btn btn-primary" onclick="openFolderModal()">+ Nova Pasta</button>
+                    <button class="btn btn-success" onclick="openUploadModal()">📤 Enviar Documento</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pastas -->
+        <div style="margin-bottom:24px">
+            <h2 style="font-size:16px; font-weight:700; color:white; margin-bottom:12px">Pastas</h2>
+            <div class="folder-grid" id="folders-container">
+                <p style="color:var(--color-text-muted); grid-column:1/-1; text-align:center; padding:20px">Carregando pastas...</p>
+            </div>
+        </div>
+
+        <!-- Documentos -->
+        <div>
+            <h2 style="font-size:16px; font-weight:700; color:white; margin-bottom:12px">Documentos Recentes</h2>
+            <div class="doc-list" id="docs-container">
+                <p style="color:var(--color-text-muted); text-align:center; padding:20px">Carregando documentos...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Folder Modal -->
+    <div id="folder-modal" class="edit-overlay" style="display:none">
+        <div class="edit-modal">
+            <h3>Nova Pasta</h3>
+            <form id="folder-form">
+                <div class="form-group">
+                    <label class="form-label">Nome da Pasta</label>
+                    <input type="text" id="folder-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <input type="text" id="folder-desc" class="form-control">
+                </div>
+                <div style="display:flex; gap:8px; margin-top:16px">
+                    <button type="button" class="btn btn-secondary" onclick="closeFolderModal()" style="flex:1">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1">Criar Pasta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="upload-modal" class="edit-overlay" style="display:none">
+        <div class="edit-modal">
+            <h3>Enviar Documento</h3>
+            <form id="upload-form">
+                <div class="form-group">
+                    <label class="form-label">Título do Documento</label>
+                    <input type="text" id="doc-title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <input type="text" id="doc-desc" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Categoria</label>
+                    <select id="doc-category" class="form-control">
+                        <option value="contrato">Contrato</option>
+                        <option value="boleto">Boleto</option>
+                        <option value="ata">Ata</option>
+                        <option value="relatorio">Relatório</option>
+                        <option value="comunicado">Comunicado</option>
+                        <option value="regulamento">Regulamento</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Pasta</label>
+                    <select id="doc-folder" class="form-control">
+                        <option value="">Nenhuma pasta</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Arquivo</label>
+                    <input type="file" id="doc-file" class="form-control" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="doc-public" checked> Visível para todos os moradores
+                    </label>
+                </div>
+                <div style="display:flex; gap:8px; margin-top:16px">
+                    <button type="button" class="btn btn-secondary" onclick="closeUploadModal()" style="flex:1">Cancelar</button>
+                    <button type="submit" class="btn btn-success" style="flex:1">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://psbvjscrqhwhttvbstty.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzYnZqc2NycWh3aHR0dmJzdHR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTA4MzAsImV4cCI6MjA5Njg2NjgzMH0.AFnX7TYKrpTSQMBEU9Rwj0g8nvgpSEDKSjGNb-FM2Gw';
+
+        let folders = [];
+        let documents = [];
+
+        async function supabaseQuery(table, select = '*', filters = {}) {
+            let url = `${SUPABASE_URL}/rest/v1/${table}?select=${select}`;
+            for (const [key, value] of Object.entries(filters)) {
+                url += `&${key}=eq.${encodeURIComponent(value)}`;
+            }
+            const res = await fetch(url, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+            return await res.json();
+        }
+
+        async function loadFolders() {
+            folders = await supabaseQuery('document_folders', '*');
+            renderFolders();
+        }
+
+        async function loadDocuments() {
+            documents = await supabaseQuery('documents', '*');
+            renderDocuments();
+        }
+
+        function renderFolders() {
+            const container = document.getElementById('folders-container');
+            if (folders.length === 0) {
+                container.innerHTML = '<p style="color:var(--color-text-muted); text-align:center; padding:20px">Nenhuma pasta criada</p>';
+                return;
+            }
+            container.innerHTML = folders.map(f => `
+                <div class="folder-card" onclick="filterByFolder('${f.id}')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">${f.name}</div>
+                    <div class="folder-count">${documents.filter(d => d.category === f.name).length} documentos</div>
+                </div>
+            `).join('');
+        }
+
+        function renderDocuments(docList = null) {
+            const container = document.getElementById('docs-container');
+            const docs = docList || documents;
+            if (docs.length === 0) {
+                container.innerHTML = '<p style="color:var(--color-text-muted); text-align:center; padding:20px">Nenhum documento encontrado</p>';
+                return;
+            }
+            const icons = { 'contrato': '📋', 'boleto': '💰', 'ata': '📝', 'relatorio': '📊', 'comunicado': '📢', 'regulamento': '📜', 'outro': '📄' };
+            container.innerHTML = docs.map(d => `
+                <div class="doc-item">
+                    <div class="doc-icon" style="background:rgba(59,130,246,0.1)">${icons[d.category] || '📄'}</div>
+                    <div class="doc-info">
+                        <div class="doc-title">${d.title}</div>
+                        <div class="doc-meta">${d.category} • ${new Date(d.created_at).toLocaleDateString('pt-BR')}</div>
+                    </div>
+                    <div class="doc-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="downloadDoc('${d.file_url || '#'}')">Baixar</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteDoc('${d.id}')">Excluir</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterByFolder(folderId) {
+            const filtered = documents.filter(d => d.category === folders.find(f => f.id === folderId)?.name);
+            renderDocuments(filtered);
+        }
+
+        function openFolderModal() { document.getElementById('folder-modal').style.display = 'flex'; }
+        function closeFolderModal() { document.getElementById('folder-modal').style.display = 'none'; }
+        
+        function openUploadModal() {
+            const select = document.getElementById('doc-folder');
+            select.innerHTML = '<option value="">Nenhuma pasta</option>';
+            folders.forEach(f => { select.innerHTML += `<option value="${f.id}">${f.name}</option>`; });
+            document.getElementById('upload-modal').style.display = 'flex';
+        }
+        function closeUploadModal() { document.getElementById('upload-modal').style.display = 'none'; }
+
+        function downloadDoc(url) { if (url && url !== '#') window.open(url, '_blank'); else alert('Arquivo não disponível para download'); }
+
+        async function deleteDoc(id) {
+            if (!confirm('Excluir este documento?')) return;
+            await fetch(`${SUPABASE_URL}/rest/v1/documents?id=eq.${id}`, {
+                method: 'DELETE',
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+            });
+            await loadDocuments();
+        }
+
+        document.getElementById('folder-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const cached = localStorage.getItem('currentUser');
+            const user = cached ? JSON.parse(cached) : null;
+            await fetch(`${SUPABASE_URL}/rest/v1/document_folders`, {
+                method: 'POST',
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: document.getElementById('folder-name').value,
+                    description: document.getElementById('folder-desc').value,
+                    created_by: user?.id || null
+                })
+            });
+            closeFolderModal();
+            await loadFolders();
+        });
+
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const cached = localStorage.getItem('currentUser');
+            const user = cached ? JSON.parse(cached) : null;
+            const file = document.getElementById('doc-file').files[0];
+            
+            await fetch(`${SUPABASE_URL}/rest/v1/documents`, {
+                method: 'POST',
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: document.getElementById('doc-title').value,
+                    description: document.getElementById('doc-desc').value,
+                    category: document.getElementById('doc-category').value,
+                    file_url: file ? URL.createObjectURL(file) : null,
+                    file_type: file ? file.type : null,
+                    file_size: file ? file.size : 0,
+                    is_public: document.getElementById('doc-public').checked,
+                    uploaded_by: user?.id || null
+                })
+            });
+            closeUploadModal();
+            await loadDocuments();
+            alert('Documento enviado com sucesso!');
+        });
+
+        loadFolders();
+        loadDocuments();
+    </script>
+</body>
+</html>

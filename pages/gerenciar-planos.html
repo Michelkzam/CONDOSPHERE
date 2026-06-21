@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Planos - CondoSphere</title>
+    <link rel="stylesheet" href="/src/styles/global.css">
+    <style>
+        .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .plan-card { background: var(--bg-darkCard); border: 2px solid var(--color-border); border-radius: 16px; padding: 24px; position: relative; transition: border-color 0.2s; }
+        .plan-card:hover { border-color: var(--color-primary); }
+        .plan-card.featured { border-color: var(--color-success); }
+        .plan-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--color-success); color: white; padding: 4px 16px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        .plan-name { font-size: 20px; font-weight: 800; color: white; margin: 0 0 8px; }
+        .plan-desc { font-size: 12px; color: var(--color-text-muted); margin-bottom: 16px; }
+        .plan-price { font-size: 32px; font-weight: 900; color: white; margin-bottom: 4px; }
+        .plan-price span { font-size: 14px; font-weight: 400; color: var(--color-text-muted); }
+        .plan-annual { font-size: 11px; color: var(--color-text-muted); margin-bottom: 16px; }
+        .plan-features { list-style: none; padding: 0; margin: 0 0 20px; }
+        .plan-features li { font-size: 12px; color: var(--color-text-muted); padding: 6px 0; display: flex; align-items: center; gap: 8px; }
+        .plan-features li::before { content: "✓"; color: var(--color-success); font-weight: bold; }
+        .plan-features li.disabled { color: #64748b; text-decoration: line-through; }
+        .plan-features li.disabled::before { content: "✕"; color: #64748b; }
+        .plan-actions { display: flex; gap: 8px; }
+        .plan-actions .btn { flex: 1; }
+        .edit-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .edit-modal { background: var(--bg-darkCard); border: 1px solid var(--color-border); border-radius: 12px; padding: 24px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+        .edit-modal h3 { color: white; margin-bottom: 16px; }
+    </style>
+</head>
+<body style="overflow:auto; padding:24px; background:var(--bg-darkBg)">
+    <div style="max-width:1200px; margin:0 auto">
+        <div class="portal-card" style="background:var(--bg-darkCard); border:1px solid var(--color-border); border-radius:12px; padding:20px; margin-bottom:24px">
+            <div style="display:flex; justify-content:space-between; align-items:center">
+                <div>
+                    <h1 style="font-size:24px; font-weight:800; color:white; margin:0">Planos de Licenciamento</h1>
+                    <p style="font-size:12px; color:var(--color-text-muted); margin:4px 0 0">Gerencie os planos de assinatura e valores</p>
+                </div>
+                <button class="btn btn-primary" onclick="openEditModal(null)">+ Novo Plano</button>
+            </div>
+        </div>
+
+        <div class="plans-grid" id="plans-container">
+            <p style="text-align:center; color:var(--color-text-muted); grid-column:1/-1; padding:40px">Carregando planos...</p>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="edit-overlay" style="display:none">
+        <div class="edit-modal">
+            <h3 id="modal-title">Editar Plano</h3>
+            <form id="plan-form">
+                <input type="hidden" id="plan-id">
+                <div class="form-group">
+                    <label class="form-label">Nome do Plano</label>
+                    <input type="text" id="plan-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <input type="text" id="plan-desc" class="form-control">
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+                    <div class="form-group">
+                        <label class="form-label">Valor Mensal (R$)</label>
+                        <input type="number" id="plan-monthly" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Valor Anual (R$)</label>
+                        <input type="number" id="plan-annual" class="form-control" step="0.01" required>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px">
+                    <div class="form-group">
+                        <label class="form-label">Máx. Unidades</label>
+                        <input type="number" id="plan-units" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Máx. Funcionários</label>
+                        <input type="number" id="plan-employees" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Máx. Áreas</label>
+                        <input type="number" id="plan-areas" class="form-control" required>
+                    </div>
+                </div>
+                <div style="display:flex; gap:8px; margin-top:16px">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()" style="flex:1">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://psbvjscrqhwhttvbstty.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzYnZqc2NycWh3aHR0dmJzdHR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTA4MzAsImV4cCI6MjA5Njg2NjgzMH0.AFnX7TYKrpTSQMBEU9Rwj0g8nvgpSEDKSjGNb-FM2Gw';
+
+        let plans = [];
+
+        async function loadPlans() {
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/license_plans?select=*`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+                plans = await res.json();
+                renderPlans();
+            } catch (err) {
+                console.error('Erro ao carregar planos:', err);
+            }
+        }
+
+        function renderPlans() {
+            const container = document.getElementById('plans-container');
+            if (plans.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:var(--color-text-muted); grid-column:1/-1; padding:40px">Nenhum plano encontrado. Clique em "+ Novo Plano" para criar.</p>';
+                return;
+            }
+
+            container.innerHTML = plans.map((plan, index) => `
+                <div class="plan-card ${index === 1 ? 'featured' : ''}">
+                    ${index === 1 ? '<div class="plan-badge">Mais Popular</div>' : ''}
+                    <h2 class="plan-name">${plan.name}</h2>
+                    <p class="plan-desc">${plan.description || ''}</p>
+                    <div class="plan-price">R$ ${plan.price_monthly.toFixed(2).replace('.', ',')}<span>/mês</span></div>
+                    <p class="plan-annual">ou R$ ${plan.price_annual.toFixed(2).replace('.', ',')}/ano (economize ${Math.round((1 - plan.price_annual / (plan.price_monthly * 12)) * 100)}%)</p>
+                    <ul class="plan-features">
+                        <li>Até ${plan.max_units} unidades</li>
+                        <li>Até ${plan.max_employees} funcionários</li>
+                        <li>Até ${plan.max_common_areas} áreas comuns</li>
+                        <li class="${plan.features?.payroll ? '' : 'disabled'}">Folha de pagamento</li>
+                        <li class="${plan.features?.assemblies ? '' : 'disabled'}">Assembleias virtuais</li>
+                    </ul>
+                    <div class="plan-actions">
+                        <button class="btn btn-secondary" onclick="editPlan('${plan.id}')">Editar</button>
+                        <button class="btn btn-danger" onclick="deletePlan('${plan.id}')">Excluir</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openEditModal(planId) {
+            const modal = document.getElementById('edit-modal');
+            if (planId) {
+                const plan = plans.find(p => p.id === planId);
+                if (plan) {
+                    document.getElementById('modal-title').innerText = 'Editar Plano';
+                    document.getElementById('plan-id').value = plan.id;
+                    document.getElementById('plan-name').value = plan.name;
+                    document.getElementById('plan-desc').value = plan.description || '';
+                    document.getElementById('plan-monthly').value = plan.price_monthly;
+                    document.getElementById('plan-annual').value = plan.price_annual;
+                    document.getElementById('plan-units').value = plan.max_units;
+                    document.getElementById('plan-employees').value = plan.max_employees;
+                    document.getElementById('plan-areas').value = plan.max_common_areas;
+                }
+            } else {
+                document.getElementById('modal-title').innerText = 'Novo Plano';
+                document.getElementById('plan-id').value = '';
+                document.getElementById('plan-name').value = '';
+                document.getElementById('plan-desc').value = '';
+                document.getElementById('plan-monthly').value = '';
+                document.getElementById('plan-annual').value = '';
+                document.getElementById('plan-units').value = '50';
+                document.getElementById('plan-employees').value = '10';
+                document.getElementById('plan-areas').value = '5';
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+        }
+
+        function editPlan(id) { openEditModal(id); }
+
+        async function deletePlan(id) {
+            if (!confirm('Tem certeza que deseja excluir este plano?')) return;
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/license_plans?id=eq.${id}`, {
+                    method: 'DELETE',
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+                await loadPlans();
+                alert('Plano excluído com sucesso!');
+            } catch (err) {
+                alert('Erro ao excluir plano');
+            }
+        }
+
+        document.getElementById('plan-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('plan-id').value;
+            const data = {
+                name: document.getElementById('plan-name').value,
+                description: document.getElementById('plan-desc').value,
+                price_monthly: parseFloat(document.getElementById('plan-monthly').value),
+                price_annual: parseFloat(document.getElementById('plan-annual').value),
+                max_units: parseInt(document.getElementById('plan-units').value),
+                max_employees: parseInt(document.getElementById('plan-employees').value),
+                max_common_areas: parseInt(document.getElementById('plan-areas').value)
+            };
+
+            try {
+                if (id) {
+                    await fetch(`${SUPABASE_URL}/rest/v1/license_plans?id=eq.${id}`, {
+                        method: 'PATCH',
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    await fetch(`${SUPABASE_URL}/rest/v1/license_plans`, {
+                        method: 'POST',
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                }
+                closeEditModal();
+                await loadPlans();
+                alert(id ? 'Plano atualizado!' : 'Plano criado!');
+            } catch (err) {
+                alert('Erro ao salvar plano');
+            }
+        });
+
+        loadPlans();
+    </script>
+</body>
+</html>
