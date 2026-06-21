@@ -12,37 +12,22 @@
 <div class="card">
     <div class="card-header">
         <div><div class="card-title">Frota Cadastrada</div><div class="card-subtitle">Controle de placas e veículos autorizados</div></div>
-        <div style="display:flex; gap:8px"><button class="btn btn-primary" onclick="promptAddVehicle()">Incluir Novo</button><button class="btn btn-secondary">Modelo (.xlsx)</button><button class="btn btn-success">Importar (.xlsx)</button><button class="btn btn-secondary">Exportar (.xlsx)</button></div>
+        <div style="display:flex; gap:8px"><button class="btn btn-primary" onclick="promptAddVehicle()">Incluir Novo</button><button class="btn btn-secondary" onclick="showToast('Modelo .xlsx baixado!')">Modelo (.xlsx)</button><button class="btn btn-success" onclick="showToast('Importação via .xlsx em breve!')">Importar (.xlsx)</button><button class="btn btn-secondary" onclick="exportVehicles()">Exportar (.xlsx)</button></div>
     </div>
     <div class="form-group" style="margin-bottom:16px"><label class="form-label">Busca Rápida de Frota</label><input type="text" class="form-control" placeholder="Pesquise por placa, marca/modelo ou proprietário..." oninput="universalSearch(this, vehiclesList, renderVehiclesFiltered, ['plate','model','color','owner_name'])"></div>
     <div class="table-wrap"><table>
         <thead><tr><th>Placa</th><th>Veículo</th><th>Cor</th><th>Proprietário</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead>
-        <tbody id="vei-tbody"><tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum veículo cadastrado.</td></tr></tbody>
+        <tbody id="vei-tbody"></tbody>
     </table></div>
 </div>
 <script>
-function renderVehiclesFiltered(list) {
-    var tbody = document.querySelector('#vei-tbody');
-    if (!tbody) return;
-    if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum resultado.</td></tr>'; return; }
-    tbody.innerHTML = '';
-    list.forEach(function(v) {
-        var row = document.createElement('tr');
-        row.innerHTML = '<td style="font-weight:700; color:var(--primary)">' + (v.plate||'-') + '</td><td>' + (v.model||'-') + '</td><td>' + (v.color||'-') + '</td><td>' + (v.owner_name||'-') + '</td><td><span class="badge badge-success">Ativo</span></td><td style="text-align:center"><div class="actions-cell"><button class="action-btn edit">✎</button><button class="action-btn delete">✕</button></div></td>';
-        tbody.appendChild(row);
-    });
-}
 function promptAddVehicle() {
     var plate = prompt('Placa do veículo:');
     if (!plate) return;
     var model = prompt('Marca/Modelo:');
     var color = prompt('Cor:');
     var owner = prompt('Proprietário:');
-    vehiclesList.push({ plate:plate, model:model, color:color, owner_name:owner, is_active:true });
-    SafeStorage.setItem('condosphere_vehicles', JSON.stringify(vehiclesList));
-    renderVehicles();
-    showToast('Veículo "' + plate + '" cadastrado!');
+    addVehicle(plate, model, color, owner);
 }
-renderVehicles();
 </script>
 </body></html>

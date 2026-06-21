@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>DP & Folha de Pagamento</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DP & Folha de Pagamento</title>
+    <link rel="stylesheet" href="/src/styles/condosphere.css">
+    <script src="/js/app.js"></script>
+    <style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style>
+</head>
 <body>
 <div class="card" style="margin-bottom:24px">
     <div class="card-header">
-        <div><div class="card-title">Funcionários e Folha de Pagamento</div><div class="card-subtitle">Recolhimento salarial CLT - Clique em uma linha para calcular horas extras/INSS/IRRF</div></div>
-        <div style="display:flex; gap:8px"><button class="btn btn-secondary" onclick="showToast('Modal de Impostos Aberto!')">Impostos & Remessa</button><button class="btn btn-danger" onclick="showToast('Modal de Rescisão Aberto!')">Rescisão CLT</button><button class="btn btn-primary" onclick="showToast('Registrar Adiantamento')">Registrar Adiantamento</button></div>
+        <div><div class="card-title">Funcionários e Folha de Pagamento</div><div class="card-subtitle">Recolhimento salarial CLT</div></div>
+        <div style="display:flex; gap:8px"><button class="btn btn-secondary" onclick="showToast('Central de Impostos aberta!')">Impostos & Remessa</button><button class="btn btn-danger" onclick="showToast('Cálculo de Rescisão CLT aberto!')">Rescisão CLT</button><button class="btn btn-primary" onclick="promptAdiantamento()">Registrar Adiantamento</button></div>
     </div>
     <div class="table-wrap"><table>
         <thead><tr><th>Funcionário</th><th>Função</th><th>Salário Base</th><th>Adiantamentos</th><th>Líquido (5º dia útil)</th><th style="text-align:center">Ação</th></tr></thead>
@@ -16,7 +23,22 @@
     <div class="card-title" style="margin-bottom:12px">Adiantamentos Efetuados neste Mês</div>
     <div class="table-wrap"><table>
         <thead><tr><th>Funcionário</th><th>Valor</th><th>Data</th><th>Observação</th><th>Ação</th></tr></thead>
-        <tbody><tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum adiantamento registrado.</td></tr></tbody>
+        <tbody id="adv-tbody"><tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum adiantamento registrado.</td></tr></tbody>
     </table></div>
 </div>
+<script>
+function promptAdiantamento() {
+    var emp = prompt('Nome do Funcionário:');
+    if (!emp) return;
+    var val = parseFloat(prompt('Valor do Adiantamento:', '300')) || 300;
+    var reason = prompt('Motivo:', 'Vale Semanal');
+    var now = new Date().toLocaleDateString('pt-BR');
+    var tbody = document.getElementById('adv-tbody');
+    if (tbody.querySelector('td[colspan]')) tbody.innerHTML = '';
+    var row = document.createElement('tr');
+    row.innerHTML = '<td><strong>' + emp + '</strong></td><td style="color:var(--danger)">R$ ' + val.toFixed(2) + '</td><td>' + now + '</td><td>' + (reason||'-') + '</td><td><button class="action-btn view" onclick="showToast(\'Recibo impresso!\')">🖨️</button></td>';
+    tbody.insertBefore(row, tbody.firstChild);
+    showToast('Adiantamento de R$ ' + val.toFixed(2) + ' registrado para ' + emp + '!');
+}
+</script>
 </body></html>

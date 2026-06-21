@@ -12,12 +12,12 @@
 <div class="card">
     <div class="card-header">
         <div><div class="card-title">Cadastro de Funcionários & Escalas (RH)</div><div class="card-subtitle">Gerencie colaboradores CLT, salários, adiantamentos</div></div>
-        <button class="btn btn-success" onclick="promptAddEmployee()">Incluir Funcionário</button>
+        <div style="display:flex; gap:8px"><button class="btn btn-success" onclick="promptAddEmployee()">Incluir Funcionário</button><button class="btn btn-secondary" onclick="exportEmployees()">Exportar (.xlsx)</button></div>
     </div>
     <div class="form-group" style="margin-bottom:16px"><label class="form-label">Busca Rápida de Funcionários</label><input type="text" class="form-control" placeholder="Pesquise por nome, CPF ou cargo..."></div>
     <div class="table-wrap"><table>
         <thead><tr><th>Funcionário</th><th>CPF</th><th>Cargo</th><th>Salário Base</th><th>Adiantamento</th><th>Contato</th><th>Admissão</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead>
-        <tbody id="emp-tbody"><tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum funcionário cadastrado.</td></tr></tbody>
+        <tbody id="emp-tbody"></tbody>
     </table></div>
 </div>
 <script>
@@ -28,11 +28,7 @@ function promptAddEmployee() {
     var role = prompt('Cargo/Função:');
     var salary = parseFloat(prompt('Salário Base:', '2500')) || 2500;
     var contact = prompt('Contato:');
-    employeesList.push({ name:name, cpf:cpf, role:role, salary:salary, advance:0, contact:contact, admission_date:new Date().toLocaleDateString('pt-BR'), is_active:true });
-    SafeStorage.setItem('condosphere_employees', JSON.stringify(employeesList));
-    renderEmployees();
-    showToast('Funcionário "' + name + '" cadastrado!');
+    addEmployee(name, cpf, role, salary, contact);
 }
-renderEmployees();
 </script>
 </body></html>

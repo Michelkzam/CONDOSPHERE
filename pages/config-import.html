@@ -1,26 +1,33 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Carga Massiva (.XLSX)</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carga Massiva (.XLSX)</title>
+    <link rel="stylesheet" href="/src/styles/condosphere.css">
+    <script src="/js/app.js"></script>
+    <style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style>
+</head>
 <body>
 <div class="card">
     <div class="card-header"><div><div class="card-title">Carga Massiva Condomínio (Residências, Moradores e Veículos)</div><div class="card-subtitle">Alimente cadastros em lote utilizando arquivo Excel</div></div></div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px">
         <div style="display:flex; flex-direction:column; gap:16px">
             <div style="font-size:12px; font-weight:700; color:#fff">Operações Consolidadas</div>
-            <p style="font-size:11px; color:var(--text-muted); line-height:1.5">Exportação e importação de múltiplos cadastros com várias abas de planilhas. Ideal para migrações iniciais.</p>
-            <div style="display:flex; gap:12px; margin-top:8px">
-                <button class="btn btn-secondary" style="flex:1; font-size:10px" onclick="showToast('Exportação iniciada!')">Exportar Dados Atuais (.xlsx)</button>
-                <button class="btn btn-success" style="flex:1; font-size:10px" onclick="showToast('Importação iniciada!')">Importar Dados Consolidados (.xlsx)</button>
+            <p style="font-size:11px; color:var(--text-muted); line-height:1.5">Exportação e importação de múltiplos cadastros em várias abas.</p>
+            <div style="display:flex; gap:12px">
+                <button class="btn btn-secondary" style="flex:1; font-size:10px" onclick="exportAllData()">Exportar Dados Atuais (.xlsx)</button>
+                <button class="btn btn-success" style="flex:1; font-size:10px" onclick="showToast('Selecione um arquivo .xlsx com as abas: Residencias, Moradores, Veiculos')">Importar Dados (.xlsx)</button>
             </div>
             <div class="metrics-grid" style="grid-template-columns:repeat(3,1fr); margin-top:14px">
-                <div class="metric-card" style="text-align:center"><div class="metric-label">Residências</div><div class="metric-value" style="font-size:16px">0</div></div>
-                <div class="metric-card" style="text-align:center"><div class="metric-label">Moradores</div><div class="metric-value" style="font-size:16px">0</div></div>
-                <div class="metric-card" style="text-align:center"><div class="metric-label">Veículos</div><div class="metric-value" style="font-size:16px">0</div></div>
+                <div class="metric-card" style="text-align:center"><div class="metric-label">Residências</div><div class="metric-value" style="font-size:16px" id="stat-res">0</div></div>
+                <div class="metric-card" style="text-align:center"><div class="metric-label">Moradores</div><div class="metric-value" style="font-size:16px" id="stat-mor">0</div></div>
+                <div class="metric-card" style="text-align:center"><div class="metric-label">Veículos</div><div class="metric-value" style="font-size:16px" id="stat-veh">0</div></div>
             </div>
         </div>
         <div style="background:rgba(255,255,255,0.01); border:1px solid var(--border); padding:20px; border-radius:var(--radius); display:flex; flex-direction:column; gap:12px">
             <div style="font-size:12px; font-weight:700; color:#fff">Estrutura do Arquivo</div>
-            <p style="font-size:10px; color:var(--text-muted); line-height:1.5">O arquivo deve seguir o layout com 3 abas nomeadas:</p>
+            <p style="font-size:10px; color:var(--text-muted); line-height:1.5">O arquivo deve seguir 3 abas nomeadas:</p>
             <div style="display:flex; flex-direction:column; gap:8px; font-size:10px; color:var(--text-muted)">
                 <div><strong style="color:#fff; display:block">Aba 1: Residencias</strong><span>Identificador | Proprietário | Endereço | Perfil | Valor | Status</span></div>
                 <div><strong style="color:#fff; display:block">Aba 2: Moradores</strong><span>Nome | CPF | Contato | Função | Residência | Associado | Morador</span></div>
@@ -29,4 +36,21 @@
         </div>
     </div>
 </div>
+<script>
+function exportAllData() {
+    var headers = ['Tipo','Identificador','Proprietário','Endereço','CPF','Contato','Placa','Modelo','Cor','Valor'];
+    var rows = [];
+    residencesList.forEach(function(r) { rows.push(['Residência',r.identifier,r.owner,r.address,'','','','','',r.base_value]); });
+    residentsList.forEach(function(r) { rows.push(['Morador','','','','',r.cpf,r.contact,'','','']); });
+    vehiclesList.forEach(function(v) { rows.push(['Veículo','','','','','','',v.plate,v.model,v.color,v.owner_name]); });
+    if (rows.length === 0) { showToast('Nenhum dado para exportar! Cadastre algo primeiro.', 'warning'); return; }
+    exportToCSV('condosphere_carga_massiva.csv', headers, rows);
+}
+function updateStats() {
+    document.getElementById('stat-res').textContent = residencesList.length;
+    document.getElementById('stat-mor').textContent = residentsList.length;
+    document.getElementById('stat-veh').textContent = vehiclesList.length;
+}
+updateStats();
+</script>
 </body></html>

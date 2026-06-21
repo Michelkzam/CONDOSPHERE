@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contas a Receber</title>
     <link rel="stylesheet" href="/src/styles/condosphere.css">
-    <style>body{overflow:auto; padding:0; background:var(--bg-body)}</style>
+    <script src="/js/app.js"></script>
+    <style>body{overflow:auto;padding:0;background:var(--bg-body)}</style>
 </head>
 <body>
     <div class="subtabs" id="rec-tabs">
@@ -19,25 +20,21 @@
     <div class="rec-panel" style="padding:24px">
         <div class="card">
             <div class="card-header">
-                <div><div class="card-title">Inadimplência de Mensalidades</div><div class="card-subtitle" style="color:var(--danger); font-weight:700">Total a Receber Vencido: R$ 1.141,40</div></div>
+                <div><div class="card-title">Inadimplência de Mensalidades</div><div class="card-subtitle" style="color:var(--danger); font-weight:700">Total a Receber Vencido</div></div>
                 <div style="display:flex; gap:8px">
-                    <button class="btn btn-success">Quitar em Grupo</button>
-                    <button class="btn btn-secondary">Exportar Relatório</button>
+                    <button class="btn btn-success" onclick="showToast('Quitação em grupo processada!')">Quitar em Grupo</button>
+                    <button class="btn btn-secondary" onclick="showToast('Relatório exportado!')">Exportar Relatório</button>
                 </div>
             </div>
             <div class="metrics-grid" style="grid-template-columns:1fr 1fr; margin-bottom:20px">
-                <div class="metric-card"><div class="metric-label">Tudo que foi Recebido</div><div class="metric-value success" style="font-size:18px">R$ 800,00</div></div>
-                <div class="metric-card"><div class="metric-label">Tudo que Falta Receber</div><div class="metric-value danger" style="font-size:18px">R$ 1.141,40</div></div>
+                <div class="metric-card"><div class="metric-label">Recebido</div><div class="metric-value success" style="font-size:18px">R$ 800,00</div></div>
+                <div class="metric-card"><div class="metric-label">Pendente</div><div class="metric-value danger" style="font-size:18px">R$ 1.141,40</div></div>
             </div>
             <div class="form-group" style="margin-bottom:16px"><label class="form-label">Busca Global</label><input type="text" class="form-control" placeholder="Filtre por Quadra, Casa, Morador..."></div>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Unidade</th><th>Proprietário</th><th>Vencimento</th><th>Dias Atraso</th><th>Valor Base</th><th>Multas/Juros</th><th>Total Devido</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead>
-                    <tbody>
-                        <tr><td>Quadra B - Lote 02</td><td>Roberto de Alencar</td><td>10/05/2026</td><td style="color:var(--warning); font-weight:700">41 dias</td><td>R$ 300,00</td><td style="color:var(--warning)">R$ 9,20</td><td style="font-weight:700">R$ 309,20</td><td><span class="badge badge-danger">Vencido</span></td><td style="text-align:center"><div class="actions-cell"><button class="action-btn view" title="Quitar" onclick="showToast('Fatura quitada!')">✓</button><button class="action-btn edit" title="Editar">✎</button><button class="action-btn delete" title="Excluir">✕</button></div></td></tr>
-                        <tr><td>Quadra E - Lote 08</td><td>Fernando Mendes</td><td>10/04/2026</td><td style="color:var(--warning); font-weight:700">71 dias</td><td>R$ 300,00</td><td style="color:var(--warning)">R$ 18,40</td><td style="font-weight:700">R$ 318,40</td><td><span class="badge badge-danger">Vencido</span></td><td style="text-align:center"><div class="actions-cell"><button class="action-btn view" title="Quitar" onclick="showToast('Fatura quitada!')">✓</button><button class="action-btn edit" title="Editar">✎</button><button class="action-btn delete" title="Excluir">✕</button></div></td></tr>
-                        <tr><td>Quadra C - Lote 18</td><td>Isabela Pereira</td><td>20/05/2026</td><td style="color:var(--warning); font-weight:700">31 dias</td><td>R$ 500,00</td><td style="color:var(--warning)">R$ 13,80</td><td style="font-weight:700">R$ 513,80</td><td><span class="badge badge-warning">Pendente</span></td><td style="text-align:center"><div class="actions-cell"><button class="action-btn view" title="Quitar" onclick="showToast('Fatura quitada!')">✓</button><button class="action-btn edit" title="Editar">✎</button><button class="action-btn delete" title="Excluir">✕</button></div></td></tr>
-                    </tbody>
+                    <tbody id="rec-tbody"></tbody>
                 </table>
             </div>
         </div>
@@ -49,9 +46,9 @@
             <div class="card-title" style="margin-bottom:10px">Emissão de Taxas e Rateios Extras</div>
             <div class="card-subtitle" style="margin-bottom:20px">Configure a geração em lote das mensalidades</div>
             <form onsubmit="event.preventDefault(); showToast('Faturamento em lote gerado!')">
-                <div class="form-group"><label class="form-label">Natureza da Taxa</label><select class="form-control"><option>Cota Mensal Ordinária</option><option>Rateio Fundo de Obras</option><option>Taxa de Reserva de Espaço</option><option>Taxa Extra</option><option>Taxa Extra - 13º Funcionários</option></select></div>
-                <div class="form-group"><label class="form-label">Escopo do Faturamento</label><select class="form-control"><option>Faturar em Lote (Todas as 500 Unidades)</option><option>Lançamento Avulso Individual</option><option>Faturar Associados</option><option>Faturar Não Associados</option></select></div>
-                <div class="form-group"><label class="form-label">Valor Base do Lançamento</label><input type="number" class="form-control" value="300.00"></div>
+                <div class="form-group"><label class="form-label">Natureza da Taxa</label><select class="form-control"><option>Cota Mensal Ordinária</option><option>Rateio Fundo de Obras</option><option>Taxa de Reserva</option><option>Taxa Extra</option></select></div>
+                <div class="form-group"><label class="form-label">Escopo</label><select class="form-control"><option>Faturar em Lote (500 Unidades)</option><option>Lançamento Avulso</option><option>Faturar Associados</option><option>Faturar Não Associados</option></select></div>
+                <div class="form-group"><label class="form-label">Valor Base</label><input type="number" class="form-control" value="300.00"></div>
                 <button type="submit" class="btn btn-success" style="width:100%">Processar e Transmitir Borderô</button>
             </form>
         </div>
@@ -61,7 +58,7 @@
     <div class="rec-panel" style="padding:24px; display:none">
         <div class="card">
             <div class="card-title" style="margin-bottom:10px">Baixa de Recebimentos por OFX / RET</div>
-            <div class="card-subtitle" style="margin-bottom:20px">Arraste arquivos de extratos ou arquivos de retorno .RET</div>
+            <div class="card-subtitle" style="margin-bottom:20px">Arraste arquivos de extratos ou retorno .RET</div>
             <div style="border:2px dashed var(--border); padding:30px; border-radius:var(--radius); text-align:center; background:var(--bg-input); color:var(--text-muted); cursor:pointer" onclick="showToast('Arquivo OFX/RET lido: 18 liquidações executadas!')">
                 Clique para carregar o arquivo RET_SICOOB ou RET_ASAAS
             </div>
@@ -72,15 +69,13 @@
     <div class="rec-panel" style="padding:24px; display:none">
         <div class="card">
             <div class="card-header">
-                <div><div class="card-title">Quitação e Acordos de Mensalidades</div><div class="card-subtitle">Gerencie atrasos, quitações em lote e acordos</div></div>
-                <button class="btn btn-success">Quitar em Grupo (Lote)</button>
+                <div><div class="card-title">Quitação e Acordos de Mensalidades</div><div class="card-subtitle">Gerencie atrasos e quitações em lote</div></div>
+                <button class="btn btn-success" onclick="showToast('Quitação em grupo processada!')">Quitar em Grupo (Lote)</button>
             </div>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Unidade</th><th>Morador</th><th>Vencimento</th><th>Atraso</th><th>Valor Total</th><th style="text-align:center">Ações</th></tr></thead>
-                    <tbody>
-                        <tr><td>Quadra B - Lote 02</td><td>Roberto de Alencar</td><td>10/05/2026</td><td>41 dias</td><td style="font-weight:700">R$ 309,20</td><td style="text-align:center"><div class="actions-cell"><button class="action-btn view" title="Negociar" onclick="showToast('Negociação iniciada!')">🤝</button><button class="action-btn view" title="Quitar" onclick="showToast('Fatura quitada!')">✓</button></div></td></tr>
-                    </tbody>
+                    <tbody><tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum acordo pendente.</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -88,11 +83,9 @@
 
     <script>
     function switchRecTab(idx, btn) {
-        document.querySelectorAll('.rec-panel').forEach((p,i) => p.style.display = i===idx ? 'block' : 'none');
-        document.querySelectorAll('#rec-tabs .subtab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.rec-panel').forEach(function(p,i) { p.style.display = i===idx ? 'block' : 'none'; });
+        document.querySelectorAll('#rec-tabs .subtab').forEach(function(t) { t.classList.remove('active'); });
         btn.classList.add('active');
     }
-    function showToast(m,t){parent.postMessage({type:'toast',msg:m,toastType:t||'success'},'*');}
     </script>
-</body>
-</html>
+</body></html>

@@ -1,26 +1,51 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Controle de Ponto & Benefícios</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Ponto & Benefícios</title>
+    <link rel="stylesheet" href="/src/styles/condosphere.css">
+    <script src="/js/app.js"></script>
+    <style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style>
+</head>
 <body>
 <div class="card" style="margin-bottom:24px">
     <div class="card-header">
         <div><div class="card-title">Controle de Ponto Integrado</div><div class="card-subtitle">Registro de jornada física ou remota</div></div>
-        <button class="btn btn-primary" onclick="showToast('Ponto registrado com sucesso!')">Registrar Ponto Online</button>
+        <button class="btn btn-primary" onclick="registrarPonto()">Registrar Ponto Online</button>
     </div>
     <div class="table-wrap"><table>
         <thead><tr><th>Colaborador</th><th>Data</th><th>Entrada 1</th><th>Saída 1</th><th>Entrada 2</th><th>Saída 2</th><th>Saldo</th><th>Status</th></tr></thead>
-        <tbody><tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum registro de ponto hoje.</td></tr></tbody>
+        <tbody id="ponto-tbody"><tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum registro de ponto hoje.</td></tr></tbody>
     </table></div>
 </div>
 <div class="card">
     <div class="card-header">
-        <div><div class="card-title">Gestão e Carga de Benefícios</div><div class="card-subtitle">Administração de recargas mensais de vale-transporte e alimentação</div></div>
-        <button class="btn btn-secondary" onclick="showToast('Créditos mensais liberados!')">Liberar Crédito Mensal</button>
+        <div><div class="card-title">Gestão e Carga de Benefícios</div><div class="card-subtitle">Administração de recargas mensais</div></div>
+        <button class="btn btn-secondary" onclick="showToast('Créditos mensais liberados para todos os funcionários!')">Liberar Crédito Mensal</button>
     </div>
     <div class="metrics-grid">
-        <div class="metric-card"><div class="metric-label">Vale-Alimentação (Sodexo)</div><div class="metric-value primary" style="font-size:18px">R$ 0,00 <span style="font-size:10px; color:var(--text-muted)">/colab</span></div><div class="progress-bar" style="margin-top:8px"><div class="progress-fill primary" style="width:100%"></div></div></div>
-        <div class="metric-card"><div class="metric-label">Vale-Transporte (RioCard)</div><div class="metric-value primary" style="font-size:18px">R$ 0,00 <span style="font-size:10px; color:var(--text-muted)">/colab</span></div><div class="progress-bar" style="margin-top:8px"><div class="progress-fill primary" style="width:100%"></div></div></div>
-        <div class="metric-card"><div class="metric-label">Convênio Médico (Amil)</div><div class="metric-value primary" style="font-size:18px">R$ 0,00 <span style="font-size:10px; color:var(--text-muted)">/colab</span></div><div class="progress-bar" style="margin-top:8px"><div class="progress-fill primary" style="width:100%"></div></div></div>
+        <div class="metric-card"><div class="metric-label">Vale-Alimentação (Sodexo)</div><div class="metric-value primary" style="font-size:18px">R$ 0,00 <span style="font-size:10px; color:var(--text-muted)">/colab</span></div></div>
+        <div class="metric-card"><div class="metric-label">Vale-Transporte (RioCard)</div><div class="metric-value primary" style="font-size:18px">R$ 0,00 <span style="font-size:10px; color:var(--text-muted)">/colab</span></div></div>
+        <div class="metric-card"><div class="metric-label">Convênio Médico (Amil)</div><div class="metric-value primary" style="font-size:18px">R$ 0,00 <span style="font-size:10px; color:var(--text-muted)">/colab</span></div></div>
     </div>
 </div>
+<script>
+var hasClockedInToday = false;
+function registrarPonto() {
+    if (hasClockedInToday) { showToast('Ponto já registrado hoje!', 'warning'); return; }
+    var now = new Date();
+    var timeStr = now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+    var tbody = document.getElementById('ponto-tbody');
+    if (tbody.querySelector('td[colspan]')) tbody.innerHTML = '';
+    var row = document.createElement('tr');
+    row.innerHTML = '<td><strong>Administrador Geral</strong></td><td>' + now.toLocaleDateString('pt-BR') + '</td>' +
+        '<td>' + timeStr + '</td><td>--:--</td><td>--:--</td><td>--:--</td>' +
+        '<td style="color:var(--success); font-weight:bold">+00:00</td>' +
+        '<td><span class="badge badge-success">Regular</span></td>';
+    tbody.insertBefore(row, tbody.firstChild);
+    hasClockedInToday = true;
+    showToast('Ponto registrado às ' + timeStr + '!');
+}
+</script>
 </body></html>
