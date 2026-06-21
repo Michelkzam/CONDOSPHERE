@@ -10861,8 +10861,12 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
                                 <td>${m.contact}</td>
                                 <td>${m.role}</td>
                                 <td style="color:var(--color-primary); font-weight:600">${m.residence_name || 'Sem Vínculo'}</td>
-                                <td><input type="checkbox" ${assocChecked} disabled></td>
-                                <td><input type="checkbox" ${residChecked} disabled></td>
+                                <td style="text-align:center">
+                                    <span style="display:inline-block; width:22px; height:22px; border-radius:5px; border:2px solid ${m.is_associated ? 'var(--color-success)' : 'var(--color-danger)'}; background:${m.is_associated ? 'var(--color-success)' : 'rgba(239,68,68,0.15)'}; color:white; font-size:12px; font-weight:bold; line-height:18px; text-align:center; cursor:default" title="${m.is_associated ? 'Associado' : 'Não Associado'}">${m.is_associated ? '✓' : '✕'}</span>
+                                </td>
+                                <td style="text-align:center">
+                                    <span style="display:inline-block; width:22px; height:22px; border-radius:5px; border:2px solid ${m.is_resident ? 'var(--color-success)' : 'var(--color-danger)'}; background:${m.is_resident ? 'var(--color-success)' : 'rgba(239,68,68,0.15)'}; color:white; font-size:12px; font-weight:bold; line-height:18px; text-align:center; cursor:default" title="${m.is_resident ? 'Morador' : 'Não Morador'}">${m.is_resident ? '✓' : '✕'}</span>
+                                </td>
                                 <td><span class="badge badge-success">Ativo</span></td>
                                 <td>
                                     <div style="display:flex; align-items:center; justify-content:center; gap:6px">
