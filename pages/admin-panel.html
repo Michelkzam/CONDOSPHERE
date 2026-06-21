@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Administração - CondoSphere</title>
+    <link rel="stylesheet" href="/src/styles/global.css">
+    <link rel="stylesheet" href="/src/styles/mobile.css">
+    <style>
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .admin-card { background: var(--bg-darkCard); border: 1px solid var(--color-border); border-radius: 12px; padding: 20px; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--color-border); }
+        .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { font-size: 12px; color: var(--color-text-muted); }
+        .stat-value { font-size: 14px; font-weight: 700; color: white; }
+        .activity-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .activity-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+        .activity-content { flex: 1; }
+        .activity-title { font-size: 12px; font-weight: 600; color: white; }
+        .activity-time { font-size: 10px; color: var(--color-text-muted); }
+        .chart-container { background: var(--bg-darkBg); border: 1px solid var(--color-border); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+        .chart-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .chart-bar-label { width: 80px; font-size: 10px; color: var(--color-text-muted); }
+        .chart-bar-fill { height: 20px; border-radius: 4px; transition: width 0.5s; }
+        .chart-bar-value { font-size: 10px; color: white; font-weight: 600; min-width: 40px; }
+    </style>
+</head>
+<body style="overflow:auto; padding:24px; background:var(--bg-darkBg)">
+    <div style="max-width:1400px; margin:0 auto">
+        <!-- Header -->
+        <div class="admin-card" style="margin-bottom:24px">
+            <div class="admin-header">
+                <div>
+                    <h1 style="font-size:24px; font-weight:800; color:white; margin:0">⚙️ Painel de Administração</h1>
+                    <p style="font-size:12px; color:var(--text-muted); margin:4px 0 0">Gerencie o sistema CondoSphere e todas as assinaturas</p>
+                </div>
+                <div style="display:flex; gap:8px">
+                    <button class="btn btn-primary" onclick="refreshDashboard()">🔄 Atualizar</button>
+                    <button class="btn btn-success" onclick="exportReport()">📊 Exportar Relatório</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas Gerais -->
+        <div class="admin-grid" style="margin-bottom:24px">
+            <div class="admin-card">
+                <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">📊 Métricas do Sistema</h3>
+                <div class="stat-row"><span class="stat-label">Total de Assinaturas</span><span class="stat-value" id="total-subscriptions">0</span></div>
+                <div class="stat-row"><span class="stat-label">Assinaturas Ativas</span><span class="stat-value" style="color:var(--color-success)" id="active-subscriptions">0</span></div>
+                <div class="stat-row"><span class="stat-label">Receita Mensal</span><span class="stat-value" id="monthly-revenue">R$ 0,00</span></div>
+                <div class="stat-row"><span class="stat-label">Receita Anual</span><span class="stat-value" id="annual-revenue">R$ 0,00</span></div>
+            </div>
+
+            <div class="admin-card">
+                <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">👥 Usuários do Sistema</h3>
+                <div class="stat-row"><span class="stat-label">Total de Usuários</span><span class="stat-value" id="total-users">0</span></div>
+                <div class="stat-row"><span class="stat-label">Administradores</span><span class="stat-value" id="admin-users">0</span></div>
+                <div class="stat-row"><span class="stat-label">Colaboradores</span><span class="stat-value" id="collab-users">0</span></div>
+                <div class="stat-row"><span class="stat-label">Moradores</span><span class="stat-value" id="resident-users">0</span></div>
+            </div>
+
+            <div class="admin-card">
+                <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">💰 Dados Financeiros</h3>
+                <div class="stat-row"><span class="stat-label">Total Recebido</span><span class="stat-value" style="color:var(--color-success)" id="total-received">R$ 0,00</span></div>
+                <div class="stat-row"><span class="stat-label">Total Pendente</span><span class="stat-value" style="color:var(--color-danger)" id="total-pending">R$ 0,00</span></div>
+                <div class="stat-row"><span class="stat-label">Total Despesas</span><span class="stat-value" style="color:var(--color-warning)" id="total-expenses">R$ 0,00</span></div>
+                <div class="stat-row"><span class="stat-label">Saldo Geral</span><span class="stat-value" id="total-balance">R$ 0,00</span></div>
+            </div>
+        </div>
+
+        <!-- Gráficos e Atividades -->
+        <div class="admin-grid">
+            <!-- Gráfico de Assinaturas por Plano -->
+            <div class="admin-card">
+                <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">📈 Assinaturas por Plano</h3>
+                <div class="chart-container">
+                    <div class="chart-bar">
+                        <span class="chart-bar-label">Básico</span>
+                        <div class="chart-bar-fill" id="chart-basico" style="width:0%; background:var(--color-primary)"></div>
+                        <span class="chart-bar-value" id="chart-basico-val">0</span>
+                    </div>
+                    <div class="chart-bar">
+                        <span class="chart-bar-label">Profissional</span>
+                        <div class="chart-bar-fill" id="chart-profissional" style="width:0%; background:var(--color-success)"></div>
+                        <span class="chart-bar-value" id="chart-profissional-val">0</span>
+                    </div>
+                    <div class="chart-bar">
+                        <span class="chart-bar-label">Enterprise</span>
+                        <div class="chart-bar-fill" id="chart-enterprise" style="width:0%; background:var(--color-warning)"></div>
+                        <span class="chart-bar-value" id="chart-enterprise-val">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Atividade Recente -->
+            <div class="admin-card">
+                <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">🕐 Atividade Recente</h3>
+                <div id="activity-list" style="max-height:300px; overflow-y:auto">
+                    <p style="text-align:center; color:var(--color-text-muted); padding:20px">Carregando atividades...</p>
+                </div>
+            </div>
+
+            <!-- Configurações Rápidas -->
+            <div class="admin-card">
+                <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">⚡ Configurações Rápidas</h3>
+                <div style="display:flex; flex-direction:column; gap:8px">
+                    <button class="btn btn-secondary" onclick="window.location.href='pages/migrate-database.html'" style="width:100%; text-align:left">🗄️ Gerenciar Banco de Dados</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='pages/gerenciar-planos.html'" style="width:100%; text-align:left">📋 Gerenciar Planos</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='pages/perfis-acesso.html'" style="width:100%; text-align:left">🔑 Gerenciar Perfis</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='pages/relatorios-automatizados.html'" style="width:100%; text-align:left">📊 Relatórios Automatizados</button>
+                    <button class="btn btn-secondary" onclick="backupDatabase()" style="width:100%; text-align:left">💾 Backup do Banco</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='pages/config-empresa.html'" style="width:100%; text-align:left">⚙️ Configurações da Empresa</button>
+                </div>
+            </div>
+
+            <!-- Logs de Auditoria -->
+            <div class="admin-card">
+                <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">📜 Logs de Auditoria</h3>
+                <div id="audit-logs" style="max-height:300px; overflow-y:auto">
+                    <p style="text-align:center; color:var(--color-text-muted); padding:20px">Carregando logs...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usuários Recentes -->
+        <div class="admin-card" style="margin-top:24px">
+            <h3 style="font-size:14px; font-weight:700; color:white; margin-bottom:16px">👤 Últimos Usuários Cadastrados</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Username</th>
+                            <th>Perfil</th>
+                            <th>Email</th>
+                            <th>Cadastro</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px">Carregando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/condo-engine.js"></script>
+    <script src="/js/condo-api.js"></script>
+    <script>
+        const SUPABASE_URL = 'https://psbvjscrqhwhttvbstty.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzYnZqc2NycWh3aHR0dmJzdHR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTA4MzAsImV4cCI6MjA5Njg2NjgzMH0.AFnX7TYKrpTSQMBEU9Rwj0g8nvgpSEDKSjGNb-FM2Gw';
+
+        async function supabaseQuery(table, select = '*', filters = {}) {
+            let url = `${SUPABASE_URL}/rest/v1/${table}?select=${select}`;
+            for (const [key, value] of Object.entries(filters)) {
+                url += `&${key}=eq.${encodeURIComponent(value)}`;
+            }
+            const res = await fetch(url, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+            return await res.json();
+        }
+
+        async function refreshDashboard() {
+            await Promise.all([
+                loadMetrics(),
+                loadSubscriptionsByPlan(),
+                loadRecentActivity(),
+                loadAuditLogs(),
+                loadUsersTable()
+            ]);
+            showToast('Dashboard atualizado!');
+        }
+
+        async function loadMetrics() {
+            try {
+                // Assinaturas
+                const subscriptions = await supabaseQuery('subscriptions', '*');
+                document.getElementById('total-subscriptions').textContent = subscriptions.length;
+                document.getElementById('active-subscriptions').textContent = subscriptions.filter(s => s.status === 'active').length;
+
+                // Usuários
+                const users = await supabaseQuery('users', '*');
+                document.getElementById('total-users').textContent = users.length;
+                document.getElementById('admin-users').textContent = users.filter(u => u.profile_id && u.username.includes('admin')).length;
+                document.getElementById('collab-users').textContent = users.filter(u => !u.username.includes('admin')).length;
+                document.getElementById('resident-users').textContent = 'N/A';
+
+                // Financeiro
+                const receivables = await supabaseQuery('receivables', '*');
+                const payables = await supabaseQuery('payables', '*');
+                const totalReceived = receivables.filter(r => r.status === 'Pago').reduce((s, r) => s + r.base_value, 0);
+                const totalPending = receivables.filter(r => r.status !== 'Pago').reduce((s, r) => s + r.base_value, 0);
+                const totalExpenses = payables.filter(p => p.status === 'Pago').reduce((s, p) => s + p.value, 0);
+
+                document.getElementById('total-received').textContent = `R$ ${totalReceived.toFixed(2).replace('.', ',')}`;
+                document.getElementById('total-pending').textContent = `R$ ${totalPending.toFixed(2).replace('.', ',')}`;
+                document.getElementById('total-expenses').textContent = `R$ ${totalExpenses.toFixed(2).replace('.', ',')}`;
+                
+                const balance = totalReceived - totalExpenses;
+                const balanceEl = document.getElementById('total-balance');
+                balanceEl.textContent = `R$ ${balance.toFixed(2).replace('.', ',')}`;
+                balanceEl.style.color = balance >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+
+                // Receita mensal/anual estimada
+                const plans = await supabaseQuery('license_plans', '*');
+                const monthlyRevenue = subscriptions.filter(s => s.status === 'active').reduce((sum, s) => {
+                    const plan = plans.find(p => p.id === s.plan_id);
+                    return sum + (plan ? plan.price_monthly : 0);
+                }, 0);
+                document.getElementById('monthly-revenue').textContent = `R$ ${monthlyRevenue.toFixed(2).replace('.', ',')}`;
+                document.getElementById('annual-revenue').textContent = `R$ ${(monthlyRevenue * 12).toFixed(2).replace('.', ',')}`;
+            } catch (err) {
+                console.error('Erro ao carregar métricas:', err);
+            }
+        }
+
+        async function loadSubscriptionsByPlan() {
+            try {
+                const plans = await supabaseQuery('license_plans', '*');
+                const subscriptions = await supabaseQuery('subscriptions', '*');
+                
+                const counts = { basico: 0, profissional: 0, enterprise: 0 };
+                subscriptions.forEach(s => {
+                    const plan = plans.find(p => p.id === s.plan_id);
+                    if (plan) {
+                        if (plan.name === 'Básico') counts.basico++;
+                        else if (plan.name === 'Profissional') counts.profissional++;
+                        else if (plan.name === 'Enterprise') counts.enterprise++;
+                    }
+                });
+
+                const max = Math.max(counts.basico, counts.profissional, counts.enterprise, 1);
+                document.getElementById('chart-basico').style.width = `${(counts.basico / max) * 100}%`;
+                document.getElementById('chart-profissional').style.width = `${(counts.profissional / max) * 100}%`;
+                document.getElementById('chart-enterprise').style.width = `${(counts.enterprise / max) * 100}%`;
+                document.getElementById('chart-basico-val').textContent = counts.basico;
+                document.getElementById('chart-profissional-val').textContent = counts.profissional;
+                document.getElementById('chart-enterprise-val').textContent = counts.enterprise;
+            } catch (err) {
+                console.error('Erro ao carregar gráfico:', err);
+            }
+        }
+
+        async function loadRecentActivity() {
+            try {
+                const activities = await supabaseQuery('activity_log', '*', {});
+                const container = document.getElementById('activity-list');
+                
+                if (activities.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px">Nenhuma atividade registrada</p>';
+                    return;
+                }
+
+                const icons = {
+                    'payment_processed': '💰',
+                    'user_created': '👤',
+                    'document_uploaded': '📄',
+                    'assembly_created': '🗳️',
+                    'reservation_created': '📅',
+                    'consent_granted': '✅'
+                };
+
+                container.innerHTML = activities.slice(0, 10).map(a => `
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background:rgba(59,130,246,0.1)">${icons[a.action] || '📋'}</div>
+                        <div class="activity-content">
+                            <div class="activity-title">${a.action.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
+                            <div class="activity-time">${a.table_name || ''} • ${new Date(a.created_at).toLocaleString('pt-BR')}</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Erro ao carregar atividades:', err);
+            }
+        }
+
+        async function loadAuditLogs() {
+            try {
+                const logs = await supabaseQuery('activity_log', '*', {});
+                const container = document.getElementById('audit-logs');
+                
+                if (logs.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px">Nenhum log de auditoria</p>';
+                    return;
+                }
+
+                container.innerHTML = logs.slice(0, 20).map(l => `
+                    <div style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.03); font-size:11px">
+                        <div style="color:white; font-weight:600">${l.action}</div>
+                        <div style="color:var(--color-text-muted)">${l.table_name || ''} • ${new Date(l.created_at).toLocaleString('pt-BR')}</div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Erro ao carregar logs:', err);
+            }
+        }
+
+        async function loadUsersTable() {
+            try {
+                const users = await supabaseQuery('users', '*');
+                const tbody = document.getElementById('users-table-body');
+                
+                if (users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px">Nenhum usuário cadastrado</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = users.map(u => `
+                    <tr>
+                        <td><strong>${u.full_name}</strong></td>
+                        <td style="font-family:monospace; color:var(--primary)">${u.username}</td>
+                        <td>${u.profile_id ? 'Configurado' : 'Padrão'}</td>
+                        <td>${u.email}</td>
+                        <td>${new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
+                        <td><span class="badge ${u.is_active ? 'badge-success' : 'badge-danger'}">${u.is_active ? 'Ativo' : 'Inativo'}</span></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Erro ao carregar usuários:', err);
+            }
+        }
+
+        async function backupDatabase() {
+            if (!confirm('Criar backup do banco de dados?')) return;
+            showToast('Iniciando backup...', 'info');
+            
+            try {
+                const data = {
+                    residences: await supabaseQuery('residences', '*'),
+                    residents: await supabaseQuery('residents', '*'),
+                    vehicles: await supabaseQuery('vehicles', '*'),
+                    receivables: await supabaseQuery('receivables', '*'),
+                    payables: await supabaseQuery('payables', '*'),
+                    employees: await supabaseQuery('employees', '*'),
+                    users: await supabaseQuery('users', '*'),
+                    timestamp: new Date().toISOString()
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `condosphere_backup_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showToast('Backup criado com sucesso!');
+            } catch (err) {
+                showToast('Erro ao criar backup', 'error');
+            }
+        }
+
+        function exportReport() {
+            const w = window.open('', '_blank');
+            w.document.write('<!DOCTYPE html><html><head><title>Relatório Admin - CondoSphere</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;padding:30px;color:#333}.header{text-align:center;border-bottom:2px solid #333;padding-bottom:15px;margin-bottom:20px}table{width:100%;border-collapse:collapse;margin:10px 0}th,td{padding:8px;border:1px solid #ddd;text-align:left}th{background:#f5f5f5;font-weight:bold}.stat{display:inline-block;margin:10px;padding:15px;background:#f9f9f9;border-radius:8px;text-align:center}</style></head><body><div class="header"><h1>CondoSphere - Relatório de Administração</h1><p>Data: ' + new Date().toLocaleString('pt-BR') + '</p></div><div class="stat"><h3>Total Usuários</h3><p id="r-users">0</p></div><div class="stat"><h3>Assinaturas</h3><p id="r-subs">0</p></div><div class="stat"><h3>Receita Mensal</h3><p id="r-revenue">R$ 0,00</p></div><script>document.getElementById("r-users").textContent="' + document.getElementById('total-users').textContent + '";document.getElementById("r-subs").textContent="' + document.getElementById('total-subscriptions').textContent + '";document.getElementById("r-revenue").textContent="' + document.getElementById('monthly-revenue').textContent + '";setTimeout(()=>window.print(),500)<\/script></body></html>');
+            w.document.close();
+        }
+
+        function showToast(msg, type) {
+            const container = document.getElementById('toast-container') || (() => {
+                const c = document.createElement('div');
+                c.id = 'toast-container';
+                c.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999';
+                document.body.appendChild(c);
+                return c;
+            })();
+            
+            const toast = document.createElement('div');
+            toast.style.cssText = `padding:12px 20px;border-radius:8px;margin-bottom:8px;color:white;font-size:12px;font-weight:600;background:${type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#10b981'}`;
+            toast.textContent = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Carregar dados ao iniciar
+        refreshDashboard();
+    </script>
+</body>
+</html>
