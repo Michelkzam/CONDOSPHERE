@@ -11,6 +11,9 @@
     <style>
         .tab-panel { display: none !important; }
         .tab-panel.active { display: block !important; }
+        .checkbox-morador { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: default; transition: all 0.2s; }
+        .checkbox-morador.checked { background: #10b981; border: 2px solid #10b981; color: white; }
+        .checkbox-morador.unchecked { background: rgba(239,68,68,0.15); border: 2px solid #ef4444; color: #ef4444; }
     </style>
 </head>
 <body>
@@ -236,7 +239,7 @@
                 <div class="footer-btns">
                     <!-- Fully enabled batch action click functions as requested -->
                     <button class="btn-footer excel" onclick="executeBatchExportXlsx()">XLSX</button>
-                    <button class="btn-footer pdf" onclick="generateGeralPDF()">PDF</button>
+                    <button class="btn-footer pdf" onclick="executeBatchExportPdf()">PDF</button>
                 </div>
             </div>
         </div>
@@ -652,9 +655,6 @@
                                     <button class="btn btn-secondary" onclick="openReceivableReportModal()">
                                         📄 Exportar Relatório
                                     </button>
-                                    <button class="btn btn-danger" onclick="generateContasReceberPDF()">
-                                        📄 Gerar PDF
-                                    </button>
                                 </div>
                             </div>
 
@@ -809,7 +809,6 @@
                                         </svg>
                                         Lançar Parcelado
                                     </button>
-                                    <button class="btn btn-danger" onclick="generateContasPagarPDF()">📄 PDF</button>
                                 </div>
                             </div>
 
@@ -1003,14 +1002,9 @@
                                     <h3 class="panel-title">Balancete e Prestação de Contas Consolidada</h3>
                                     <p class="panel-subtitle">Auditoria de caixa mensal para síndicos e conselho fiscal</p>
                                 </div>
-                                <div style="display:flex; gap:8px">
-                                    <button class="btn btn-secondary" onclick="window.print()">
-                                        📄 Exportar Balancete (PDF)
-                                    </button>
-                                    <button class="btn btn-danger" onclick="generateBalancetePDF()">
-                                        📄 Gerar PDF
-                                    </button>
-                                </div>
+                                <button class="btn btn-secondary" onclick="window.print()">
+                                    📄 Exportar Balancete (PDF)
+                                </button>
                             </div>
                             <div class="table-container">
                                 <table>
@@ -1111,7 +1105,6 @@
                                     📤 Importar (.xlsx)
                                     <input type="file" style="display:none" onchange="simulateImportExcel('residencias', this)">
                                 </label>
-                                <button class="btn btn-danger" onclick="generateResidenciasPDF()">📄 PDF</button>
                             </div>
                         </div>
                         <!-- Residences Search Input -->
@@ -1156,7 +1149,6 @@
                                     📤 Importar (.xlsx)
                                     <input type="file" style="display:none" onchange="simulateImportExcel('moradores', this)">
                                 </label>
-                                <button class="btn btn-danger" onclick="generateMoradoresPDF()">📄 PDF</button>
                             </div>
                         </div>
                         
@@ -1205,7 +1197,6 @@
                                     <input type="file" style="display:none" onchange="simulateImportExcel('veiculos', this)">
                                 </label>
                                 <button class="btn btn-secondary" onclick="exportVeiculosExcel()">📤 Exportar (.xlsx)</button>
-                                <button class="btn btn-danger" onclick="generateVeiculosPDF()">📄 PDF</button>
                             </div>
                         </div>
 
@@ -1359,7 +1350,6 @@
                                     </svg>
                                     Incluir Funcionário
                                 </button>
-                                <button class="btn btn-danger" onclick="generateFuncionariosPDF()">📄 PDF</button>
                             </div>
                         </div>
 
@@ -1405,7 +1395,6 @@
                                 <button class="btn btn-secondary" style="background:#dc2626" onclick="openRescisionModal()">✂️ Rescisão CLT</button>
                                 <button class="btn btn-secondary" style="background:#312e81" onclick="showToast('Modal de Descontos Consignados Aberto!')">💳 Consignados</button>
                                 <button class="btn" onclick="openAdvanceModal()">💸 Registrar Adiantamento</button>
-                                <button class="btn btn-danger" onclick="generateFolhaPagamentoPDF()">📄 PDF</button>
                             </div>
                         </div>
                         <div class="table-container">
@@ -1784,7 +1773,6 @@
                             </div>
                             <div style="display:flex; gap:10px">
                                 <button class="btn btn-primary" onclick="openPrestadorModal(false)">+ Novo Prestador</button>
-                                <button class="btn btn-danger" onclick="generatePrestadoresPDF()">📄 PDF</button>
                             </div>
                         </div>
                         <div class="form-group" style="margin-bottom:15px">
@@ -5006,56 +4994,70 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
             document.querySelectorAll('.submenu-item').forEach(i => i.classList.remove('active'));
             
             // Add active class to clicked element
-            el.classList.add('active');
+            if (el) el.classList.add('active');
             
             // If it is a submenu link, also active its parent header
-            if (el.classList.contains('submenu-item')) {
+            if (el && el.classList.contains('submenu-item')) {
                 const parentMenuId = el.parentElement.id;
                 const headerBtn = document.querySelector(`button[onclick*="${parentMenuId}"]`);
                 if (headerBtn) headerBtn.classList.add('active');
             }
 
-            // Toggle displayed panels
-            document.querySelectorAll('.tab-panel').forEach(panel => {
-                panel.classList.remove('active');
-                panel.style.display = 'none';
-            });
-            const targetPanel = document.getElementById('tab-' + tabId);
-            if (targetPanel) {
-                targetPanel.classList.add('active');
-                targetPanel.style.display = '';
-            }
-
             // Update title
             let cleanTitle = tabId;
-            if (tabId === 'recebiveis') cleanTitle = 'Financeiro > Contas a Receber';
-            else if (tabId === 'pagar') cleanTitle = 'Financeiro > Contas a Pagar';
-            else if (tabId === 'conciliacao') cleanTitle = 'Financeiro > Conciliação & Controle';
-            else if (tabId === 'gestao_fin') cleanTitle = 'Financeiro > Relatórios & Gestão';
-            else if (tabId === 'funcionarios') cleanTitle = 'RH & Pessoal > Cadastro de Funcionários';
-            else if (tabId === 'prestadores') cleanTitle = 'RH & Pessoal > Prestadores de Serviço';
-            else if (tabId === 'folha') cleanTitle = 'RH & Pessoal > DP & Folha de Pagamento';
-            else if (tabId === 'ponto_beneficios') cleanTitle = 'RH & Pessoal > Controle de Ponto & Benefícios';
-            else if (tabId === 'rh_estrategico') cleanTitle = 'RH & Pessoal > RH Estratégico & Talentos';
-            else if (tabId === 'portal_colaborador') cleanTitle = 'RH & Pessoal > Portal do Colaborador';
-            else if (tabId === 'people_analytics') cleanTitle = 'RH & Pessoal > People Analytics & KPIs';
-            else cleanTitle = cleanTitle.replace('config_', 'Configurações > ').charAt(0).toUpperCase() + cleanTitle.slice(1);
-            
+            const titleMap = {
+                'recebiveis': 'Financeiro > Contas a Receber',
+                'pagar': 'Financeiro > Contas a Pagar',
+                'conciliacao': 'Financeiro > Conciliação & Controle',
+                'gestao_fin': 'Financeiro > Relatórios & Gestão',
+                'funcionarios': 'RH & Pessoal > Cadastro de Funcionários',
+                'prestadores': 'RH & Pessoal > Prestadores de Serviço',
+                'folha': 'RH & Pessoal > DP & Folha de Pagamento',
+                'ponto_beneficios': 'RH & Pessoal > Controle de Ponto & Benefícios',
+                'rh_estrategico': 'RH & Pessoal > RH Estratégico & Talentos',
+                'portal_colaborador': 'RH & Pessoal > Portal do Colaborador',
+                'people_analytics': 'RH & Pessoal > People Analytics & KPIs',
+                'portaria': 'Portaria & Acesso',
+                'dashboard': 'Painel Principal',
+                'residencias': 'Condomínio > Residências',
+                'moradores': 'Condomínio > Moradores',
+                'veiculos': 'Condomínio > Veículos',
+                'areas': 'Condomínio > Áreas Comuns',
+                'reservas': 'Condomínio > Reservas',
+                'assemblies': 'Condomínio > Assembleias Virtuais',
+                'config_empresa': 'Configurações > Dados da Empresa',
+                'config_usuarios': 'Configurações > Usuários do Sistema',
+                'config_perfis': 'Configurações > Perfis de Acesso',
+                'config_supabase': 'Configurações > Rede & Banco de Dados',
+                'config_mass_import': 'Configurações > Carga Massiva',
+                'config_rh': 'Configurações > RH & Escalas',
+                'config_adm': 'Configurações > Administrativo'
+            };
+            cleanTitle = titleMap[tabId] || tabId.charAt(0).toUpperCase() + tabId.slice(1);
             document.getElementById('current-tab-title').innerText = cleanTitle;
 
-            // Trigger dynamic renders/syncs on tab switch
-            if (tabId === 'recebiveis') {
-                renderReceivables();
-            } else if (tabId === 'pagar') {
-                renderPayables();
-            } else if (tabId === 'funcionarios') {
-                renderEmployees();
-            } else if (tabId === 'prestadores') {
-                renderPrestadores();
-            } else if (tabId === 'portaria') {
-                renderVisitorLogs();
-                populateVisitorAuthDropdown(); // Dynamic population of visitor authorize select
+            // Try to load page from external file first, fallback to existing tab-panel
+            const contentArea = document.querySelector('.content-body');
+            const existingPanel = document.getElementById('tab-' + tabId);
+            
+            if (existingPanel && existingPanel.dataset.loaded === 'true') {
+                // Already loaded from file, just show it
+                document.querySelectorAll('.tab-panel').forEach(p => { p.style.display = 'none'; });
+                existingPanel.style.display = '';
+                existingPanel.classList.add('active');
+            } else if (existingPanel) {
+                // Panel exists in DOM (original monolith), show it
+                document.querySelectorAll('.tab-panel').forEach(p => { p.style.display = 'none'; p.classList.remove('active'); });
+                existingPanel.style.display = '';
+                existingPanel.classList.add('active');
             }
+
+            // Trigger dynamic renders/syncs on tab switch
+            if (tabId === 'recebiveis') renderReceivables();
+            else if (tabId === 'pagar') renderPayables();
+            else if (tabId === 'funcionarios') renderEmployees();
+            else if (tabId === 'prestadores') renderPrestadores();
+            else if (tabId === 'portaria') { renderVisitorLogs(); populateVisitorAuthDropdown(); }
 
             showToast("Visualizando módulo: " + cleanTitle);
         }
@@ -10862,10 +10864,10 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
                                 <td>${m.role}</td>
                                 <td style="color:var(--color-primary); font-weight:600">${m.residence_name || 'Sem Vínculo'}</td>
                                 <td style="text-align:center">
-                                    <span style="display:inline-block; width:22px; height:22px; border-radius:5px; border:2px solid ${m.is_associated ? 'var(--color-success)' : 'var(--color-danger)'}; background:${m.is_associated ? 'var(--color-success)' : 'rgba(239,68,68,0.15)'}; color:white; font-size:12px; font-weight:bold; line-height:18px; text-align:center; cursor:default" title="${m.is_associated ? 'Associado' : 'Não Associado'}">${m.is_associated ? '✓' : '✕'}</span>
+                                    <span class="checkbox-morador ${m.is_associated ? 'checked' : 'unchecked'}" title="${m.is_associated ? 'Associado' : 'Não Associado'}">${m.is_associated ? '✓' : '✕'}</span>
                                 </td>
                                 <td style="text-align:center">
-                                    <span style="display:inline-block; width:22px; height:22px; border-radius:5px; border:2px solid ${m.is_resident ? 'var(--color-success)' : 'var(--color-danger)'}; background:${m.is_resident ? 'var(--color-success)' : 'rgba(239,68,68,0.15)'}; color:white; font-size:12px; font-weight:bold; line-height:18px; text-align:center; cursor:default" title="${m.is_resident ? 'Morador' : 'Não Morador'}">${m.is_resident ? '✓' : '✕'}</span>
+                                    <span class="checkbox-morador ${m.is_resident ? 'checked' : 'unchecked'}" title="${m.is_resident ? 'Morador' : 'Não Morador'}">${m.is_resident ? '✓' : '✕'}</span>
                                 </td>
                                 <td><span class="badge badge-success">Ativo</span></td>
                                 <td>
@@ -12900,295 +12902,6 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
                 showToast('Registro excluído com sucesso!');
             }
         }
-    </script>
-    <!-- jsPDF Library for PDF Generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script>
-    /* =====================================================================
-       CONDOSPHERE - Gerador de Relatórios PDF
-       ===================================================================== */
-    const PDFReport = {
-        addHeader: function(doc, title, subtitle) {
-            doc.setFillColor(20, 28, 46);
-            doc.rect(0, 0, 210, 35, 'F');
-            doc.setFillColor(59, 130, 246);
-            doc.circle(20, 17.5, 10, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(12);
-            doc.setFont(undefined, 'bold');
-            doc.text('CS', 20, 19, { align: 'center' });
-            doc.setFontSize(16);
-            doc.text('CondoSphere ERP', 35, 14);
-            doc.setFontSize(10);
-            doc.setFont(undefined, 'normal');
-            doc.text(title || 'Relatório', 35, 21);
-            doc.setFontSize(8);
-            doc.setTextColor(150, 160, 180);
-            doc.text(subtitle || 'Documento gerado automaticamente', 35, 27);
-            doc.text('Data: ' + new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR'), 190, 14, { align: 'right' });
-            return 40;
-        },
-        addTable: function(doc, startY, headers, rows, options) {
-            options = options || {};
-            var colWidths = options.colWidths || [];
-            if (colWidths.length === 0) colWidths = headers.map(function() { return 190 / headers.length; });
-            var currentY = startY;
-            doc.setFillColor(30, 45, 74);
-            doc.rect(10, currentY - 4, 190, 8, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(7);
-            doc.setFont(undefined, 'bold');
-            var xPos = 10;
-            headers.forEach(function(h, i) { doc.text(h, xPos + 2, currentY); xPos += colWidths[i]; });
-            currentY += 8;
-            doc.setTextColor(40, 40, 40);
-            doc.setFont(undefined, 'normal');
-            doc.setFontSize(7);
-            rows.forEach(function(row, ri) {
-                if (currentY > 270) {
-                    doc.addPage();
-                    currentY = 20;
-                    doc.setFillColor(30, 45, 74);
-                    doc.rect(10, currentY - 4, 190, 8, 'F');
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(7);
-                    doc.setFont(undefined, 'bold');
-                    xPos = 10;
-                    headers.forEach(function(h, i) { doc.text(h, xPos + 2, currentY); xPos += colWidths[i]; });
-                    currentY += 8;
-                    doc.setTextColor(40, 40, 40);
-                    doc.setFont(undefined, 'normal');
-                    doc.setFontSize(7);
-                }
-                if (ri % 2 === 0) { doc.setFillColor(248, 249, 250); doc.rect(10, currentY - 4, 190, 6, 'F'); }
-                xPos = 10;
-                row.forEach(function(cell, i) { doc.text(String(cell || '-'), xPos + 2, currentY); xPos += colWidths[i]; });
-                currentY += 6;
-            });
-            return currentY;
-        },
-        addFooter: function(doc) {
-            var total = doc.internal.getNumberOfPages();
-            for (var i = 1; i <= total; i++) {
-                doc.setPage(i);
-                doc.setFillColor(20, 28, 46);
-                doc.rect(0, 285, 210, 12, 'F');
-                doc.setTextColor(150, 160, 180);
-                doc.setFontSize(7);
-                doc.text('CondoSphere ERP - Documento gerado eletronicamente', 10, 292);
-                doc.text('Página ' + i + ' de ' + total, 200, 292, { align: 'right' });
-            }
-        },
-        addSummaryBox: function(doc, y, items) {
-            doc.setFillColor(240, 245, 255);
-            doc.roundedRect(10, y, 190, items.length * 7 + 10, 3, 3, 'F');
-            doc.setFontSize(9);
-            doc.setFont(undefined, 'bold');
-            doc.setTextColor(59, 130, 246);
-            doc.text('Resumo', 15, y + 7);
-            doc.setFont(undefined, 'normal');
-            doc.setFontSize(8);
-            doc.setTextColor(60, 60, 60);
-            var sy = y + 14;
-            items.forEach(function(item) {
-                doc.text(item.label + ':', 15, sy);
-                doc.setFont(undefined, 'bold');
-                doc.text(item.value, 80, sy);
-                doc.setFont(undefined, 'normal');
-                sy += 7;
-            });
-            return sy + 5;
-        }
-    };
-
-    function generateResidenciasPDF() {
-        var doc = new jspdf.jsPDF();
-        var y = PDFReport.addHeader(doc, 'Relatório de Residências', 'Cadastro completo de unidades habitacionais');
-        var totalValue = residenciasList.reduce(function(s, r) { return s + (r.base_value || 0); }, 0);
-        var activeCount = residenciasList.filter(function(r) { return r.status === 'Ativo'; }).length;
-        y = PDFReport.addSummaryBox(doc, y, [
-            { label: 'Total de Residências', value: String(residenciasList.length) },
-            { label: 'Ativas', value: String(activeCount) },
-            { label: 'Valor Total Mensal', value: 'R$ ' + totalValue.toFixed(2) }
-        ]);
-        if (residenciasList.length > 0) {
-            var headers = ['Identificador', 'Proprietário', 'Endereço', 'Valor Base', 'Status'];
-            var rows = residenciasList.map(function(r) { return [r.identifier, r.owner, r.address, 'R$ ' + (r.base_value || 0).toFixed(2), r.status]; });
-            y = PDFReport.addTable(doc, y, headers, rows, { colWidths: [40, 45, 50, 30, 25] });
-        }
-        PDFReport.addFooter(doc);
-        doc.save('condosphere_residencias_' + new Date().toISOString().split('T')[0] + '.pdf');
-        showToast('PDF de Residências gerado com sucesso!');
-    }
-
-    function generateMoradoresPDF() {
-        var doc = new jspdf.jsPDF();
-        var y = PDFReport.addHeader(doc, 'Relatório de Moradores', 'Cadastro de associados e moradores');
-        y = PDFReport.addSummaryBox(doc, y, [
-            { label: 'Total de Moradores', value: String(moradoresList.length) }
-        ]);
-        if (moradoresList.length > 0) {
-            var headers = ['Nome', 'CPF', 'Contato', 'Função', 'Residência', 'Status'];
-            var rows = moradoresList.map(function(r) { return [r.name, r.cpf, r.contact, r.role, r.residence_name, r.status || 'Ativo']; });
-            y = PDFReport.addTable(doc, y, headers, rows, { colWidths: [35, 25, 30, 25, 40, 25] });
-        }
-        PDFReport.addFooter(doc);
-        doc.save('condosphere_moradores_' + new Date().toISOString().split('T')[0] + '.pdf');
-        showToast('PDF de Moradores gerado com sucesso!');
-    }
-
-    function generateVeiculosPDF() {
-        var doc = new jspdf.jsPDF();
-        var y = PDFReport.addHeader(doc, 'Relatório de Veículos', 'Frota cadastrada no condomínio');
-        y = PDFReport.addSummaryBox(doc, y, [
-            { label: 'Total de Veículos', value: String(veiculosList.length) }
-        ]);
-        if (veiculosList.length > 0) {
-            var headers = ['Placa', 'Marca/Modelo', 'Cor', 'Proprietário', 'Status'];
-            var rows = veiculosList.map(function(v) { return [v.plate, v.model, v.color, v.owner_name, v.is_active !== false ? 'Ativo' : 'Inativo']; });
-            y = PDFReport.addTable(doc, y, headers, rows, { colWidths: [30, 40, 30, 50, 30] });
-        }
-        PDFReport.addFooter(doc);
-        doc.save('condosphere_veiculos_' + new Date().toISOString().split('T')[0] + '.pdf');
-        showToast('PDF de Veículos gerado com sucesso!');
-    }
-
-    function generateFuncionariosPDF() {
-        var doc = new jspdf.jsPDF();
-        var y = PDFReport.addHeader(doc, 'Relatório de Funcionários', 'Cadastro de colaboradores CLT');
-        var totalSalary = funcionariosList.reduce(function(s, e) { return s + (e.salary || 0); }, 0);
-        y = PDFReport.addSummaryBox(doc, y, [
-            { label: 'Total de Funcionários', value: String(funcionariosList.length) },
-            { label: 'Folha Salarial', value: 'R$ ' + totalSalary.toFixed(2) }
-        ]);
-        if (funcionariosList.length > 0) {
-            var headers = ['Funcionário', 'CPF', 'Cargo', 'Salário', 'Admissão', 'Status'];
-            var rows = funcionariosList.map(function(e) { return [e.name, e.cpf, e.role, 'R$ ' + (e.salary || 0).toFixed(2), e.admission_date, e.is_active !== false ? 'Ativo' : 'Inativo']; });
-            y = PDFReport.addTable(doc, y, headers, rows, { colWidths: [35, 25, 35, 30, 30, 25] });
-        }
-        PDFReport.addFooter(doc);
-        doc.save('condosphere_funcionarios_' + new Date().toISOString().split('T')[0] + '.pdf');
-        showToast('PDF de Funcionários gerado com sucesso!');
-    }
-
-    function generateContasPagarPDF() {
-        var doc = new jspdf.jsPDF();
-        var y = PDFReport.addHeader(doc, 'Relatório de Contas a Pagar', 'Extrato de despesas');
-        var totalPending = payablesList.filter(function(p) { return p.status === 'Pendente'; }).reduce(function(s, p) { return s + p.value; }, 0);
-        var totalPaid = payablesList.filter(function(p) { return p.status === 'Pago'; }).reduce(function(s, p) { return s + p.value; }, 0);
-        y = PDFReport.addSummaryBox(doc, y, [
-            { label: 'Total de Despesas', value: String(payablesList.length) },
-            { label: 'Pendente', value: 'R$ ' + totalPending.toFixed(2) },
-            { label: 'Pago', value: 'R$ ' + totalPaid.toFixed(2) }
-        ]);
-        if (payablesList.length > 0) {
-            var headers = ['Código', 'Fornecedor', 'Descrição', 'Vencimento', 'Valor', 'Status'];
-            var rows = payablesList.map(function(p) { return ['#' + String(p.id).padStart(3,'0'), p.creditor, p.description, p.dueDate, 'R$ ' + p.value.toFixed(2), p.status]; });
-            y = PDFReport.addTable(doc, y, headers, rows, { colWidths: [18, 35, 45, 30, 30, 25] });
-        }
-        PDFReport.addFooter(doc);
-        doc.save('condosphere_contas_pagar_' + new Date().toISOString().split('T')[0] + '.pdf');
-        showToast('PDF de Contas a Pagar gerado com sucesso!');
-    }
-
-    function generateContasReceberPDF() {
-        var doc = new jspdf.jsPDF();
-        var y = PDFReport.addHeader(doc, 'Relatório de Contas a Receber', 'Inadimplência e faturamento condominial');
-        if (receivablesList.length > 0) {
-            var totalPending = receivablesList.filter(function(r) { return r.status !== 'Pago'; }).reduce(function(s, r) { return s + r.baseValue; }, 0);
-            var totalPaid = receivablesList.filter(function(r) { return r.status === 'Pago'; }).reduce(function(s, r) { return s + r.baseValue; }, 0);
-            y = PDFReport.addSummaryBox(doc, y, [
-                { label: 'Total de Lançamentos', value: String(receivablesList.length) },
-                { label: 'Recebido', value: 'R$ ' + totalPaid.toFixed(2) },
-                { label: 'Pendente', value: 'R$ ' + totalPending.toFixed(2) }
-            ]);
-            var headers = ['Unidade', 'Proprietário', 'Vencimento', 'Dias Atraso', 'Valor', 'Status'];
-            var rows = receivablesList.map(function(r) { return [r.identifier, r.owner, r.dueDate, r.delayDays > 0 ? r.delayDays + ' dias' : '-', 'R$ ' + r.baseValue.toFixed(2), r.status]; });
-            y = PDFReport.addTable(doc, y, headers, rows, { colWidths: [35, 35, 30, 25, 30, 25] });
-        }
-        PDFReport.addFooter(doc);
-        doc.save('condosphere_contas_receber_' + new Date().toISOString().split('T')[0] + '.pdf');
-        showToast('PDF de Contas a Receber gerado com sucesso!');
-    }
-
-    function generatePrestadoresPDF() {
-        var doc = new jspdf.jsPDF();
-        var y = PDFReport.addHeader(doc, 'Relatório de Prestadores', 'Contratos de empresas terceirizadas');
-        y = PDFReport.addSummaryBox(doc, y, [
-            { label: 'Total de Prestadores', value: String(prestadoresList.length) }
-        ]);
-        if (prestadoresList.length > 0) {
-            var headers = ['Empresa', 'CNPJ', 'Serviço', 'Valor', 'Status'];
-            var rows = prestadoresList.map(function(p) { return [p.company, p.cnpj, p.service, 'R$ ' + (p.contract_value || 0).toFixed(2), p.status]; });
-            y = PDFReport.addTable(doc, y, headers, rows, { colWidths: [40, 30, 40, 35, 25] });
-        }
-        PDFReport.addFooter(doc);
-        doc.save('condosphere_prestadores_' + new Date().toISOString().split('T')[0] + '.pdf');
-        showToast('PDF de Prestadores gerado com sucesso!');
-    }
-
-    function generateBalancetePDF() {
-        var doc = new jspdf.jsPDF();
-        var y = PDFReport.addHeader(doc, 'Balancete Mensal', 'Prestação de contas consolidada');
-        var totalReceitas = receivablesList.filter(function(r) { return r.status === 'Pago'; }).reduce(function(s, r) { return s + r.baseValue; }, 0);
-        var totalDespesas = payablesList.filter(function(p) { return p.status === 'Pago'; }).reduce(function(s, p) { return s + p.value; }, 0);
-        var saldo = totalReceitas - totalDespesas;
-        y = PDFReport.addSummaryBox(doc, y, [
-            { label: 'Receitas Liquidadas', value: 'R$ ' + totalReceitas.toFixed(2) },
-            { label: 'Despesas Pagas', value: 'R$ ' + totalDespesas.toFixed(2) },
-            { label: 'Saldo do Período', value: 'R$ ' + saldo.toFixed(2) }
-        ]);
-        var headers = ['Categoria', 'Entradas', 'Saídas', 'Saldo'];
-        var rows = [
-            ['Receitas de Cotas', 'R$ ' + totalReceitas.toFixed(2), '-', 'R$ ' + totalReceitas.toFixed(2)],
-            ['Despesas Operacionais', '-', 'R$ ' + totalDespesas.toFixed(2), '-R$ ' + totalDespesas.toFixed(2)],
-            ['SALDO CONSOLIDADO', '', '', 'R$ ' + saldo.toFixed(2)]
-        ];
-        y = PDFReport.addTable(doc, y, headers, rows, { colWidths: [50, 40, 40, 40] });
-        PDFReport.addFooter(doc);
-        doc.save('condosphere_balancete_' + new Date().toISOString().split('T')[0] + '.pdf');
-        showToast('PDF do Balancete gerado com sucesso!');
-    }
-
-    function generateFolhaPagamentoPDF() {
-        var doc = new jspdf.jsPDF();
-        var y = PDFReport.addHeader(doc, 'Folha de Pagamento', 'DP & Recolhimentos CLT');
-        var totalSalary = funcionariosList.reduce(function(s, e) { return s + (e.salary || 0); }, 0);
-        var totalINSS = totalSalary * 0.11;
-        var totalFGTS = totalSalary * 0.08;
-        y = PDFReport.addSummaryBox(doc, y, [
-            { label: 'Folha Bruta', value: 'R$ ' + totalSalary.toFixed(2) },
-            { label: 'INSS (11%)', value: 'R$ ' + totalINSS.toFixed(2) },
-            { label: 'FGTS (8%)', value: 'R$ ' + totalFGTS.toFixed(2) }
-        ]);
-        if (funcionariosList.length > 0) {
-            var headers = ['Funcionário', 'Cargo', 'Salário', 'INSS', 'Líquido'];
-            var rows = funcionariosList.map(function(e) {
-                var sal = e.salary || 0; var inss = sal * 0.11;
-                return [e.name, e.role, 'R$ ' + sal.toFixed(2), 'R$ ' + inss.toFixed(2), 'R$ ' + (sal - inss).toFixed(2)];
-            });
-            y = PDFReport.addTable(doc, y, headers, rows, { colWidths: [40, 35, 35, 35, 35] });
-        }
-        PDFReport.addFooter(doc);
-        doc.save('condosphere_folha_' + new Date().toISOString().split('T')[0] + '.pdf');
-        showToast('PDF da Folha de Pagamento gerado com sucesso!');
-    }
-
-    function generateGeralPDF() {
-        var doc = new jspdf.jsPDF();
-        var y = PDFReport.addHeader(doc, 'Relatório Geral do Sistema', 'Consolidado completo');
-        y = PDFReport.addSummaryBox(doc, y, [
-            { label: 'Residências', value: String(residenciasList.length) },
-            { label: 'Moradores', value: String(moradoresList.length) },
-            { label: 'Veículos', value: String(veiculosList.length) },
-            { label: 'Funcionários', value: String(funcionariosList.length) },
-            { label: 'Despesas', value: String(payablesList.length) },
-            { label: 'Prestadores', value: String(prestadoresList.length) }
-        ]);
-        PDFReport.addFooter(doc);
-        doc.save('condosphere_relatorio_geral_' + new Date().toISOString().split('T')[0] + '.pdf');
-        showToast('Relatório Geral PDF gerado com sucesso!');
-    }
     </script>
 </body>
 </html>
