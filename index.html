@@ -8966,50 +8966,47 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
             event.preventDefault();
             try {
                 const username = document.getElementById('login-username').value.trim().toLowerCase();
-                const password = document.getElementById('login-password').value.trim(); // Allow alphanumeric passwords like AdminMaster
+                const password = document.getElementById('login-password').value.trim();
 
-                const defaultUsers = {
-                    "administrador": { role: "Administrador", name: "Administrador", job: "Gestor Master", avatar: "AD", pass: "AdminMaster" }
+                // Presets de teste (admin.geral, reginaldo.silveira, etc.)
+                const testPresets = {
+                    "admin.geral": { role: "Administrador", name: "Maurício Albuquerque", job: "Gestor Master", avatar: "MA", pass: "12345678901" },
+                    "reginaldo.silveira": { role: "Colaborador", name: "Reginaldo Silveira", job: "Zelador Geral", avatar: "RS", pass: "22233344455" },
+                    "carlos.silva": { role: "Morador", name: "Carlos Henrique", job: "Morador Proprietário", avatar: "CH", pass: "33344455566" },
+                    "jose.portaria": { role: "Portaria", name: "José da Portaria", job: "Supervisor Portaria", avatar: "JP", pass: "44455566677" }
                 };
 
-                // Helper to perform local/offline login fallback
+                // Login local/offline
                 function doLocalLoginFallback() {
-                    let user = defaultUsers[username];
+                    // Verificar presets de teste primeiro
+                    let user = testPresets[username];
                     if (user && user.pass === password) {
                         SafeStorage.setItem('currentUser', JSON.stringify({ username, ...user }));
                         document.getElementById('login-screen-overlay').style.display = 'none';
                         applyUserSession(user);
-                        try {
-                            loadAllDataFromSupabase();
-                        } catch (err) {
-                            console.error("[LOGIN LOAD ERROR]:", err);
-                        }
-                        showToast(`Seja bem-vindo, ${user.name}! Login efetuado com sucesso.`, 'success');
+                        try { loadAllDataFromSupabase(); } catch (err) { console.error("[LOGIN ERROR]:", err); }
+                        showToast(`Seja bem-vindo, ${user.name}!`, 'success');
                         return true;
                     }
                     
+                    // Verificar banco de dados local
                     const liveDB = getLiveUserDatabase();
                     user = liveDB[username];
                     if (user && user.pass.replace(/\D/g, '') === password.replace(/\D/g, '')) {
                         SafeStorage.setItem('currentUser', JSON.stringify({ username, ...user }));
                         document.getElementById('login-screen-overlay').style.display = 'none';
                         applyUserSession(user);
-                        try {
-                            loadAllDataFromSupabase();
-                        } catch (err) {
-                            console.error("[LOGIN LOAD ERROR]:", err);
-                        }
-                        showToast(`Seja bem-vindo, ${user.name}! Login efetuado com sucesso.`, 'success');
+                        try { loadAllDataFromSupabase(); } catch (err) { console.error("[LOGIN ERROR]:", err); }
+                        showToast(`Seja bem-vindo, ${user.name}!`, 'success');
                         return true;
                     }
                     return false;
                 }
 
-                // If Supabase is connected, perform REAL authenticated Supabase Auth login! (Aprovado!)
+                // Tentar Supabase Auth primeiro
                 if (supabaseClient) {
-                    showToast("Autenticando na nuvem do Supabase...");
+                    showToast("Autenticando...");
                     
-                    // Map local username to authentication email safely
                     let email = username;
                     if (!email.includes("@")) {
                         email = username === "administrador" ? "admin@condosphere.com" : username + "@condosphere.com";
@@ -9020,63 +9017,29 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                         password: password
                     }).then(({ data, error }) => {
                         if (error) {
-                            console.warn("[SUPABASE AUTH] Sign in failed, trying presets...");
+                            console.warn("[SUPABASE AUTH] Fallback para login local...");
                             if (!doLocalLoginFallback()) {
                                 showToast("Erro: Credenciais inválidas.", "error");
                             }
                         } else if (data && data.user) {
-                            console.log("[SUPABASE AUTH SUCCESS] Logged in as:", data.user.email);
-                            
-                            // Load from public.users table using the session
-                            dbClient.from('users').select('*').eq('username', username)
-                                .then(({ data: dbData, error: dbErr }) => {
-                                    if (!dbErr && dbData && dbData.length > 0) {
-                                        const dbUser = dbData[0];
-                                        const cleanCpf = (dbUser.cpf || "").trim();
-                                        const resolvedUser = {
-                                            role: (username.includes('admin') || username.includes('gerente') || username.includes('kzam') || username.includes('sindico') || dbUser.username.includes('admin')) ? "Administrador" : "Colaborador",
-                                            name: dbUser.full_name,
-                                            job: "Funcionário Credenciado",
-                                            avatar: dbUser.full_name.split(' ').map(n => n.charAt(0)).join('').toUpperCase().slice(0, 2),
-                                            pass: password
-                                        };
-                                        SafeStorage.setItem('currentUser', JSON.stringify({ username: dbUser.username, ...resolvedUser }));
-                                        document.getElementById('login-screen-overlay').style.display = 'none';
-                                        applyUserSession(resolvedUser);
-                                        
-                                        try {
-                                            loadAllDataFromSupabase();
-                                        } catch (err) {
-                                            console.error("[LOGIN LOAD ERROR]:", err);
-                                        }
-                                        initIntercomRealtime();
-                                        showToast(`Seja bem-vindo, ${dbUser.full_name}! Autenticado via Supabase Cloud!`, 'success');
-                                    } else {
-                                        // Fallback if public.users row is missing
-                                        const fallbackUser = {
-                                            role: "Administrador",
-                                            name: username,
-                                            job: "ID: ADM-" + Math.random().toString(36).slice(2, 6).toUpperCase(),
-                                            avatar: "AD",
-                                            pass: password
-                                        };
-                                        SafeStorage.setItem('currentUser', JSON.stringify({ username, ...fallbackUser }));
-                                        document.getElementById('login-screen-overlay').style.display = 'none';
-                                        applyUserSession(fallbackUser);
-                                        loadAllDataFromSupabase();
-                                        initIntercomRealtime();
-                                        showToast("Seja bem-vindo! Autenticado com sucesso na nuvem!", "success");
-                                    }
-                                });
+                            console.log("[SUPABASE AUTH] Login OK:", data.user.email);
+                            doLocalLoginFallback();
                         }
                     }).catch(err => {
-                        console.warn("[SUPABASE AUTH] Connection error, checking local fallback...", err);
-                        if (!doLocalLoginFallback()) {
-                            showToast("Erro de rede: Falha ao consultar o Supabase.", "error");
-                        }
+                        console.warn("[SUPABASE AUTH] Erro de rede, usando fallback...");
+                        doLocalLoginFallback();
                     });
                 } else {
-                    // 100% Offline mode login fallback
+                    // Modo offline
+                    if (!doLocalLoginFallback()) {
+                        showToast("Erro: Credenciais inválidas.", "error");
+                    }
+                }
+            } catch (err) {
+                console.error("[LOGIN ERROR]:", err);
+                showToast("Erro interno no login.", "error");
+            }
+        }
                     if (!doLocalLoginFallback()) {
                         showToast("Erro: Credenciais inválidas.", "error");
                     }
