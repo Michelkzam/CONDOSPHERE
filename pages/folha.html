@@ -6,13 +6,15 @@
     <title>DP & Folha de Pagamento</title>
     <link rel="stylesheet" href="/src/styles/condosphere.css">
     <script src="/js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="/js/pdf-reports.js"></script>
     <style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style>
 </head>
 <body>
 <div class="card" style="margin-bottom:24px">
     <div class="card-header">
         <div><div class="card-title">Funcionários e Folha de Pagamento</div><div class="card-subtitle">Recolhimento salarial CLT</div></div>
-        <div style="display:flex; gap:8px"><button class="btn btn-secondary" onclick="showToast('Central de Impostos aberta!')">Impostos & Remessa</button><button class="btn btn-danger" onclick="showToast('Cálculo de Rescisão CLT aberto!')">Rescisão CLT</button><button class="btn btn-primary" onclick="promptAdiantamento()">Registrar Adiantamento</button></div>
+        <div style="display:flex; gap:8px"><button class="btn btn-secondary" onclick="showToast('Central de Impostos aberta!')">Impostos & Remessa</button><button class="btn btn-danger" onclick="showToast('Cálculo de Rescisão CLT aberto!')">Rescisão CLT</button><button class="btn btn-primary" onclick="promptAdiantamento()">Registrar Adiantamento</button><button class="btn btn-danger" onclick="generateFolhaPagamentoPDF()">📄 Relatório (.pdf)</button></div>
     </div>
     <div class="table-wrap"><table>
         <thead><tr><th>Funcionário</th><th>Função</th><th>Salário Base</th><th>Adiantamentos</th><th>Líquido (5º dia útil)</th><th style="text-align:center">Ação</th></tr></thead>

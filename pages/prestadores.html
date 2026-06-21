@@ -6,13 +6,18 @@
     <title>Prestadores de Serviço</title>
     <link rel="stylesheet" href="/src/styles/condosphere.css">
     <script src="/js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="/js/pdf-reports.js"></script>
     <style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style>
 </head>
 <body>
 <div class="card">
     <div class="card-header">
         <div><div class="card-title">Prestadores de Serviço</div><div class="card-subtitle">Gerencie contratos de empresas terceirizadas</div></div>
-        <button class="btn btn-primary" onclick="promptAddPrestador()">+ Novo Prestador</button>
+        <div style="display:flex; gap:8px">
+            <button class="btn btn-primary" onclick="promptAddPrestador()">+ Novo Prestador</button>
+            <button class="btn btn-danger" onclick="generatePrestadoresPDF()">📄 Relatório (.pdf)</button>
+        </div>
     </div>
     <div class="form-group" style="margin-bottom:16px"><label class="form-label">Busca Rápida</label><input type="text" class="form-control" placeholder="Pesquise por empresa, CNPJ ou serviço..."></div>
     <div class="table-wrap"><table>

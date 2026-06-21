@@ -6,13 +6,15 @@
     <title>Moradores</title>
     <link rel="stylesheet" href="/src/styles/condosphere.css">
     <script src="/js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="/js/pdf-reports.js"></script>
     <style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style>
 </head>
 <body>
 <div class="card">
     <div class="card-header">
         <div><div class="card-title">Fichas Cadastrais de Moradores</div><div class="card-subtitle">Organize os associados e controle categorias</div></div>
-        <div style="display:flex; gap:8px"><button class="btn btn-primary" onclick="promptAddResident()">Incluir Novo</button><button class="btn btn-secondary" onclick="showToast('Modelo .xlsx baixado!')">Modelo (.xlsx)</button><button class="btn btn-success" onclick="showToast('Importação via .xlsx em breve!')">Importar (.xlsx)</button><button class="btn btn-secondary" onclick="exportResidents()">Exportar (.xlsx)</button></div>
+        <div style="display:flex; gap:8px"><button class="btn btn-primary" onclick="promptAddResident()">Incluir Novo</button><button class="btn btn-secondary" onclick="showToast('Modelo .xlsx baixado!')">Modelo (.xlsx)</button><button class="btn btn-success" onclick="showToast('Importação via .xlsx em breve!')">Importar (.xlsx)</button><button class="btn btn-secondary" onclick="exportResidents()">Exportar (.xlsx)</button><button class="btn btn-danger" onclick="generateMoradoresPDF()">📄 Relatório (.pdf)</button></div>
     </div>
     <div class="form-group" style="margin-bottom:16px"><label class="form-label">Busca Rápida de Moradores</label><input type="text" class="form-control" placeholder="Pesquise por nome, CPF ou função..." oninput="universalSearch(this, residentsList, renderResidentsFiltered, ['name','cpf','contact','role'])"></div>
     <div class="table-wrap"><table>

@@ -1,20 +1,76 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Relatórios & Gestão</title><link rel="stylesheet" href="/src/styles/condosphere.css"><style>body{overflow:auto;padding:0;background:var(--bg-body)}</style></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios & Gestão</title>
+    <link rel="stylesheet" href="/src/styles/condosphere.css">
+    <script src="/js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="/js/pdf-reports.js"></script>
+    <style>body{overflow:auto;padding:0;background:var(--bg-body)}</style>
+</head>
 <body>
-<div class="subtabs" id="ges-tabs"><button class="subtab active" onclick="sw(0,this)">Balancete Mensal</button><button class="subtab" onclick="sw(1,this)">Previsão Orçamentária</button><button class="subtab" onclick="sw(2,this)">Demonstrativo DRE</button></div>
-<div class="ges-panel" style="padding:24px"><div class="card"><div class="card-header"><div><div class="card-title">Balancete e Prestação de Contas</div><div class="card-subtitle">Auditoria de caixa mensal</div></div><button class="btn btn-secondary" onclick="window.print()">Exportar Balancete (PDF)</button></div>
-<div class="table-wrap"><table><thead><tr><th>Categoria</th><th>Entradas</th><th>Saídas</th><th>Saldo Parcial</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum faturamento ou despesa liquidada neste mês.</td></tr></tbody></table></div></div></div>
-<div class="ges-panel" style="padding:24px; display:none"><div class="card" style="max-width:520px"><div class="card-title" style="margin-bottom:10px">Previsão Orçamentária</div><div class="card-subtitle" style="margin-bottom:20px">Definição de reajuste da cota condominial</div>
-<form onsubmit="event.preventDefault();showToast('Projeção salva!')"><div class="form-group"><label class="form-label">Gasto Mensal Médio Histórico</label><input type="text" class="form-control" value="R$ 0,00" readonly></div><div class="form-group"><label class="form-label">Previsão Inflação Anual (%)</label><input type="number" class="form-control" value="5.5" step="0.1"></div><div class="form-group"><label class="form-label">Nova Cota Sugerida</label><input type="text" class="form-control" value="R$ 0,00 / Unidade" readonly style="font-weight:bold; color:var(--success)"></div><button type="submit" class="btn btn-success" style="width:100%">Confirmar Planejamento</button></form></div></div>
-<div class="ges-panel" style="padding:24px; display:none"><div class="card"><div class="card-title" style="margin-bottom:10px">Demonstrativo de Resultados do Exercício (DRE)</div><div class="card-subtitle" style="margin-bottom:20px">Análise macro de receitas e faturamento</div>
-<div style="background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:var(--radius); padding:20px; font-size:12px; display:flex; flex-direction:column; gap:10px">
-<div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:6px; font-weight:bold"><span>(=) RECEITA BRUTA OPERACIONAL</span><span style="color:var(--success)">R$ 0,00</span></div>
-<div style="display:flex; justify-content:space-between; color:var(--text-muted); padding-left:14px"><span>(-) Desconto de Inadimplência</span><span>-R$ 0,00</span></div>
-<div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:6px; font-weight:bold"><span>(=) RECEITA LÍQUIDA</span><span>R$ 0,00</span></div>
-<div style="display:flex; justify-content:space-between; color:var(--text-muted); padding-left:14px"><span>(-) Folha Salarial CLT</span><span>-R$ 0,00</span></div>
-<div style="display:flex; justify-content:space-between; color:var(--text-muted); padding-left:14px"><span>(-) Despesas Gerais</span><span>-R$ 0,00</span></div>
-<div style="display:flex; justify-content:space-between; font-weight:900; font-size:14px; border-top:2px solid var(--border); padding-top:10px; margin-top:8px"><span style="color:#fff">(=) SUPERÁVIT OPERACIONAL</span><span style="color:var(--success)">R$ 0,00</span></div>
-</div></div></div>
-<script>function sw(i,b){document.querySelectorAll('.ges-panel').forEach((p,x)=>p.style.display=x===i?'block':'none');document.querySelectorAll('#ges-tabs .subtab').forEach(t=>t.classList.remove('active'));b.classList.add('active');}function showToast(m,t){parent.postMessage({type:'toast',msg:m,toastType:t||'success'},'*');}</script>
+<div class="subtabs" id="ges-tabs">
+    <button class="subtab active" onclick="sw(0,this)">Balancete Mensal</button>
+    <button class="subtab" onclick="sw(1,this)">Previsão Orçamentária</button>
+    <button class="subtab" onclick="sw(2,this)">Demonstrativo DRE</button>
+</div>
+
+<!-- Balancete -->
+<div class="ges-panel" style="padding:24px">
+    <div class="card">
+        <div class="card-header">
+            <div><div class="card-title">Balancete e Prestação de Contas</div><div class="card-subtitle">Auditoria de caixa mensal</div></div>
+            <div style="display:flex; gap:8px">
+                <button class="btn btn-secondary" onclick="generateBalancetePDF()">📄 Exportar Balancete (PDF)</button>
+                <button class="btn btn-danger" onclick="generateGeralPDF()">📄 Relatório Geral (PDF)</button>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Categoria</th><th>Entradas</th><th>Saídas</th><th>Saldo Parcial</th></tr></thead>
+                <tbody><tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:15px">Nenhum faturamento ou despesa liquidada neste mês.</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Previsão -->
+<div class="ges-panel" style="padding:24px; display:none">
+    <div class="card" style="max-width:520px">
+        <div class="card-title" style="margin-bottom:10px">Previsão Orçamentária</div>
+        <div class="card-subtitle" style="margin-bottom:20px">Definição de reajuste da cota condominial</div>
+        <form onsubmit="event.preventDefault();showToast('Projeção salva!')">
+            <div class="form-group"><label class="form-label">Gasto Mensal Médio Histórico</label><input type="text" class="form-control" value="R$ 0,00" readonly></div>
+            <div class="form-group"><label class="form-label">Previsão Inflação Anual (%)</label><input type="number" class="form-control" value="5.5" step="0.1"></div>
+            <div class="form-group"><label class="form-label">Nova Cota Sugerida</label><input type="text" class="form-control" value="R$ 0,00 / Unidade" readonly style="font-weight:bold; color:var(--success)"></div>
+            <button type="submit" class="btn btn-success" style="width:100%">Confirmar Planejamento</button>
+        </form>
+    </div>
+</div>
+
+<!-- DRE -->
+<div class="ges-panel" style="padding:24px; display:none">
+    <div class="card">
+        <div class="card-title" style="margin-bottom:10px">Demonstrativo de Resultados do Exercício (DRE)</div>
+        <div class="card-subtitle" style="margin-bottom:20px">Análise macro de receitas e faturamento</div>
+        <div style="background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:var(--radius); padding:20px; font-size:12px; display:flex; flex-direction:column; gap:10px">
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:6px; font-weight:bold"><span>(=) RECEITA BRUTA OPERACIONAL</span><span style="color:var(--success)">R$ 0,00</span></div>
+            <div style="display:flex; justify-content:space-between; color:var(--text-muted); padding-left:14px"><span>(-) Desconto de Inadimplência</span><span>-R$ 0,00</span></div>
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:6px; font-weight:bold"><span>(=) RECEITA LÍQUIDA</span><span>R$ 0,00</span></div>
+            <div style="display:flex; justify-content:space-between; color:var(--text-muted); padding-left:14px"><span>(-) Folha Salarial CLT</span><span>-R$ 0,00</span></div>
+            <div style="display:flex; justify-content:space-between; color:var(--text-muted); padding-left:14px"><span>(-) Despesas Gerais</span><span>-R$ 0,00</span></div>
+            <div style="display:flex; justify-content:space-between; font-weight:900; font-size:14px; border-top:2px solid var(--border); padding-top:10px; margin-top:8px"><span style="color:#fff">(=) SUPERÁVIT OPERACIONAL</span><span style="color:var(--success)">R$ 0,00</span></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function sw(i,b){
+    document.querySelectorAll('.ges-panel').forEach(function(p,x){p.style.display=x===i?'block':'none';});
+    document.querySelectorAll('#ges-tabs .subtab').forEach(function(t){t.classList.remove('active');});
+    b.classList.add('active');
+}
+</script>
 </body></html>

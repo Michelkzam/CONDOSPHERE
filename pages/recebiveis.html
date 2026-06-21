@@ -6,6 +6,8 @@
     <title>Contas a Receber</title>
     <link rel="stylesheet" href="/src/styles/condosphere.css">
     <script src="/js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="/js/pdf-reports.js"></script>
     <style>body{overflow:auto;padding:0;background:var(--bg-body)}</style>
 </head>
 <body>
@@ -23,7 +25,7 @@
                 <div><div class="card-title">Inadimplência de Mensalidades</div><div class="card-subtitle" style="color:var(--danger); font-weight:700">Total a Receber Vencido</div></div>
                 <div style="display:flex; gap:8px">
                     <button class="btn btn-success" onclick="showToast('Quitação em grupo processada!')">Quitar em Grupo</button>
-                    <button class="btn btn-secondary" onclick="showToast('Relatório exportado!')">Exportar Relatório</button>
+                    <button class="btn btn-secondary" onclick="generateContasReceberPDF()">📄 Exportar Relatório</button>
                 </div>
             </div>
             <div class="metrics-grid" style="grid-template-columns:1fr 1fr; margin-bottom:20px">
