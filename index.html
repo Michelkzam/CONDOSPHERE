@@ -8988,7 +8988,8 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
         function fillLoginPreset(username, password) {
             document.getElementById('login-username').value = username;
             document.getElementById('login-password').value = password;
-            showToast(`Dados preenchidos para: ${username}!`);
+            // Fazer login automaticamente
+            document.getElementById('login-form').dispatchEvent(new Event('submit'));
         }
 
         function handleLoginSubmit(event) {
