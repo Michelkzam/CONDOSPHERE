@@ -1,0 +1,407 @@
+/* =====================================================================
+   CONDOSPHERE - Design Responsivo Mobile
+   ===================================================================== */
+
+/* === TABLET (768px - 1024px) === */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 200px;
+        min-width: 200px;
+    }
+    
+    .sidebar .logo-container {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .sidebar .system-name {
+        font-size: 12px;
+    }
+    
+    .sidebar .nav-item {
+        padding: 6px 10px;
+        font-size: 10px;
+    }
+    
+    .sidebar .submenu-item {
+        font-size: 9px;
+    }
+    
+    .content-body {
+        padding: 16px 20px;
+    }
+    
+    .header-bar {
+        padding: 12px 20px;
+    }
+    
+    .header-title {
+        font-size: 16px;
+    }
+    
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+    
+    .grid-3 {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .grid-4 {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .portal-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .plan-card {
+        min-width: 250px;
+    }
+    
+    .calendar-grid {
+        font-size: 10px;
+    }
+    
+    .calendar-day {
+        min-height: 60px;
+        padding: 6px;
+    }
+    
+    .modal-box {
+        margin: 10px;
+        max-height: 90vh;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    .actions-popup {
+        min-width: 180px;
+    }
+}
+
+/* === MOBILE (max-width: 768px) === */
+@media (max-width: 768px) {
+    /* Sidebar */
+    .sidebar {
+        position: fixed;
+        left: -260px;
+        top: 0;
+        width: 260px;
+        min-width: 260px;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+    }
+    
+    .sidebar.mobile-open {
+        left: 0;
+    }
+    
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+    }
+    
+    .sidebar-overlay.active {
+        display: block;
+    }
+    
+    /* Header */
+    .header-bar {
+        padding: 10px 16px;
+        flex-wrap: wrap;
+    }
+    
+    .header-title {
+        font-size: 14px;
+    }
+    
+    .user-profile-info {
+        display: none;
+    }
+    
+    .logout-btn-header {
+        padding: 6px 8px;
+        font-size: 9px;
+    }
+    
+    /* Content */
+    .content-body {
+        padding: 12px 16px;
+    }
+    
+    /* Grids */
+    .grid-2,
+    .grid-3,
+    .grid-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .portal-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .report-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Cards */
+    .panel-card {
+        padding: 16px;
+    }
+    
+    .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .panel-header > div:last-child {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    /* Tables */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+        min-width: 600px;
+    }
+    
+    /* Modals */
+    .modal-overlay {
+        padding: 10px;
+        align-items: flex-end;
+    }
+    
+    .modal-box {
+        max-height: 85vh;
+        border-radius: 12px 12px 0 0;
+    }
+    
+    /* Calendar */
+    .calendar-grid {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+    }
+    
+    .calendar-day {
+        min-height: 50px;
+        padding: 4px;
+        font-size: 10px;
+    }
+    
+    .calendar-day .day-num {
+        font-size: 11px;
+    }
+    
+    .calendar-day .day-event {
+        font-size: 8px;
+    }
+    
+    /* Plans */
+    .plans-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .plan-card {
+        margin-bottom: 16px;
+    }
+    
+    /* Navigation */
+    .nav-item {
+        padding: 10px 12px;
+        font-size: 11px;
+    }
+    
+    .submenu-item {
+        padding: 8px 12px;
+        font-size: 10px;
+    }
+    
+    /* Forms */
+    .form-group {
+        margin-bottom: 12px;
+    }
+    
+    .form-control {
+        font-size: 14px;
+        padding: 12px;
+    }
+    
+    /* Buttons */
+    .btn {
+        padding: 10px 16px;
+        font-size: 12px;
+    }
+    
+    .btn-sm {
+        padding: 8px 12px;
+        font-size: 11px;
+    }
+    
+    /* Footer */
+    .sidebar-footer {
+        padding: 12px;
+    }
+    
+    .export-checkboxes {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Toast */
+    .toast-notification {
+        left: 16px;
+        right: 16px;
+        max-width: none;
+    }
+}
+
+/* === MOBILE PEQUENO (max-width: 480px) === */
+@media (max-width: 480px) {
+    .header-bar {
+        padding: 8px 12px;
+    }
+    
+    .header-title {
+        font-size: 12px;
+    }
+    
+    .badge-info {
+        font-size: 8px;
+        padding: 2px 6px;
+    }
+    
+    .content-body {
+        padding: 8px 12px;
+    }
+    
+    .panel-card {
+        padding: 12px;
+        border-radius: 8px;
+    }
+    
+    .panel-title {
+        font-size: 13px;
+    }
+    
+    .metric-card {
+        padding: 12px;
+    }
+    
+    .metric-value {
+        font-size: 18px;
+    }
+    
+    .btn {
+        padding: 8px 12px;
+        font-size: 11px;
+    }
+    
+    .modal-box {
+        margin: 5px;
+        border-radius: 8px 8px 0 0;
+    }
+    
+    .modal-header {
+        padding: 12px 16px;
+    }
+    
+    .modal-body {
+        padding: 16px;
+    }
+    
+    .modal-footer {
+        padding: 12px 16px;
+    }
+    
+    .calendar-day {
+        min-height: 40px;
+        padding: 3px;
+    }
+    
+    .stat-grid {
+        gap: 8px;
+    }
+    
+    .stat-card {
+        padding: 12px;
+    }
+    
+    .stat-value {
+        font-size: 16px;
+    }
+}
+
+/* === MENU HAMBURGER === */
+.mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 998;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--color-primary);
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .header-bar {
+        padding-left: 60px;
+    }
+}
+
+/* === UTILITÁRIOS MOBILE === */
+.touch-target {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+.scroll-horizontal {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.scroll-horizontal::-webkit-scrollbar {
+    display: none;
+}
+
+/* Safe area para iPhones */
+@supports (padding: env(safe-area-inset-bottom)) {
+    .sidebar-footer {
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    }
+    
+    .content-body {
+        padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+}
