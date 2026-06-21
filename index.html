@@ -214,6 +214,30 @@
                     </div>
 
                 </div>
+
+                <!-- NOVOS MÓDULOS -->
+                <div class="nav-menu">
+                    <button class="nav-item submenu-header" onclick="toggleSubmenu('novos-sub', this)">
+                        <span style="display:flex;align-items:center;gap:12px">
+                            <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <span class="nav-label">Novos Módulos</span>
+                        </span>
+                        <svg class="submenu-arrow" style="width:12px;height:12px;fill:currentColor" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </button>
+                    <div id="novos-sub" class="submenu-list">
+                        <button class="submenu-item" onclick="loadExternalPage('pages/admin-panel.html')">⚙️ Painel Admin</button>
+                        <button class="submenu-item" onclick="loadExternalPage('pages/portal-morador.html')">🏠 Portal Morador</button>
+                        <button class="submenu-item" onclick="loadExternalPage('pages/portal-colaborador-novo.html')">👤 Portal Colaborador</button>
+                        <button class="submenu-item" onclick="loadExternalPage('pages/gerenciar-planos.html')">📋 Planos Licenciamento</button>
+                        <button class="submenu-item" onclick="loadExternalPage('pages/reservas-agendamentos.html')">📅 Reservas & Agendamentos</button>
+                        <button class="submenu-item" onclick="loadExternalPage('pages/documentos.html')">📁 Documentos</button>
+                        <button class="submenu-item" onclick="loadExternalPage('pages/assembleias-online.html')">🗳️ Assembleias Online</button>
+                        <button class="submenu-item" onclick="loadExternalPage('pages/perfis-acesso.html')">🔑 Perfis de Acesso</button>
+                        <button class="submenu-item" onclick="loadExternalPage('pages/relatorios-automatizados.html')">📊 Relatórios Automatizados</button>
+                        <button class="submenu-item" onclick="loadExternalPage('pages/migrate-database.html')">🗄️ Migrar Banco</button>
+                    </div>
+                </div>
+
             </div>
 
             <!-- BATCH EXPORT AND IMPORT CONTROLS -->
@@ -4998,6 +5022,11 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
         // Page cache for external pages
         const pageCache = {};
         let currentPageContent = null;
+
+        // Carregar página externa
+        function loadExternalPage(pageUrl) {
+            window.location.href = pageUrl;
+        }
 
         function switchTab(tabId, el = null) {
             // Remove active classes from all navs & subnavs
