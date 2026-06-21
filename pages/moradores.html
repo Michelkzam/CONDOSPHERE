@@ -1,34 +1,45 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moradores</title>
-    <link rel="stylesheet" href="/src/styles/condosphere.css">
-    <script src="/js/app.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="/js/pdf-reports.js"></script>
-    <style>body{overflow:auto;padding:24px;background:var(--bg-body)}</style>
-</head>
-<body>
-<div class="card">
-    <div class="card-header">
-        <div><div class="card-title">Fichas Cadastrais de Moradores</div><div class="card-subtitle">Organize os associados e controle categorias</div></div>
-        <div style="display:flex; gap:8px"><button class="btn btn-primary" onclick="promptAddResident()">Incluir Novo</button><button class="btn btn-secondary" onclick="showToast('Modelo .xlsx baixado!')">Modelo (.xlsx)</button><button class="btn btn-success" onclick="showToast('Importação via .xlsx em breve!')">Importar (.xlsx)</button><button class="btn btn-secondary" onclick="exportResidents()">Exportar (.xlsx)</button><button class="btn btn-danger" onclick="generateMoradoresPDF()">📄 Relatório (.pdf)</button></div>
+<div id="tab-moradores" class="tab-panel">
+    <div class="panel-card">
+        <div class="panel-header">
+            <div>
+                <h3 class="panel-title">Fichas Cadastrais de Moradores</h3>
+                <p class="panel-subtitle">Organize os associados e controle as categorias</p>
+            </div>
+            <div style="display:flex; gap:10px">
+                <button class="btn btn-primary" onclick="openMoradorModal(false)"><svg style="width:14px; height:14px; fill:currentColor; margin-right:4px; display:inline-block; vertical-align:middle" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Incluir Novo</button>
+                <button class="btn btn-secondary" onclick="downloadMoradoresExcelModel()">📥 Modelo (.xlsx)</button>
+                <label class="btn btn-success" style="cursor:pointer">
+                    📤 Importar (.xlsx)
+                    <input type="file" style="display:none" onchange="simulateImportExcel('moradores', this)">
+                </label>
+            </div>
+        </div>
+        
+        <!-- Moradores Search Input -->
+        <div class="form-group" style="margin-bottom:15px; padding: 0 15px">
+            <label class="form-label" style="font-weight:bold; font-size:0.75rem">🔍 Busca Rápida de Moradores (Nome, CPF ou Função)</label>
+            <input type="text" id="residents-search" class="form-control" style="background-color:var(--bg-input)" oninput="filterResidentsTable()" placeholder="Pesquise por nome, CPF, contato, função ou residência vinculada...">
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Contato</th>
+                        <th>Função</th>
+                        <th>Residência Vinculada</th>
+                        <th>Associado</th>
+                        <th>Morador</th>
+                        <th>Status</th>
+                        <th style="text-align:center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic rows loaded from database -->
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="form-group" style="margin-bottom:16px"><label class="form-label">Busca Rápida de Moradores</label><input type="text" class="form-control" placeholder="Pesquise por nome, CPF ou função..." oninput="universalSearch(this, residentsList, renderResidentsFiltered, ['name','cpf','contact','role'])"></div>
-    <div class="table-wrap"><table>
-        <thead><tr><th>Nome</th><th>CPF</th><th>Contato</th><th>Função</th><th>Residência</th><th>Associado</th><th>Morador</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead>
-        <tbody id="mor-tbody"></tbody>
-    </table></div>
 </div>
-<script>
-function promptAddResident() {
-    var name = prompt('Nome completo:');
-    if (!name) return;
-    var cpf = prompt('CPF (só números):');
-    var contact = prompt('Contato/Telefone:');
-    addResident(name, cpf, contact, 'Morador', '-', false, true);
-}
-</script>
-</body></html>
