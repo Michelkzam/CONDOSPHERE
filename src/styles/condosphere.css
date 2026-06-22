@@ -1589,7 +1589,7 @@ textarea.form-control { resize: vertical !important; min-height: 80px !important
   position: fixed !important;
   inset: 0 !important;
   background: var(--bg-body) !important;
-  display: flex !important;
+  display: flex;
   align-items: center !important;
   justify-content: center !important;
   z-index: 3000 !important;
