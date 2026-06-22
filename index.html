@@ -7673,7 +7673,31 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
 
                             if (importedCount > 0) {
                                 showToast(`${importedCount} registros de '${type}' importados e cadastrados com sucesso no Módulo CondoSphere!`);
-                                setTimeout(() => loadAllDataFromSupabase(), 2000);
+                                try {
+                                    if (type === 'residencias') {
+                                        const rows = [];
+                                        Array.from(document.querySelectorAll('#table-residencias-list tbody tr')).forEach(row => {
+                                            const c = row.getElementsByTagName('td');
+                                            if (c.length >= 5) rows.push({ identifier: c[0].textContent.trim(), owner: c[1].textContent.trim(), address: c[2].textContent.trim(), profile_name: c[3].textContent.trim(), base_value: parseFloat(c[4].textContent.replace(/[^\d.,]/g, '').replace(',', '.')) || 300, status: c[5] ? c[5].textContent.trim() : 'Ativo' });
+                                        });
+                                        if (rows.length > 0) SafeStorage.setItem('condosphere_residences', JSON.stringify(rows));
+                                    } else if (type === 'moradores') {
+                                        const rows = [];
+                                        Array.from(document.querySelectorAll('#tab-moradores table tbody tr')).forEach(row => {
+                                            const c = row.getElementsByTagName('td');
+                                            if (c.length >= 5) { const a = c[5] ? c[5].querySelector('input') : null; const r = c[6] ? c[6].querySelector('input') : null; rows.push({ name: c[0].textContent.trim(), cpf: c[1].textContent.trim(), contact: c[2].textContent.trim(), role: c[3].textContent.trim(), residence_name: c[4].textContent.trim(), is_associated: a ? a.checked : false, is_resident: r ? r.checked : false }); }
+                                        });
+                                        if (rows.length > 0) SafeStorage.setItem('condosphere_residents', JSON.stringify(rows));
+                                    } else if (type === 'veiculos') {
+                                        const rows = [];
+                                        Array.from(document.querySelectorAll('#tab-veiculos table tbody tr')).forEach(row => {
+                                            const c = row.getElementsByTagName('td');
+                                            if (c.length >= 4) rows.push({ plate: c[0].textContent.trim(), model: c[1].textContent.trim(), color: c[2].textContent.trim(), owner_name: c[3].textContent.trim(), is_active: true });
+                                        });
+                                        if (rows.length > 0) SafeStorage.setItem('condosphere_vehicles', JSON.stringify(rows));
+                                    }
+                                } catch(e) { console.warn('[IMPORT] Cache save error:', e); }
+                                setTimeout(() => loadAllDataFromSupabase(), 5000);
                                 return;
                             }
                         }
@@ -9707,11 +9731,64 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
 
                         showToast(`Carga concluída! ${resCount} residências, ${morCount} moradores e ${vehCount} veículos importados com sucesso!`, "success");
                         
-                        // Automatically redirect user to the Residences tab so they see results instantly!
+                        // Save to SafeStorage so data persists across tab switches
+                        try {
+                            const allResRows = [];
+                            Array.from(document.querySelectorAll('#table-residencias-list tbody tr')).forEach(row => {
+                                const c = row.getElementsByTagName('td');
+                                if (c.length >= 5) {
+                                    allResRows.push({
+                                        identifier: c[0].textContent.trim(),
+                                        owner: c[1].textContent.trim(),
+                                        address: c[2].textContent.trim(),
+                                        profile_name: c[3].textContent.trim(),
+                                        base_value: parseFloat(c[4].textContent.replace(/[^\d.,]/g, '').replace(',', '.')) || 300,
+                                        status: c[5] ? c[5].textContent.trim() : 'Ativo'
+                                    });
+                                }
+                            });
+                            if (allResRows.length > 0) SafeStorage.setItem('condosphere_residences', JSON.stringify(allResRows));
+
+                            const allMorRows = [];
+                            Array.from(document.querySelectorAll('#tab-moradores table tbody tr')).forEach(row => {
+                                const c = row.getElementsByTagName('td');
+                                if (c.length >= 5) {
+                                    const assocInput = c[5] ? c[5].querySelector('input') : null;
+                                    const residInput = c[6] ? c[6].querySelector('input') : null;
+                                    allMorRows.push({
+                                        name: c[0].textContent.trim(),
+                                        cpf: c[1].textContent.trim(),
+                                        contact: c[2].textContent.trim(),
+                                        role: c[3].textContent.trim(),
+                                        residence_name: c[4].textContent.trim(),
+                                        is_associated: assocInput ? assocInput.checked : false,
+                                        is_resident: residInput ? residInput.checked : false
+                                    });
+                                }
+                            });
+                            if (allMorRows.length > 0) SafeStorage.setItem('condosphere_residents', JSON.stringify(allMorRows));
+
+                            const allVehRows = [];
+                            Array.from(document.querySelectorAll('#tab-veiculos table tbody tr')).forEach(row => {
+                                const c = row.getElementsByTagName('td');
+                                if (c.length >= 4) {
+                                    allVehRows.push({
+                                        plate: c[0].textContent.trim(),
+                                        model: c[1].textContent.trim(),
+                                        color: c[2].textContent.trim(),
+                                        owner_name: c[3].textContent.trim(),
+                                        is_active: true
+                                    });
+                                }
+                            });
+                            if (allVehRows.length > 0) SafeStorage.setItem('condosphere_vehicles', JSON.stringify(allVehRows));
+                        } catch(e) { console.warn('[IMPORT] Erro ao salvar cache:', e); }
+
+                        // Wait 5s for Supabase upserts to complete, then redirect
                         setTimeout(() => {
                             switchTab('residencias');
-                            loadAllDataFromSupabase();
-                        }, 2000);
+                            setTimeout(() => loadAllDataFromSupabase(), 1000);
+                        }, 5000);
                         return;
                     }
 
@@ -10916,6 +10993,7 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
                         });
                         console.log("[SUPABASE FETCH] Residences loaded!");
                         window._residencesData = data;
+                        SafeStorage.setItem('condosphere_residences', JSON.stringify(data));
                         populateMoradorResidencesDropdown();
                     }
                 }).catch(() => {});
@@ -10970,6 +11048,7 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
                         });
                         console.log("[SUPABASE FETCH] Residents loaded!");
                         window._residentsData = data;
+                        SafeStorage.setItem('condosphere_residents', JSON.stringify(data));
                     }
                 }).catch(() => {});
 
