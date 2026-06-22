@@ -8985,20 +8985,26 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
             let user = testPresets[username];
             if (user && user.pass === password) {
                 SafeStorage.setItem('currentUser', JSON.stringify({ username, ...user }));
-                document.getElementById('login-screen-overlay').style.display = 'none';
-                applyUserSession(user);
-                showDashboardDirect();
-                try { loadAllDataFromSupabase(); } catch (e) {}
-                showToast(`Seja bem-vindo, ${user.name}!`, 'success');
+                try {
+                    document.getElementById('login-screen-overlay').style.setProperty('display', 'none', 'important');
+                    showDashboardDirect();
+                    applyUserSession(user);
+                    try { loadAllDataFromSupabase(); } catch (e2) {}
+                } catch(e) {
+                    console.error("[LOGIN ERROR]", e);
+                    document.getElementById('login-screen-overlay').style.setProperty('display', 'none', 'important');
+                    showDashboardDirect();
+                }
+                showToast('Seja bem-vindo, ' + user.name + '!');
             } else {
-                showToast("Credenciais inválidas! Use: admin.geral / 12345678901", "error");
+                showToast("Credenciais inválidas! Use: admin.geral / 12345678901");
             }
         }
 
         function handleLogout() {
             SafeStorage.removeItem('currentUser');
-            document.getElementById('login-screen-overlay').style.display = 'flex';
-            document.querySelectorAll('.tab-panel').forEach(function(p) { p.style.display = 'none'; p.classList.remove('active'); });
+            document.getElementById('login-screen-overlay').style.setProperty('display', 'flex', 'important');
+            document.querySelectorAll('.tab-panel').forEach(function(p) { p.style.setProperty('display', 'none', 'important'); p.classList.remove('active'); });
             
             // Clear Supabase session on logout (Aprovado!)
             if (supabaseClient) {
@@ -9011,10 +9017,16 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
 
         function showDashboardDirect() {
             var da = document.getElementById('dynamic-content-area');
-            if (da) da.style.display = 'none';
-            document.querySelectorAll('.tab-panel').forEach(function(p) { p.style.display = 'none'; p.classList.remove('active'); });
+            if (da) da.style.setProperty('display', 'none', 'important');
+            document.querySelectorAll('.tab-panel').forEach(function(p) {
+                p.style.setProperty('display', 'none', 'important');
+                p.classList.remove('active');
+            });
             var dash = document.getElementById('tab-dashboard');
-            if (dash) { dash.style.display = 'block'; dash.classList.add('active'); }
+            if (dash) {
+                dash.style.setProperty('display', 'block', 'important');
+                dash.classList.add('active');
+            }
             document.getElementById('current-tab-title').innerText = 'Painel Principal';
             document.querySelectorAll('.nav-item').forEach(function(i) { i.classList.remove('active'); });
             var dashBtn = document.querySelector('.nav-item[onclick*="dashboard"]');
