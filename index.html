@@ -12049,8 +12049,14 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
                     })
                     .on('broadcast', { event: 'webrtc-offer' }, ({ payload }) => {
                         const cachedUser = SafeStorage.getItem('currentUser');
-                        const myName = cachedUser ? JSON.parse(cachedUser).name.toLowerCase() : '';
-                        if (payload.to && payload.to.toLowerCase() !== myName) return;
+                        const currentUser = cachedUser ? JSON.parse(cachedUser) : null;
+                        if (!currentUser) return;
+                        const myName = currentUser.name.toLowerCase();
+                        const toLower = (payload.to || '').toLowerCase();
+                        const isForMe = toLower === myName ||
+                            (currentUser.role === 'Administrador' && (toLower === 'central de administração' || toLower === 'portaria de plantão')) ||
+                            (currentUser.role === 'Portaria' && (toLower === 'portaria de plantão' || toLower === 'central de administração'));
+                        if (!isForMe) return;
                         if (IntercomEngine) {
                             IntercomEngine._pendingOffer = payload.offer;
                             IntercomEngine._pendingCallId = payload.callId;
@@ -12345,10 +12351,12 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
             phoneState = "CONNECTED";
             
             if (intercomChannel) {
+                const cachedUser = SafeStorage.getItem('currentUser');
+                const myName = cachedUser ? JSON.parse(cachedUser).name : 'Unknown';
                 intercomChannel.send({
                     type: 'broadcast',
                     event: 'call-answer',
-                    payload: { from: getMyName ? getMyName() : 'Unknown' }
+                    payload: { from: myName }
                 });
             }
 
