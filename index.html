@@ -5108,8 +5108,16 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                         return res.text();
                     })
                     .then(html => {
-                        pageCache[tabId] = html;
-                        contentArea.innerHTML = html;
+                        var content = html;
+                        if (html.indexOf('<!DOCTYPE') !== -1 || html.indexOf('<html') !== -1) {
+                            var bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+                            if (bodyMatch) content = bodyMatch[1];
+                            content = content.replace(/<style>\s*body\s*\{[^}]*\}\s*<\/style>/gi, '');
+                            content = content.replace(/<link[^>]*condosphere\.css[^>]*>/gi, '');
+                            content = content.replace(/<script[^>]*src="[^"]*(?:app\.js|jspdf|pdf-reports)[^"]*"[^>]*><\/script>/gi, '');
+                        }
+                        pageCache[tabId] = content;
+                        contentArea.innerHTML = content;
                         contentArea.style.display = 'block';
                         executeAfterPageLoad(tabId);
                     })
