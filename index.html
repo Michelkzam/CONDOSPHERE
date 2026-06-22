@@ -5149,13 +5149,118 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
         }
 
         function executeAfterPageLoad(tabId) {
-            // Trigger dynamic renders/syncs after page content is loaded
             if (tabId === 'recebiveis') renderReceivables();
             else if (tabId === 'pagar') renderPayables();
             else if (tabId === 'funcionarios') renderEmployees();
             else if (tabId === 'prestadores') renderPrestadores();
             else if (tabId === 'portaria') { renderVisitorLogs(); populateVisitorAuthDropdown(); }
             else if (tabId === 'moradores') loadMoradoresFromSupabase();
+            else if (tabId === 'residencias') loadResidenciasFromCache();
+            else if (tabId === 'veiculos') loadVeiculosFromCache();
+        }
+
+        function loadResidenciasFromCache() {
+            const tbody = document.querySelector('#dynamic-content-area #res-tbody') || document.querySelector('#dynamic-content-area table tbody');
+            if (!tbody) return;
+            try {
+                let data = null;
+                if (supabaseClient || dbSource === 'supabase') {
+                    // Try Supabase first
+                    dbClient.from('residences').select('*').then(({ data: sData, error }) => {
+                        if (!error && sData && sData.length > 0) {
+                            SafeStorage.setItem('condosphere_residences', JSON.stringify(sData));
+                            renderResidenciasRows(tbody, sData);
+                        } else {
+                            const cached = SafeStorage.getItem('condosphere_residences');
+                            if (cached) renderResidenciasRows(tbody, JSON.parse(cached));
+                            else tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--color-text-muted);padding:20px">Nenhuma residência encontrada</td></tr>';
+                        }
+                    }).catch(() => {
+                        const cached = SafeStorage.getItem('condosphere_residences');
+                        if (cached) renderResidenciasRows(tbody, JSON.parse(cached));
+                    });
+                } else {
+                    const cached = SafeStorage.getItem('condosphere_residences');
+                    if (cached) renderResidenciasRows(tbody, JSON.parse(cached));
+                    else tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--color-text-muted);padding:20px">Nenhuma residência encontrada</td></tr>';
+                }
+            } catch(e) { console.warn('[RESIDENCIAS] Cache load error:', e); }
+        }
+
+        function renderResidenciasRows(tbody, data) {
+            tbody.innerHTML = "";
+            data.forEach(r => {
+                const tr = document.createElement('tr');
+                const statusClass = r.status === 'Ativo' ? 'badge-success' : 'badge-danger';
+                const formattedVal = r.base_value || 300;
+                tr.innerHTML = `
+                    <td><strong>${r.identifier}</strong></td>
+                    <td>${r.owner}</td>
+                    <td>${r.address}</td>
+                    <td style="color:#60a5fa">${r.profile_name || 'Perfil Lote Padrão'}</td>
+                    <td>R$ ${Number(formattedVal).toFixed(2).replace('.', ',')}</td>
+                    <td><span class="badge ${statusClass}">${r.status}</span></td>
+                    <td>
+                        <div style="display:flex;align-items:center;justify-content:center;gap:8px">
+                            <button class="action-icon" style="color:var(--color-success);border:none;background:none" title="Ativar" onclick="toggleResidenciaStatus(this,true)"><svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></button>
+                            <button class="action-icon" style="color:var(--color-warning);border:none;background:none" title="Desativar" onclick="toggleResidenciaStatus(this,false)"><svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg></button>
+                            <button class="action-icon" style="color:var(--color-danger);border:none;background:none" title="Excluir" onclick="deleteTableRow(this,'${r.identifier}')"><svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5L9 4H5v2h14V4z"/></svg></button>
+                        </div>
+                    </td>`;
+                tbody.appendChild(tr);
+            });
+            console.log("[RESIDENCIAS] " + data.length + " registros carregados");
+        }
+
+        function loadVeiculosFromCache() {
+            const tbody = document.querySelector('#dynamic-content-area #vei-tbody') || document.querySelector('#dynamic-content-area table tbody');
+            if (!tbody) return;
+            try {
+                if (supabaseClient || dbSource === 'supabase') {
+                    dbClient.from('vehicles').select('*').then(({ data: sData, error }) => {
+                        if (!error && sData && sData.length > 0) {
+                            SafeStorage.setItem('condosphere_vehicles', JSON.stringify(sData));
+                            renderVeiculosRows(tbody, sData);
+                        } else {
+                            const cached = SafeStorage.getItem('condosphere_vehicles');
+                            if (cached) renderVeiculosRows(tbody, JSON.parse(cached));
+                            else tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--color-text-muted);padding:20px">Nenhum veículo encontrado</td></tr>';
+                        }
+                    }).catch(() => {
+                        const cached = SafeStorage.getItem('condosphere_vehicles');
+                        if (cached) renderVeiculosRows(tbody, JSON.parse(cached));
+                    });
+                } else {
+                    const cached = SafeStorage.getItem('condosphere_vehicles');
+                    if (cached) renderVeiculosRows(tbody, JSON.parse(cached));
+                    else tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--color-text-muted);padding:20px">Nenhum veículo encontrado</td></tr>';
+                }
+            } catch(e) { console.warn('[VEICULOS] Cache load error:', e); }
+        }
+
+        function renderVeiculosRows(tbody, data) {
+            tbody.innerHTML = "";
+            data.forEach(v => {
+                const tr = document.createElement('tr');
+                const statusClass = v.is_active ? 'badge-success' : 'badge-secondary';
+                const plate = v.plate || '';
+                const model = v.model || '';
+                const color = v.color || '';
+                const owner = v.owner_name || v.owner || '';
+                tr.innerHTML = `
+                    <td style="font-weight:700;letter-spacing:1px;color:var(--color-primary)">${plate}</td>
+                    <td>${model}</td>
+                    <td>${color}</td>
+                    <td>${owner}</td>
+                    <td><span class="badge ${statusClass}">${v.is_active ? 'Ativo' : 'Inativo'}</span></td>
+                    <td>
+                        <div style="display:flex;align-items:center;justify-content:center;gap:6px">
+                            <button class="action-icon" style="color:var(--color-danger);border:none;background:none" title="Excluir" onclick="deleteTableRow(this,'s${plate}')"><svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5L9 4H5v2h14V4z"/></svg></button>
+                        </div>
+                    </td>`;
+                tbody.appendChild(tr);
+            });
+            console.log("[VEICULOS] " + data.length + " registros carregados");
         }
 
         // Switch internal sub tabs inside financial modules (Aprovado!)
@@ -5561,65 +5666,86 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
         /* DYNAMIC RENDER OF VISITOR ACCESS LOGS TABLE LIST (Makes row click active!) */
         // Load moradores from Supabase when page is loaded dynamically
         function loadMoradoresFromSupabase() {
-            if (!supabaseClient && dbSource !== 'supabase') return;
-            
             const tbody = document.querySelector('#dynamic-content-area table tbody') || document.querySelector('#tab-moradores table tbody');
             if (!tbody) return;
-            
-            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--color-text-muted);padding:20px">Carregando moradores...</td></tr>';
-            
-            dbClient.from('residents').select('*')
-                .then(({ data, error }) => {
-                    if (error) {
-                        console.error("[SUPABASE ERROR] Fetch residents:", error.message);
-                        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--color-danger);padding:20px">Erro ao carregar: ' + error.message + '</td></tr>';
-                    } else if (data && data.length > 0) {
-                        tbody.innerHTML = "";
-                        data.forEach(m => {
-                            const tr = document.createElement('tr');
-                            tr.id = 'mor-row-' + Math.floor(Math.random() * 100000);
-                            tr.dataset.dbId = m.id;
-                            
-                            tr.innerHTML = `
-                                <td><strong>${m.name}</strong></td>
-                                <td>${m.cpf}</td>
-                                <td>${m.contact}</td>
-                                <td>${m.role}</td>
-                                <td style="color:var(--color-primary);font-weight:600">${m.residence_name || 'Sem Vínculo'}</td>
-                                <td style="text-align:center">
-                                    <span class="checkbox-morador ${m.is_associated ? 'checked' : 'unchecked'}" title="${m.is_associated ? 'Associado' : 'Não Associado'}">${m.is_associated ? '✓' : '✕'}</span>
-                                </td>
-                                <td style="text-align:center">
-                                    <span class="checkbox-morador ${m.is_resident ? 'checked' : 'unchecked'}" title="${m.is_resident ? 'Morador' : 'Não Morador'}">${m.is_resident ? '✓' : '✕'}</span>
-                                </td>
-                                <td><span class="badge badge-success">Ativo</span></td>
-                                <td>
-                                    <div style="display:flex;align-items:center;justify-content:center;gap:6px">
-                                        <button class="action-icon" style="color:var(--color-success);border:none;background:none" title="Ativar" onclick="toggleMoradorStatus(this,true)">
-                                            <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                                        </button>
-                                        <button class="action-icon" style="color:var(--color-warning);border:none;background:none" title="Desativar" onclick="toggleMoradorStatus(this,false)">
-                                            <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
-                                        </button>
-                                        <button class="action-icon" style="color:var(--color-primary);border:none;background:none" title="Alterar" onclick="editMoradorRow(this)">
-                                            <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M3 17.25V21h4.25L17.81 9.94l-4.25-4.25L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 4.25 4.25 1.83-1.83z"/></svg>
-                                        </button>
-                                        <button class="action-icon" style="color:var(--color-danger);border:none;background:none" title="Excluir" onclick="deleteTableRow(this,'${m.name}')">
-                                            <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5L9 4H5v2h14V4z"/></svg>
-                                        </button>
-                                    </div>
-                                </td>
-                            `;
-                            tbody.appendChild(tr);
-                        });
-                        console.log("[MORADORES] " + data.length + " registros carregados do Supabase");
-                    } else {
-                        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--color-text-muted);padding:20px">Nenhum morador cadastrado</td></tr>';
-                    }
-                }).catch(err => {
-                    console.error("[MORADORES] Erro:", err);
-                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--color-danger);padding:20px">Falha na conexão</td></tr>';
-                });
+
+            // Fallback: try Supabase first, then SafeStorage cache
+            if (supabaseClient || dbSource === 'supabase') {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--color-text-muted);padding:20px">Carregando moradores...</td></tr>';
+                
+                dbClient.from('residents').select('*')
+                    .then(({ data, error }) => {
+                        if (error || !data || data.length === 0) {
+                            loadMoradoresFromCache(tbody);
+                        } else {
+                            renderMoradoresRows(tbody, data);
+                            SafeStorage.setItem('condosphere_residents', JSON.stringify(data));
+                        }
+                    }).catch(() => loadMoradoresFromCache(tbody));
+            } else {
+                loadMoradoresFromCache(tbody);
+            }
+        }
+
+        function loadMoradoresFromCache(tbody) {
+            try {
+                const cached = SafeStorage.getItem('condosphere_residents');
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    if (data.length > 0) { renderMoradoresRows(tbody, data); return; }
+                }
+            } catch(e) {}
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--color-text-muted);padding:20px">Nenhum morador encontrado</td></tr>';
+        }
+
+        function renderMoradoresRows(tbody, data) {
+            tbody.innerHTML = "";
+            data.forEach(m => {
+                const tr = document.createElement('tr');
+                tr.id = 'mor-row-' + Math.floor(Math.random() * 100000);
+                tr.dataset.dbId = m.id || '';
+                const name = m.name || m.full_name || '';
+                const cpf = m.cpf || '';
+                const contact = m.contact || '';
+                const role = m.role || 'Morador';
+                const resName = m.residence_name || 'Sem Vínculo';
+                const isAssoc = m.is_associated;
+                const isRes = m.is_resident;
+                
+                tr.innerHTML = `
+                    <td><strong>${name}</strong></td>
+                    <td>${cpf}</td>
+                    <td>${contact}</td>
+                    <td>${role}</td>
+                    <td style="color:var(--color-primary);font-weight:600">${resName}</td>
+                    <td style="text-align:center">
+                        <span class="checkbox-morador ${isAssoc ? 'checked' : 'unchecked'}" title="${isAssoc ? 'Associado' : 'Não Associado'}">${isAssoc ? '✓' : '✕'}</span>
+                    </td>
+                    <td style="text-align:center">
+                        <span class="checkbox-morador ${isRes ? 'checked' : 'unchecked'}" title="${isRes ? 'Morador' : 'Não Morador'}">${isRes ? '✓' : '✕'}</span>
+                    </td>
+                    <td><span class="badge badge-success">Ativo</span></td>
+                    <td>
+                        <div style="display:flex;align-items:center;justify-content:center;gap:6px">
+                            <button class="action-icon" style="color:var(--color-success);border:none;background:none" title="Ativar" onclick="toggleMoradorStatus(this,true)">
+                                <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            </button>
+                            <button class="action-icon" style="color:var(--color-warning);border:none;background:none" title="Desativar" onclick="toggleMoradorStatus(this,false)">
+                                <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+                            </button>
+                            <button class="action-icon" style="color:var(--color-primary);border:none;background:none" title="Alterar" onclick="editMoradorRow(this)">
+                                <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M3 17.25V21h4.25L17.81 9.94l-4.25-4.25L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 4.25 4.25 1.83-1.83z"/></svg>
+                            </button>
+                            <button class="action-icon" style="color:var(--color-danger);border:none;background:none" title="Excluir" onclick="deleteTableRow(this,'${name}')">
+                                <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5L9 4H5v2h14V4z"/></svg>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            console.log("[MORADORES] " + data.length + " registros carregados");
+        }
         }
 
         function renderVisitorLogs() {
