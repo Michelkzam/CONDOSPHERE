@@ -9437,7 +9437,15 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
 
         function importUnifiedCondoExcel(fileInput) {
             const file = fileInput.files[0];
-            if (!file) return;
+            if (!file) { showToast("Nenhum arquivo selecionado!", "error"); return; }
+
+            showToast("Processando arquivo: " + file.name + "...", "info");
+
+            if (typeof XLSX === 'undefined') {
+                showToast("Biblioteca XLSX não carregada! Verifique sua conexão com a internet.", "error");
+                console.error("[IMPORT] XLSX library not loaded. CDN may have failed.");
+                return;
+            }
 
             // Sincronização e backup do arquivo físico no Supabase Storage Bucket 'uploads' (Aprovado!)
             if (supabaseClient) {
@@ -9794,7 +9802,8 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
 
                     throw new Error("Formato inválido");
                 } catch (err) {
-                    console.error("Unified bulk import failed, using fallback mock import:", err);
+                    console.error("Unified bulk import failed:", err);
+                    showToast("Erro na importação: " + err.message + ". Usando dados de exemplo.", "error");
                     
                     insertMockRow("Quadra B - Lote 14", "Rodrigo Alves (Carga)", "Alameda dos Pinheiros, 33", "Perfil Lote Luxo", 500.00, "Ativo");
                     upsertToSupabase('residences', { identifier: "Quadra B - Lote 14", owner: "Rodrigo Alves (Carga)", address: "Alameda dos Pinheiros, 33", profile_name: "Perfil Lote Luxo", base_value: 500.00, status: "Ativo" }, 'identifier');
