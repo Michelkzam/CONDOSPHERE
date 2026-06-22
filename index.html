@@ -7,18 +7,20 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>CondoSphere - ERP & Governança de Alta Performance</title>
-    <link rel="stylesheet" href="/src/styles/global.css">
-    <link rel="stylesheet" href="/src/styles/mobile.css">
-    <link rel="stylesheet" href="/src/styles/condosphere.css">
+    <link rel="stylesheet" href="/src/styles/global.css?v=3.1">
+    <link rel="stylesheet" href="/src/styles/mobile.css?v=3.1">
+    <link rel="stylesheet" href="/src/styles/condosphere.css?v=3.1">
     <style>
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
         .checkbox-morador { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: default; transition: all 0.2s; }
         .checkbox-morador.checked { background: #10b981; border: 2px solid #10b981; color: white; }
         .checkbox-morador.unchecked { background: rgba(239,68,68,0.15); border: 2px solid #ef4444; color: #ef4444; }
+        #version-badge { position: fixed; top: 4px; left: 4px; z-index: 99999; background: #10b981; color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 4px; font-family: monospace; }
     </style>
 </head>
 <body>
+    <div id="version-badge">v3.1 - OK</div>
 
     <!-- FULL LOGIN SCREEN OVERLAY -->
     <div id="login-screen-overlay" class="login-overlay">
@@ -4469,10 +4471,16 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     <!-- High-Performance CDN loading for 100% reliability on Vercel and local executions -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script src="/js/condo-engine.js"></script>
-    <script src="/js/banking-integration.js"></script>
-    <script src="/js/condo-api.js"></script>
+    <script src="/js/condo-engine.js?v=3.1"></script>
+    <script src="/js/banking-integration.js?v=3.1"></script>
+    <script src="/js/condo-api.js?v=3.1"></script>
     <script>
+        window.onerror = function(msg, src, line, col, err) {
+            document.getElementById('version-badge').textContent = 'ERROR: ' + msg + ' (line ' + line + ')';
+            document.getElementById('version-badge').style.background = '#ef4444';
+            console.error('[GLOBAL ERROR]', msg, 'at line', line);
+            return false;
+        };
         // SafeStorage defined at the top-level to prevent hoisting/reference errors (Aprovado!)
         if (typeof SafeStorage === 'undefined') {
             var SafeStorage = {
@@ -4501,8 +4509,8 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                     };
         }
 
-        // VERSION: 2.0 (cache buster - if you see [SUPABASE UPSERT ERROR] instead of [REST]/[JS Client], your cache is stale)
-        console.log(`%c[CondoSphere v2.0] %cLoaded at ${new Date().toISOString()}`, 'font-weight:bold;color:#2563eb;', 'color:#666;');
+        // VERSION: 3.1 (cache buster)
+        console.log(`%c[CondoSphere v3.1] %cLoaded at ${new Date().toISOString()}`, 'font-weight:bold;color:#10b981;font-size:16px;', 'color:#666;');
         // Initialize Supabase Client dynamically for local/external executions (Aprovado!)
         let supabaseClient = null;
         let dbSource = SafeStorage.getItem('condosphere_db_source') || 'supabase';
