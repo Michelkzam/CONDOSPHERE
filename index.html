@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="/src/styles/mobile.css">
     <link rel="stylesheet" href="/src/styles/condosphere.css">
     <style>
-        .tab-panel { display: none !important; }
-        .tab-panel.active { display: block !important; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
         .checkbox-morador { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: default; transition: all 0.2s; }
         .checkbox-morador.checked { background: #10b981; border: 2px solid #10b981; color: white; }
         .checkbox-morador.unchecked { background: rgba(239,68,68,0.15); border: 2px solid #ef4444; color: #ef4444; }
@@ -8988,7 +8988,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                 SafeStorage.setItem('currentUser', JSON.stringify({ username, ...user }));
                 document.getElementById('login-screen-overlay').style.display = 'none';
                 applyUserSession(user);
-                switchTab('dashboard', document.querySelector('.nav-item'));
+                showDashboardDirect();
                 try { loadAllDataFromSupabase(); } catch (e) {}
                 showToast(`Seja bem-vindo, ${user.name}!`, 'success');
             } else {
@@ -8999,6 +8999,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
         function handleLogout() {
             SafeStorage.removeItem('currentUser');
             document.getElementById('login-screen-overlay').style.display = 'flex';
+            document.querySelectorAll('.tab-panel').forEach(function(p) { p.style.display = 'none'; p.classList.remove('active'); });
             
             // Clear Supabase session on logout (Aprovado!)
             if (supabaseClient) {
@@ -9007,6 +9008,18 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                 });
             }
             showToast("Sessão encerrada com sucesso!");
+        }
+
+        function showDashboardDirect() {
+            var da = document.getElementById('dynamic-content-area');
+            if (da) da.style.display = 'none';
+            document.querySelectorAll('.tab-panel').forEach(function(p) { p.style.display = 'none'; p.classList.remove('active'); });
+            var dash = document.getElementById('tab-dashboard');
+            if (dash) { dash.style.display = 'block'; dash.classList.add('active'); }
+            document.getElementById('current-tab-title').innerText = 'Painel Principal';
+            document.querySelectorAll('.nav-item').forEach(function(i) { i.classList.remove('active'); });
+            var dashBtn = document.querySelector('.nav-item[onclick*="dashboard"]');
+            if (dashBtn) dashBtn.classList.add('active');
         }
 
         function forceTabPanelVisibility() {
@@ -9073,7 +9086,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                     const user = JSON.parse(cachedUser);
                     document.getElementById('login-screen-overlay').style.display = 'none';
                     applyUserSession(user);
-                    switchTab('dashboard', document.querySelector('.nav-item'));
+                    showDashboardDirect();
                     setTimeout(() => {
                         try { loadAllDataFromSupabase(); } catch (e) { console.warn("[AUTH LOAD] Data load:", e); }
                     }, 100);
