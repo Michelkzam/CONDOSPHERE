@@ -516,11 +516,18 @@
                                     <!-- Dial Controls (Default View) -->
                                     <div id="phone-dial-controls" style="display:flex; gap:10px">
                                         <button id="btn-phone-call-admin" class="btn btn-secondary" onclick="dialAdmin()" style="flex:1; font-size:0.65rem; padding:10px; display:flex; justify-content:center; align-items:center; gap:4px; font-weight:bold">
-                                            🏢 Ligar p/ Admin
+                                            🏢 Ligar p/ Portaria
                                         </button>
                                         <button id="btn-phone-call-resident" class="btn" onclick="dialResident()" style="flex:1; background-color:#374151; color:#94a3b8; font-size:0.65rem; padding:10px; font-weight:bold; cursor:not-allowed; border:none" disabled>
                                             📞 Ligar p/ Morador
                                         </button>
+                                    </div>
+
+                                    <!-- Admin Selection (shown when multiple admins online for Portaria) -->
+                                    <div id="phone-admin-select" style="display:none; flex-direction:column; gap:6px">
+                                        <span style="font-size:0.6rem; color:#10b981; font-weight:700; text-transform:uppercase; letter-spacing:0.5px">Selecione o administrador:</span>
+                                        <div id="admin-select-list" style="display:flex; flex-direction:column; gap:4px; max-height:120px; overflow-y:auto"></div>
+                                        <button class="btn btn-secondary" onclick="cancelAdminSelect()" style="font-size:0.6rem; padding:6px">Cancelar</button>
                                     </div>
 
                                     <!-- Active Call Controls (Triggered when Calling/Active) -->
@@ -9096,10 +9103,18 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
             if (btnAdmin) {
                 if (user.role === 'Administrador') {
                     btnAdmin.innerHTML = '🏢 Ligar p/ Portaria';
+                    btnAdmin.style.backgroundColor = '';
+                    btnAdmin.style.color = '';
+                    btnAdmin.style.cursor = '';
+                    btnAdmin.disabled = false;
                 } else if (user.role === 'Portaria') {
                     btnAdmin.innerHTML = '🏢 Ligar p/ Admin';
+                    btnAdmin.style.backgroundColor = '';
+                    btnAdmin.style.color = '';
+                    btnAdmin.style.cursor = '';
+                    btnAdmin.disabled = false;
                 } else {
-                    btnAdmin.innerHTML = '🏢 Indisponível';
+                    btnAdmin.innerHTML = '🏢 Sem interfone';
                     btnAdmin.disabled = true;
                     btnAdmin.style.cursor = 'not-allowed';
                     btnAdmin.style.backgroundColor = '#374151';
@@ -12107,32 +12122,74 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
             }
 
             if (currentUser.role === 'Portaria') {
-                if (!isTargetOnline(null, 'Administrador')) {
+                const onlineAdmins = Object.values(onlineUsers).filter(u => u.role === 'Administrador');
+                if (onlineAdmins.length === 0) {
                     addIntercomLog("[SISTEMA] Nenhum administrador está logado no sistema no momento.");
                     showToast("Nenhum administrador disponível no sistema!", "warning");
                     return;
                 }
-                activePhoneContact = { name: "Central de Administração", unit: "Sede Geral", role: "Administrador" };
-                startCallingFlow("Administração");
-            } else if (currentUser.role === 'Administrador') {
-                const onlineAdmins = Object.values(onlineUsers).filter(u => u.role === 'Administrador' && u.name !== currentUser.name);
-                const onlinePortaria = Object.values(onlineUsers).filter(u => u.role === 'Portaria');
-                if (onlinePortaria.length > 0) {
-                    activePhoneContact = { name: "Portaria de Plantão", unit: "Guarita", role: "Portaria" };
-                    startCallingFlow("Portaria");
-                } else if (onlineAdmins.length > 0) {
-                    const target = onlineAdmins[0];
-                    activePhoneContact = { name: target.name, unit: "Administração", role: "Administrador" };
+                if (onlineAdmins.length === 1) {
+                    activePhoneContact = { name: onlineAdmins[0].name, unit: "Administração", role: "Administrador" };
                     startCallingFlow("Administração");
                 } else {
-                    addIntercomLog("[SISTEMA] Nenhum colaborador disponível no momento.");
-                    showToast("Nenhum colaborador disponível!", "warning");
+                    showAdminSelect(onlineAdmins);
+                }
+            } else if (currentUser.role === 'Administrador') {
+                const onlinePortaria = Object.values(onlineUsers).filter(u => u.role === 'Portaria');
+                if (onlinePortaria.length === 0) {
+                    addIntercomLog("[SISTEMA] Nenhum porteiro está logado no sistema no momento.");
+                    showToast("Nenhum porteiro disponível no sistema!", "warning");
                     return;
+                }
+                if (onlinePortaria.length === 1) {
+                    activePhoneContact = { name: onlinePortaria[0].name, unit: "Guarita", role: "Portaria" };
+                    startCallingFlow("Portaria");
+                } else {
+                    showAdminSelect(onlinePortaria);
                 }
             } else {
                 addIntercomLog("[SISTEMA] Seu perfil não pode realizar esta chamada.");
                 showToast("Seu perfil não pode realizar esta chamada!", "warning");
             }
+        }
+
+        function showAdminSelect(onlineList) {
+            const listDiv = document.getElementById('admin-select-list');
+            const cachedUser = SafeStorage.getItem('currentUser');
+            const currentUser = cachedUser ? JSON.parse(cachedUser) : null;
+            const filtered = onlineList.filter(u => u.name !== (currentUser ? currentUser.name : ''));
+            
+            if (filtered.length === 0) {
+                addIntercomLog("[SISTEMA] Nenhum colaborador adicional disponível.");
+                showToast("Nenhum colaborador adicional disponível!", "warning");
+                return;
+            }
+
+            listDiv.innerHTML = '';
+            filtered.forEach(user => {
+                const btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.style.cssText = 'background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); color:white; font-size:0.7rem; padding:8px 12px; text-align:left; font-weight:600; cursor:pointer; border-radius:6px; transition:background 0.15s; display:flex; align-items:center; gap:8px';
+                btn.innerHTML = '<span style="width:8px; height:8px; border-radius:50%; background:#10b981; flex-shrink:0"></span>' + user.name + ' <span style="color:#94a3b8; font-size:0.6rem; margin-left:auto">' + user.role + '</span>';
+                btn.onmouseover = function() { this.style.background = 'rgba(59,130,246,0.2)'; };
+                btn.onmouseout = function() { this.style.background = 'rgba(59,130,246,0.1)'; };
+                btn.onclick = function() {
+                    document.getElementById('phone-admin-select').style.display = 'none';
+                    document.getElementById('phone-dial-controls').style.display = 'flex';
+                    activePhoneContact = { name: user.name, unit: user.role === 'Portaria' ? 'Guarita' : 'Administração', role: user.role };
+                    startCallingFlow(user.role);
+                };
+                listDiv.appendChild(btn);
+            });
+
+            document.getElementById('phone-dial-controls').style.display = 'none';
+            document.getElementById('phone-admin-select').style.display = 'flex';
+            addIntercomLog(`[SISTEMA] ${filtered.length} colaborador(es) online. Selecione um para ligar.`);
+        }
+
+        function cancelAdminSelect() {
+            document.getElementById('phone-admin-select').style.display = 'none';
+            document.getElementById('phone-dial-controls').style.display = 'flex';
         }
 
         function dialResident() {
@@ -12388,6 +12445,7 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
             
             document.getElementById('phone-dial-controls').style.display = 'flex';
             document.getElementById('phone-active-controls').style.display = 'none';
+            document.getElementById('phone-admin-select').style.display = 'none';
             
             if (activePhoneContact && activePhoneContact.name !== "Central de Administração") {
                 selectIntercomContact(activePhoneContact.name, activePhoneContact.unit, activePhoneContact.role);
