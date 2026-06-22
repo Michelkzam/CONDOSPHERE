@@ -4471,9 +4471,10 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
     <!-- High-Performance CDN loading for 100% reliability on Vercel and local executions -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script src="/js/condo-engine.js?v=3.1"></script>
-    <script src="/js/banking-integration.js?v=3.1"></script>
-    <script src="/js/condo-api.js?v=3.1"></script>
+    <script src="/js/condo-engine.js?v=3.2"></script>
+    <script src="/js/banking-integration.js?v=3.2"></script>
+    <script src="/js/condo-api.js?v=3.2"></script>
+    <script src="/js/intercom.js?v=3.2"></script>
     <script>
         window.onerror = function(msg, src, line, col, err) {
             document.getElementById('version-badge').textContent = 'ERROR: ' + msg + ' (line ' + line + ')';
@@ -9005,6 +9006,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                     document.getElementById('login-screen-overlay').style.setProperty('display', 'none', 'important');
                     showDashboardDirect();
                     applyUserSession(user);
+                    setTimeout(() => { try { initIntercomRealtime(); } catch(e) { console.warn('[INTERCOM] Init failed:', e); } }, 1000);
                     try { loadAllDataFromSupabase(); } catch (e2) {}
                 } catch(e) {
                     console.error("[LOGIN ERROR]", e);
@@ -9114,6 +9116,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                     document.getElementById('login-screen-overlay').style.display = 'none';
                     applyUserSession(user);
                     showDashboardDirect();
+                    setTimeout(() => { try { initIntercomRealtime(); } catch(e) { console.warn('[INTERCOM] Init failed:', e); } }, 1000);
                     setTimeout(() => {
                         try { loadAllDataFromSupabase(); } catch (e) { console.warn("[AUTH LOAD] Data load:", e); }
                     }, 100);
@@ -9943,14 +9946,27 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
             let html = '';
 
             if (matchedResidents.length === 0 && matchedResidences.length > 0) {
-                html += `<div style="margin-bottom:8px; font-size:0.85rem; color:var(--color-text-muted)">Residências encontradas (${matchedResidences.length}):</div>`;
+                html += `<div style="margin-bottom:8px; font-size:0.85rem; color:var(--color-text-muted)">Residências encontradas (${matchedResidences.length}). Moradores vinculados:</div>`;
                 matchedResidences.forEach(id => {
                     const r = residencesMap[id];
+                    const residentsInThis = residents.filter(res => res.ident.toLowerCase() === id.toLowerCase());
                     html += `
-                        <div style="background-color:rgba(16,185,129,0.05); border:1px solid var(--color-success); border-radius:8px; padding:16px; margin-bottom:8px">
-                            <div style="font-size:1rem; font-weight:bold; color:white">${id}</div>
-                            <div style="font-size:0.85rem; color:var(--color-text-muted); margin-top:4px">Proprietário: ${r.owner} | Endereço: ${r.address}</div>
-                        </div>`;
+                        <div style="background-color:rgba(16,185,129,0.05); border:1px solid var(--color-success); border-radius:8px; padding:12px; margin-bottom:8px">
+                            <div style="font-size:0.95rem; font-weight:bold; color:white">${id}</div>
+                            <div style="font-size:0.75rem; color:var(--color-text-muted); margin-top:2px">Proprietário: ${r.owner} | Endereço: ${r.address}</div>`;
+                    if (residentsInThis.length > 0) {
+                        residentsInThis.forEach(res => {
+                            const encName = encodeURIComponent(res.name).replace(/'/g, "%27");
+                            const encIdent = encodeURIComponent(res.ident).replace(/'/g, "%27");
+                            const encRole = encodeURIComponent(res.role).replace(/'/g, "%27");
+                            html += `
+                            <div onclick="selectIntercomContact(decodeURIComponent('${encName}'), decodeURIComponent('${encIdent}'), decodeURIComponent('${encRole}'))" style="cursor:pointer; margin-top:6px; padding:8px 10px; border-radius:6px; background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.15); transition:background 0.15s" onmouseover="this.style.background='rgba(59,130,246,0.15)'" onmouseout="this.style.background='rgba(59,130,246,0.08)'">
+                                <span style="color:#fbbf24; font-size:0.7rem">${res.role}</span> <span style="color:white; font-weight:bold; font-size:0.85rem">${res.name}</span>
+                                <span style="color:var(--color-text-muted); font-size:0.7rem; margin-left:4px">${res.contact || ''}</span>
+                            </div>`;
+                        });
+                    }
+                    html += `</div>`;
                 });
             }
 
@@ -12016,6 +12032,21 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
                     .on('broadcast', { event: 'call-hangup' }, ({ payload }) => {
                         handleCallHangupBroadcast(payload);
                     })
+                    .on('broadcast', { event: 'webrtc-offer' }, ({ payload }) => {
+                        const cachedUser = SafeStorage.getItem('currentUser');
+                        const myName = cachedUser ? JSON.parse(cachedUser).name.toLowerCase() : '';
+                        if (payload.to && payload.to.toLowerCase() !== myName) return;
+                        if (IntercomEngine) {
+                            IntercomEngine._pendingOffer = payload.offer;
+                            IntercomEngine._pendingCallId = payload.callId;
+                        }
+                    })
+                    .on('broadcast', { event: 'webrtc-answer' }, ({ payload }) => {
+                        if (IntercomEngine) IntercomEngine.handleAnswer(payload);
+                    })
+                    .on('broadcast', { event: 'ice-candidate' }, ({ payload }) => {
+                        if (IntercomEngine) IntercomEngine.handleIceCandidate(payload);
+                    })
                     .subscribe((status) => {
                         console.log("[INTERCOM REALTIME] Channel subscription status:", status);
                         if (status === 'SUBSCRIBED' && currentUser) {
@@ -12081,16 +12112,23 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
                     showToast("Nenhum administrador disponível no sistema!", "warning");
                     return;
                 }
-                activePhoneContact = { name: "Central de Administração", unit: "Sede Geral", role: "Administração" };
+                activePhoneContact = { name: "Central de Administração", unit: "Sede Geral", role: "Administrador" };
                 startCallingFlow("Administração");
             } else if (currentUser.role === 'Administrador') {
-                if (!isTargetOnline(null, 'Portaria')) {
-                    addIntercomLog("[SISTEMA] Nenhum porteiro está logado no sistema no momento.");
-                    showToast("Nenhum porteiro disponível no sistema!", "warning");
+                const onlineAdmins = Object.values(onlineUsers).filter(u => u.role === 'Administrador' && u.name !== currentUser.name);
+                const onlinePortaria = Object.values(onlineUsers).filter(u => u.role === 'Portaria');
+                if (onlinePortaria.length > 0) {
+                    activePhoneContact = { name: "Portaria de Plantão", unit: "Guarita", role: "Portaria" };
+                    startCallingFlow("Portaria");
+                } else if (onlineAdmins.length > 0) {
+                    const target = onlineAdmins[0];
+                    activePhoneContact = { name: target.name, unit: "Administração", role: "Administrador" };
+                    startCallingFlow("Administração");
+                } else {
+                    addIntercomLog("[SISTEMA] Nenhum colaborador disponível no momento.");
+                    showToast("Nenhum colaborador disponível!", "warning");
                     return;
                 }
-                activePhoneContact = { name: "Portaria de Plantão", unit: "Guarita", role: "Portaria" };
-                startCallingFlow("Portaria");
             } else {
                 addIntercomLog("[SISTEMA] Seu perfil não pode realizar esta chamada.");
                 showToast("Seu perfil não pode realizar esta chamada!", "warning");
@@ -12138,6 +12176,8 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
             const cachedUser = SafeStorage.getItem('currentUser');
             const callerUser = cachedUser ? JSON.parse(cachedUser) : null;
             const callerName = callerUser ? callerUser.name : "Portaria Principal";
+            const callerRole = callerUser ? callerUser.role : "Portaria";
+            const callId = 'call-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
 
             if (intercomChannel) {
                 intercomChannel.send({
@@ -12145,18 +12185,26 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
                     event: 'call-dial',
                     payload: {
                         from: callerName,
+                        fromRole: callerRole,
                         to: activePhoneContact.name,
-                        unit: activePhoneContact.unit
+                        unit: activePhoneContact.unit,
+                        callId: callId
                     }
                 });
             }
+
+            // Initiate WebRTC after a short delay to allow the broadcast to reach
+            setTimeout(() => {
+                if (phoneState === "DIALING" && IntercomEngine) {
+                    IntercomEngine.initiateCall(intercomChannel, activePhoneContact.name, callId);
+                }
+            }, 500);
         }
 
         let lastCallerName = "";
 
         // --- BROADCAST EVENT LISTENERS ON THE RECEIVING COMPUTER ---
         function handleIncomingCallBroadcast(payload) {
-            // Get logged-in user name
             const cachedUser = SafeStorage.getItem('currentUser');
             const currentUser = cachedUser ? JSON.parse(cachedUser) : null;
             
@@ -12164,13 +12212,19 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
 
             const isRecipient = currentUser.name.toLowerCase() === payload.to.toLowerCase() || 
                               (currentUser.role === 'Administrador' && payload.to === "Central de Administração") ||
-                              (currentUser.role === 'Portaria' && payload.to === "Portaria de Plantão");
+                              (currentUser.role === 'Portaria' && payload.to === "Portaria de Plantão") ||
+                              (currentUser.role === 'Administrador' && payload.to === "Portaria de Plantão") ||
+                              (currentUser.role === 'Portaria' && payload.to === "Central de Administração");
 
             if (isRecipient && phoneState === "IDLE") {
                 phoneState = "RINGING";
                 lastCallerName = payload.from;
+                if (payload.callId && IntercomEngine) {
+                    IntercomEngine._pendingCallId = payload.callId;
+                }
                 document.getElementById('inc-caller-name').innerText = payload.from;
                 document.getElementById('modal-incoming-call').style.display = "flex";
+                document.getElementById('modal-incoming-call').style.setProperty('display', 'flex', 'important');
                 console.log("[TELEFONE] Recebendo chamada de:", payload.from);
             }
         }
@@ -12227,23 +12281,30 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
 
         // --- RECEIVER ACTIONS ---
         function answerIncomingCall() {
-            // On Resident side: Accept the call
             document.getElementById('modal-incoming-call').style.display = "none";
             document.getElementById('modal-active-call').style.display = "flex";
-            document.getElementById('act-caller-name').innerText = lastCallerName || "Portaria Principal";
+            document.getElementById('act-caller-name').innerText = lastCallerName || "Chamada";
             
             phoneState = "CONNECTED";
             
-            // Broadcast the acceptance back to Portaria
             if (intercomChannel) {
                 intercomChannel.send({
                     type: 'broadcast',
                     event: 'call-answer',
-                    payload: {}
+                    payload: { from: getMyName ? getMyName() : 'Unknown' }
                 });
             }
 
-            // Start resident local timer
+            if (IntercomEngine && IntercomEngine._pendingOffer) {
+                const callId = IntercomEngine._pendingCallId || ('call-' + Date.now());
+                IntercomEngine.handleOffer(intercomChannel, {
+                    callId: callId,
+                    offer: IntercomEngine._pendingOffer,
+                    from: lastCallerName
+                });
+                IntercomEngine._pendingOffer = null;
+            }
+
             callSeconds = 0;
             if (callInterval) clearInterval(callInterval);
             callInterval = setInterval(() => {
@@ -12269,7 +12330,7 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
         }
 
         function hangUpActiveCall() {
-            // On Resident side: Hang up connected call
+            if (IntercomEngine) IntercomEngine.endCall();
             cleanupActiveCallState();
             
             if (intercomChannel) {
@@ -12282,6 +12343,7 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
         }
 
         function cleanupActiveCallState() {
+            if (IntercomEngine) IntercomEngine.endCall();
             clearInterval(phoneTimer);
             clearInterval(callInterval);
             phoneState = "IDLE";
@@ -12350,7 +12412,7 @@ const cachedRec = SafeStorage.getItem('condosphere_receivables');
         }
 
         function hangUpPhone() {
-            // On Portaria side: Hang up dialing or active call
+            if (IntercomEngine) IntercomEngine.endCall();
             if (intercomChannel) {
                 intercomChannel.send({
                     type: 'broadcast',
