@@ -8988,6 +8988,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                 SafeStorage.setItem('currentUser', JSON.stringify({ username, ...user }));
                 document.getElementById('login-screen-overlay').style.display = 'none';
                 applyUserSession(user);
+                switchTab('dashboard', document.querySelector('.nav-item'));
                 try { loadAllDataFromSupabase(); } catch (e) {}
                 showToast(`Seja bem-vindo, ${user.name}!`, 'success');
             } else {
@@ -9071,8 +9072,8 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
                 try {
                     const user = JSON.parse(cachedUser);
                     document.getElementById('login-screen-overlay').style.display = 'none';
-                    forceTabPanelVisibility();
                     applyUserSession(user);
+                    switchTab('dashboard', document.querySelector('.nav-item'));
                     setTimeout(() => {
                         try { loadAllDataFromSupabase(); } catch (e) { console.warn("[AUTH LOAD] Data load:", e); }
                     }, 100);
