@@ -147,11 +147,11 @@ CREATE POLICY "Allow public write access" ON public.reservations FOR ALL USING (
 CREATE TABLE IF NOT EXISTS public.portaria_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
-    doc_identifier VARCHAR(100) NOT NULL,
-    access_type VARCHAR(100) NOT NULL DEFAULT 'Visitante',
-    vehicle_info VARCHAR(255),
-    authorizer_info VARCHAR(255) NOT NULL,
-    observations TEXT,
+    doc VARCHAR(100) NOT NULL,
+    type VARCHAR(100) NOT NULL DEFAULT 'Visitante',
+    vehicle_plate VARCHAR(20),
+    authorized_by VARCHAR(255),
+    action VARCHAR(50) DEFAULT 'Entrada',
     photo_doc TEXT,
     photo_person TEXT,
     created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
@@ -219,6 +219,7 @@ CREATE TABLE IF NOT EXISTS public.providers (
     service VARCHAR(255) NOT NULL,
     contract_value DECIMAL(12,2) NOT NULL DEFAULT 0.00,
     status VARCHAR(50) DEFAULT 'Ativo',
+    contact VARCHAR(100),
     created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

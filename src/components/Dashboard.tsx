@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface DashboardProps {
-  userRole: 'Administrador' | 'Portaria' | 'Zelador';
+  userRole: 'Administrador' | 'Portaria' | 'Zelador' | 'Colaborador' | 'Morador';
   unidadesCount: number;
   unidadesTotal: number;
   inadimplenciaValue: number;

@@ -130,7 +130,7 @@ export const App: React.FC = () => {
             role: m.role,
             isAssociated: m.is_associated,
             isResident: m.is_resident,
-            residenceId: m.residence_id
+            residenceId: m.residence_name
           }));
           setResidents(mappedMor);
         }
@@ -249,8 +249,21 @@ export const App: React.FC = () => {
 
     // RBAC: Dynamic routing restrictions based on logged-in user role
     switch (activeTab) {
-      case 'dashboard':
-        return <Dashboard />;
+      case 'dashboard': {
+        const inadimplenciaValue = receivables
+          .filter(r => r.status === 'Vencido')
+          .reduce((sum, r) => sum + (r.baseValue || 0) + (r.extraCharges || 0), 0);
+        return (
+          <Dashboard
+            userRole={currentUser.role as any}
+            unidadesCount={residences.length}
+            unidadesTotal={residences.length}
+            inadimplenciaValue={inadimplenciaValue}
+            acessosCount={0}
+            reservasCount={0}
+          />
+        );
+      }
       case 'residencias':
         return <Residences residences={residences} setResidences={setResidences} setReceivables={setReceivables} />;
       case 'moradores':

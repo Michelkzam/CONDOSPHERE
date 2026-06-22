@@ -10,7 +10,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const [password, setPassword] = useState("");
   
   const userDatabase: Record<string, { role: string; name: string; job: string; avatar: string; pass: string }> = {
-    "admin.geral": { role: "Administrador", name: "Maurício Albuquerque", job: "Administrador Geral", avatar: "MA", pass: "12345678901" },
+    "admin.geral": { role: "Administrador", name: "Maurício Albuquerque", job: "Gestor Master & Arquiteto", avatar: "MA", pass: "12345678901" },
     "reginaldo.silveira": { role: "Colaborador", name: "Reginaldo Silveira", job: "Zelador Geral", avatar: "RS", pass: "22233344455" },
     "carlos.silva": { role: "Morador", name: "Carlos Henrique Silva", job: "Morador Proprietário", avatar: "CS", pass: "33344455566" },
     "jose.portaria": { role: "Portaria", name: "José Portaria", job: "Supervisor Portaria", avatar: "JP", pass: "44455566677" }

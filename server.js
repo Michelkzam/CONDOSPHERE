@@ -286,6 +286,22 @@ const server = http.createServer(async (req, res) => {
     const table = parts[1]; // e.g. 'users', 'residents'
     const id = parts[2];    // e.g. row UUID if deleting/updating
 
+    const ALLOWED_TABLES = [
+      'profiles', 'users', 'residences', 'residents', 'employees',
+      'vehicles', 'common_areas', 'reservations', 'portaria_logs',
+      'payables', 'receivables', 'financial_config', 'providers',
+      'assemblies', 'company_settings', 'ouvidoria_tickets',
+      'ouvidoria_messages', 'deliveries', 'notification_templates',
+      'notification_queue', 'bank_accounts', 'reconciliation_imports',
+      'reconciliation_items', 'payment_cancellations'
+    ];
+
+    if (table && !ALLOWED_TABLES.includes(table) && table !== 'reset') {
+      res.writeHead(400);
+      res.end(JSON.stringify({ error: "Tabela não permitida: " + table }));
+      return;
+    }
+
     // --- CASE A: PostgreSQL Engine (Active) ---
     if (usePostgres && pgPool) {
       try {

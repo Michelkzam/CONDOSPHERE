@@ -185,6 +185,7 @@ CREATE TABLE IF NOT EXISTS providers (
 CREATE TABLE IF NOT EXISTS assemblies (
     id TEXT PRIMARY KEY,
     title TEXT NOT NULL,
+    theme TEXT NOT NULL DEFAULT '',
     start_date TEXT NOT NULL,
     end_date TEXT NOT NULL,
     proposals TEXT NOT NULL DEFAULT '[]',

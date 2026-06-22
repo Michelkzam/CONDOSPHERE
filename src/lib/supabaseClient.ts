@@ -49,7 +49,7 @@ export interface Database {
           role: string;
           is_associated: boolean;
           is_resident: boolean;
-          residence_id: string | null;
+          residence_name: string | null;
           created_at: string;
         };
       };
@@ -59,7 +59,8 @@ export interface Database {
           plate: string;
           model: string;
           color: string;
-          owner: string;
+          owner_name: string;
+          is_active: boolean;
           created_at: string;
         };
       };
@@ -76,9 +77,11 @@ export interface Database {
       reservations: {
         Row: {
           id: string;
+          area_id: string | null;
           area_name: string;
           resident_name: string;
-          reservation_date: string;
+          date: string;
+          time_period: string;
           fee: number;
           status: string;
           created_at: string;
@@ -87,16 +90,14 @@ export interface Database {
       portaria_logs: {
         Row: {
           id: string;
-          visitor_name: string;
-          visitor_doc: string;
-          visitor_type: string;
-          authorized_by: string;
-          vehicle_type: string | null;
+          name: string;
+          doc: string;
+          type: string;
           vehicle_plate: string | null;
-          vehicle_color: string | null;
-          vehicle_model: string | null;
-          photo_doc_url: string | null;
-          photo_person_url: string | null;
+          authorized_by: string | null;
+          action: string;
+          photo_doc: string | null;
+          photo_person: string | null;
           created_at: string;
         };
       };

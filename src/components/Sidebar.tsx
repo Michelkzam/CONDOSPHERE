@@ -358,6 +358,38 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   Folha de Pagamento
                 </button>
+                <button
+                  onClick={() => setActiveTab('ponto_beneficios')}
+                  className={`w-full text-left py-1 text-xs rounded hover:text-white block transition-colors ${
+                    activeTab === 'ponto_beneficios' ? 'text-blue-400 font-extrabold' : 'text-slate-400'
+                  }`}
+                >
+                  Ponto & Benefícios
+                </button>
+                <button
+                  onClick={() => setActiveTab('rh_estrategico')}
+                  className={`w-full text-left py-1 text-xs rounded hover:text-white block transition-colors ${
+                    activeTab === 'rh_estrategico' ? 'text-blue-400 font-extrabold' : 'text-slate-400'
+                  }`}
+                >
+                  RH Estratégico
+                </button>
+                <button
+                  onClick={() => setActiveTab('portal_colaborador')}
+                  className={`w-full text-left py-1 text-xs rounded hover:text-white block transition-colors ${
+                    activeTab === 'portal_colaborador' ? 'text-blue-400 font-extrabold' : 'text-slate-400'
+                  }`}
+                >
+                  Portal do Colaborador
+                </button>
+                <button
+                  onClick={() => setActiveTab('people_analytics')}
+                  className={`w-full text-left py-1 text-xs rounded hover:text-white block transition-colors ${
+                    activeTab === 'people_analytics' ? 'text-blue-400 font-extrabold' : 'text-slate-400'
+                  }`}
+                >
+                  People Analytics
+                </button>
               </div>
             )}
           </div>
