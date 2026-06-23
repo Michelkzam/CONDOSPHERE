@@ -5157,6 +5157,7 @@ Cláusula 3: Danos materiais provocados serão apurados pela diretoria e cobrado
             else if (tabId === 'moradores') loadMoradoresFromSupabase();
             else if (tabId === 'residencias') loadResidenciasFromCache();
             else if (tabId === 'veiculos') loadVeiculosFromCache();
+            else if (tabId === 'reservas') setTimeout(renderReservationsCalendar, 200);
         }
 
         function loadResidenciasFromCache() {
